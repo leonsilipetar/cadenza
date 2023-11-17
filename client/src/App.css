@@ -240,6 +240,9 @@ header{
 .link{
   text-decoration: none;
 }
+h1{
+  font-size: 3rem;
+}
 .login-signup{
   width: 100vw;
   height: 100vh;
@@ -252,6 +255,8 @@ header{
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: url(./components/img/nota.png);
+  background-position:left;
 }
 .main-login-signup{
   width: 50%;
@@ -355,7 +360,6 @@ color: var(--isticanje);
   text-decoration: underline;
   color: rgb(var(--isticanje));
 }
-
 .main{
   position: relative;
   width: 93vw;
@@ -390,7 +394,7 @@ color: var(--isticanje);
         justify-content: space-evenly;
         align-items: center;
         width: 100%;
-        height: 3rem;
+        height: 8svh;
         bottom: 0;
         flex-direction: row;
         border-radius: 15px 15px 0 0;
