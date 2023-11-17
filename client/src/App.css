@@ -1,0 +1,455 @@
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+}
+
+/* Set core root defaults */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+   scroll-behavior: auto;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:root{
+  --isticanje: var(--narancasta);
+  --isticanje-svijetlo: rgba(var(--isticanje), 0.425);
+
+  --pozadina: rgb(var(--pozadina-svijetlo));
+  --pozadina-svijetlo: 255, 255, 255;
+  --pozadina-tamno: 17, 17, 17;
+
+  --iznad: rgb(var(--svijetlo-iznad));
+  --iznad-objava: rgb(var(--isticanje));
+  --iznad-prozirno: 56, 58, 56, 0.8;
+
+  --tekst: rgb(var(--svijetlo-tekst));
+
+  --tamno-iznad: 66, 68, 66;
+  --svijetlo-iznad: rgb(229, 229, 229);
+
+  --tamno-tekst: 218, 214, 214;
+  --svijetlo-tekst: 15, 15, 15;
+
+  --visinaKartice: 250px;
+
+  --boxShadow: var(--sjena-svijetlo);
+  --sjena-tamno-navtop: 0px 0px 40px 1px rgba(0, 0, 0, 0.6);
+  --sjena-tamno: none;
+  --sjena-svijetlo: 0px 0px 40px 1px rgba(63, 63, 63, 0.219);
+  /* boje isticanja:*/
+  --ljubicasta: 150, 103, 224;
+  --crvena: 255, 104, 107;
+  --zuta: 254, 219, 114;
+  --siva: 97, 102, 107;
+  --plava: 35, 166, 213;
+  --narancasta: 251, 133, 0;
+  --zelena: 132, 169, 140;
+  --radius: 0.5rem;
+}
+
+body.light {
+  background-color: #ffffff;
+  color: #000000;
+  --iznad: rgb(var(--svijetlo-iznad));
+  --boxShadow: var(--sjena-svijetlo);
+  --tekst: rgb(var(--svijetlo-tekst));
+  --isticanje-svijetlo: rgba(var(--isticanje), 0.425);
+  --iznad-objava: rgb(var(--isticanje));
+  --pozadina: rgb(var(--pozadina-svijetlo));
+}
+
+/* Dark Theme */
+body.dark {
+  background-color: rgb(23, 23, 23);
+  color: #ffffff;
+  --iznad: rgb(var(--tamno-iznad));
+  --boxShadow: var(--sjena-tamno);
+  --tekst: rgb(var(--tamno-tekst));
+  --isticanje-svijetlo: rgba(var(--isticanje), 0.425);
+  --iznad-objava: rgb(var(--isticanje));
+  --pozadina: rgb(var(--pozadina-tamno));
+}
+*{
+  font-family: 'My font', sans-serif;
+  color: var(--tekst);
+}
+
+html{
+  background-color: var(--pozadina);
+}
+input[type="text"]{
+  color: black;
+}
+header{
+    width: 3.5rem;
+    height: 100%;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: var(--iznad);
+    box-shadow: var(--boxShadow);
+  }
+  nav{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 4rem 0 1rem 0;
+    align-items: center;
+    justify-content: space-between;
+  }
+  nav div{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--iznad-objava);
+    transition: margin-left 0.2s ease;
+  }
+  .icon{
+    color: #dfdfdf;
+  }
+  nav div:hover{
+    color: var(--pozadina);
+    margin-left: 1rem;
+    outline: 7px solid var(--iznad);
+  }
+  nav div.otvoreno{
+    margin-left: 2rem;
+    width: 3.6rem;
+    height: 3.6rem;
+    outline: 8px solid var(--iznad);
+  }
+  .welcome-poruka{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .errorM{
+    color: red;
+    background-color: rgba(255, 0, 0, 0.185);
+    padding: 1% 2%;
+    border-radius: var(--radius);
+  }
+ .uil{
+    color: rgb(var(--isticanje));
+    font-size: 2.4em;
+  }
+  #tema{
+    font-size: 1.4em;
+  }
+  .gumb:hover{
+    cursor: pointer;
+  }
+  .nav-top{
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    top: 0;
+    width: 100%;
+    padding: 0.5rem;
+    height: 3.5rem;
+}
+.nav-top div{
+  margin: 0.5rem;
+  transition: margin 0.5s ease;
+}
+.nav-top div:hover{
+  margin: 2rem;
+}
+.gumb-novo{
+  border-radius: 5px;
+  border: none;
+  background-color: transparent;
+  text-align: center;
+  font-weight: bold;
+}
+.gumb-novo:hover{
+  background-color: var(--isticanje-svijetlo);
+  box-shadow: var(--boxShadow);
+}
+.link{
+  text-decoration: none;
+}
+.login-signup{
+  width: 100vw;
+  height: 100vh;
+}
+.header-forma-login-signup{
+  width: 50%;
+  height: 100%;
+  position: relative;
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.main-login-signup{
+  width: 50%;
+  height: 100%;
+  position: relative;
+  float: right;
+  flex-direction: column;
+  background-color: var(--pozadina);
+}
+.pokazatelj{
+  width: 90%;
+  height: 10%;
+  position: relative;
+  top: 0;
+  border-radius: 0 0 1em 1em;
+  box-shadow: var(--boxShadow);
+  background-color: var(--iznad);
+}
+.pokazatelj .p{
+  color: rgb(var(--tekst));
+  font-weight: bold;
+}
+.glavna-forma{
+  width: 90%;
+  height: 85%;
+  position: absolute;
+  bottom: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--iznad);
+  border-radius: 1em 1em 0 0;
+  box-shadow: var(--boxShadow);
+}
+.naziv-ime{
+  padding: 2%;
+}
+form{
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+}
+.input-login-signup{
+  width: 75%;
+  margin: 2%;
+  border-radius: var(--radius);
+  padding: var(--radius);
+  box-shadow: 1px 1px 15px rgba(63, 63, 63, 0.315);
+  color: rgb(var(--svijetlo-tekst));
+  outline: none;
+  border: none;
+  transition: border-bottom 0.1s ease-in-out;
+}
+.input-login-signup:focus{
+border-bottom: 4px solid rgb(var(--isticanje));
+}
+#gumb-login-signup{
+  font-weight: bold;
+  text-decoration: none;
+  width: 75%;
+  margin-top: 5%;
+  color: rgb(var(--pozadina-svijetlo));
+  background-color: var(--isticanje-svijetlo);
+  border-radius: var(--radius);
+  border: none;
+  outline: none;
+  padding: var(--radius);
+}
+#gumb-login-signup:hover{
+outline: 2px solid var(--isticanje-svijetlo);
+background-color: var(--pozadina-svijetlo);
+color: rgb(var(--isticanje));
+}
+.gumb-login-signup{
+  font-weight: bold;
+  text-decoration: none;
+  width: 100%;
+  margin-top: 5%;
+  color: rgb(var(--pozadina-svijetlo));
+  background-color: var(--isticanje-svijetlo);
+  border-radius: var(--radius);
+  border: none;
+  outline: none;
+  padding: 1rem 2rem;
+}
+.gumb-login-signup:hover{
+outline: 2px solid var(--isticanje-svijetlo);
+background-color: var(--pozadina-svijetlo);
+color: rgb(var(--isticanje));
+}
+a{
+color: var(--isticanje);
+}
+.p{
+  padding: 5%;
+}
+.link-signup-login{
+  text-decoration: underline;
+  color: rgb(var(--isticanje));
+}
+
+.main{
+  position: relative;
+  width: 93vw;
+  float: right;
+  display: flex;
+  top: 4.5rem;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+  padding-bottom: 10%;
+}
+.karticaZadatka{
+  background-color: var(--iznad);
+  box-shadow: var(--boxShadow);
+  border-radius: var(--radius);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  position: relative;
+  width: 60%;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 2%;
+  transition: height 0.3s ease-in-out;
+}
+  @media only screen and (max-width: 1080px) {
+    #uil{
+      font-size: 1.2rem;
+    }
+    header{
+        justify-content: space-evenly;
+        align-items: center;
+        width: 100%;
+        height: 3rem;
+        bottom: 0;
+        flex-direction: row;
+        border-radius: 15px 15px 0 0;
+      }
+      .main{
+        width: 100%;
+        display: flex;
+        align-items: center;
+      }
+      .karticaZadatka{
+        width: 96%;
+      }
+      nav {
+        display: flex;
+        flex-direction: row;
+      }
+    
+      nav div {
+        position: relative;
+        width: 2.5rem;
+        height: 2.5rem;
+        bottom: 1.5rem;
+        border-radius: 50%;
+        transition: height 0.3s ease-in-out, bottom 0.2s ease-in-out;
+      }
+      .nav-top{
+        width: 100%;
+        padding: 0.5rem;
+    }
+
+  .header-forma-login-signup{
+      width: 100%;
+      height: 90vh;
+  }
+  .main-login-signup{
+      width: 100%;
+      display: flex;
+      align-items: center;
+      background-color: var(--pozadina);
+  }
+  .pokazatelj{
+      border-radius: 1em;
+  }
+  .gumb-login-signup{
+    width: 90%;
+  }
+input{
+    width: 100%;
+}
+  }
+  .error{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0, 0, 0, 0.4);
+    z-index: 4;
+    top: 0;
+    left: 0;
+  }
