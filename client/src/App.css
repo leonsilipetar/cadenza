@@ -88,7 +88,7 @@ select {
   --tekst: rgb(var(--svijetlo-tekst));
 
   --tamno-iznad: 66, 68, 66;
-  --svijetlo-iznad: rgb(229, 229, 229);
+  --svijetlo-iznad: 241, 241, 241;
 
   --tamno-tekst: 218, 214, 214;
   --svijetlo-tekst: 15, 15, 15;
@@ -170,7 +170,6 @@ header{
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
-    background: var(--iznad-objava);
     transition: margin-left 0.2s ease;
   }
   .icon{
@@ -179,13 +178,14 @@ header{
   nav div:hover{
     color: var(--pozadina);
     margin-left: 1rem;
-    outline: 7px solid var(--iznad);
+    background-color: rgb(var(--isticanje));
   }
   nav div.otvoreno{
     margin-left: 2rem;
     width: 3.6rem;
     height: 3.6rem;
     outline: 8px solid var(--iznad);
+    background-color: rgb(var(--isticanje));
   }
   .welcome-poruka{
     display: flex;
@@ -198,7 +198,7 @@ header{
     padding: 1% 2%;
     border-radius: var(--radius);
   }
- .uil{
+ .icon{
     color: rgb(var(--isticanje));
     font-size: 2.4em;
   }
@@ -255,8 +255,6 @@ h1{
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url(./components/img/nota.png);
-  background-position:left;
 }
 .main-login-signup{
   width: 50%;
@@ -387,8 +385,8 @@ color: var(--isticanje);
   transition: height 0.3s ease-in-out;
 }
   @media only screen and (max-width: 1080px) {
-    #uil{
-      font-size: 1.2rem;
+    .icon{
+      font-size: 2rem;
     }
     header{
         justify-content: space-evenly;
@@ -410,30 +408,41 @@ color: var(--isticanje);
       nav {
         display: flex;
         flex-direction: row;
+        align-items: center;
+        justify-content: center;
       }
     
       nav div {
         position: relative;
-        width: 2.5rem;
-        height: 2.5rem;
-        bottom: 1.5rem;
+        width: 2.2rem;
+        height: 2.2rem;
+        bottom: 1.3rem;
         border-radius: 50%;
-        transition: height 0.3s ease-in-out, bottom 0.2s ease-in-out;
+        transition: height 0.3s ease-in-out, margin-bottom 0.2s ease-in-out;
+      }
+      nav div:hover{
+        margin-left: 0;
+        margin-bottom: 1rem;
+      }
+      nav div.otvoreno{
+        margin-left: 0;
+        margin-bottom: 1rem;
       }
       .nav-top{
         width: 100%;
         padding: 0.5rem;
     }
-
   .header-forma-login-signup{
       width: 100%;
       height: 90vh;
+  }
+  h1{
+    font-size: 2rem;
   }
   .main-login-signup{
       width: 100%;
       display: flex;
       align-items: center;
-      background-color: var(--pozadina);
   }
   .pokazatelj{
       border-radius: 1em;

@@ -4,51 +4,50 @@ import '../../App.css';
 import Naslovna from "../naslovna/Naslovna";
 import axios from 'axios';
 import Profil from "../Profile";
-import MusicNoteIcon from '@mui/icons-material/MusicNote';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ChatIcon from '@mui/icons-material/Chat';
-import PaymentsIcon from '@mui/icons-material/Payments';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import Chat from "../Chat";
 import Racuni from "../Racuni";
 import Raspored from "../Raspored";
+import { Icon } from '@iconify/react';
 axios.defaults.withCredentials = true;
 
 const Navigacija = ({ user, otvoreno}) => {
-    const [activeItem, setActiveItem] = useState(otvoreno);
+  const [activeItem, setActiveItem] = useState(otvoreno);
 
-    const handleItemClick = (item) => {
-      setActiveItem(item === activeItem ? null : item);
-    };
+  const handleItemClick = (item) => {
+    // If the clicked item is the same as the active item, return early
+    if (item === activeItem) {
+      return;
+    }
+
+    setActiveItem(item);
+  };
     return (
         <>
         <header>
       <nav>
         <div className={activeItem === 'naslovna' ? 'otvoreno' : ''} onClick={() => handleItemClick('naslovna')}>
           <Link className="link" to="/user">
-            <MusicNoteIcon fontSize="large"></MusicNoteIcon>
+          <Icon className="icon" icon="solar:music-notes-broken" />
           </Link>
         </div>
         <div className={activeItem === 'chat' ? 'otvoreno' : ''} onClick={() => handleItemClick('chat')}>
           <Link className="link" to="/chat">
-            <ChatIcon fontSize="large"/>
+          <Icon className="icon" icon="solar:chat-dots-broken" />
           </Link>
         </div>
         <div className={activeItem === 'racuni' ? 'otvoreno' : ''} onClick={() => handleItemClick('racuni')}>
           <Link className="link" to="/racuni">
-            <PaymentsIcon fontSize="large"/>
+          <Icon className="icon" icon="solar:file-check-broken" />
           </Link>
         </div>
         <div className={activeItem === 'raspored' ? 'otvoreno' : ''} onClick={() => handleItemClick('raspored')}>
           <Link className="link" to="/raspored">
-            <CalendarMonthIcon fontSize="large" />
+          <Icon className="icon" icon="solar:calendar-broken" />
           </Link>
         </div>
-      </nav>
-      <nav>
         <div className={activeItem === 'profil' ? 'otvoreno' : ''} onClick={() => handleItemClick('profil')}>
           <Link className="link" to="/profil">
-            <AccountCircleIcon fontSize="large"/>
+          <Icon className="icon" icon="solar:user-circle-broken" />
           </Link>
         </div>
       </nav>
