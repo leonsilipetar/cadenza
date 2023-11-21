@@ -5,8 +5,6 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store";
 const NavTop = ({user, naslov}) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [isOpenP, setIsOpenP] = useState(false); 
 
     const dispatch = useDispatch();
   const sendLogoutRequest = async () => {
@@ -40,9 +38,11 @@ const NavTop = ({user, naslov}) => {
     return (
         <>  
         <div className="nav-top">
-            <div>
-            {user && <p>{user.korisnickoIme}</p>}
+          {user && user.isAdmin && (
+            <div className="admin-gumb">
+              Administracija
             </div>
+          )}
             <div>
                 <button className="gumb-novo gumb-nav " onClick={toggleTheme}><i id='tema' className="uil uil-swatchbook">{theme === 'dark' ? 'Svijetla tema' : 'Tamna tema'}</i></button>
             </div>

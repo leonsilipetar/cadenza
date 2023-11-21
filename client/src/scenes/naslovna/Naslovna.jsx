@@ -1,8 +1,6 @@
 import React from 'react'
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { authActions } from "../../store";
 import Navigacija from "../navigacija";
 import NavTop from '../nav-top';
 
@@ -12,21 +10,6 @@ const Naslovna = () => {
 
   const [user, setUser] = useState();
   const otvoreno = "naslovna";
-
-  const dispatch = useDispatch();
-  const sendLogoutRequest = async () => {
-    axios.defaults.withCredentials = true
-  const res = await axios.post("http://localhost:5000/api/logout", null, {
-    withCredentials: true
-  })
-  if(res.status === 200) {
-    return res;
-  }
-  return new Error("Unable to logout. Try again");
- }
- const handleLogout = () => {
-  sendLogoutRequest().then(()=>dispatch(authActions.logout()))
- }
 
   const sendRequest = async () => {
       const res = await axios.get('http://localhost:5000/api/user', {

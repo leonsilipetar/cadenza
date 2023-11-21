@@ -14,6 +14,7 @@ function App() {
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const dispatch = useDispatch();
   const location = useLocation();
+  
 
   useEffect(() => {
     const storedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -31,7 +32,7 @@ function App() {
   return (
     <Routes>
       {isLoggedIn && <Route path="/user/*" element={<Naslovna />} />}
-      {isLoggedIn && <Route path="/profil" element={<Profil />} />}
+      {isLoggedIn && <Route path="/profil/*" element={<Profil />} />}
       {isLoggedIn && <Route path="/chat" element={<Chat />} />}
       {isLoggedIn && <Route path="/racuni" element={<Racuni />} />}
       {isLoggedIn && <Route path="/raspored" element={<Raspored />} />}

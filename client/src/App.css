@@ -83,12 +83,11 @@ select {
 
   --iznad: rgb(var(--svijetlo-iznad));
   --iznad-objava: rgb(var(--isticanje));
-  --iznad-prozirno: 56, 58, 56, 0.8;
 
   --tekst: rgb(var(--svijetlo-tekst));
 
   --tamno-iznad: 66, 68, 66;
-  --svijetlo-iznad: 241, 241, 241;
+  --svijetlo-iznad: 218, 218, 218;
 
   --tamno-tekst: 218, 214, 214;
   --svijetlo-tekst: 15, 15, 15;
@@ -105,7 +104,7 @@ select {
   --zuta: 254, 219, 114;
   --siva: 97, 102, 107;
   --plava: 35, 166, 213;
-  --narancasta: 251, 133, 0;
+  --narancasta: 252, 163, 17;
   --zelena: 132, 169, 140;
   --radius: 0.5rem;
 }
@@ -113,37 +112,40 @@ select {
 body.light {
   background-color: #ffffff;
   color: #000000;
+  --navtop: rgb(255, 255, 255);
   --iznad: rgb(var(--svijetlo-iznad));
   --boxShadow: var(--sjena-svijetlo);
   --tekst: rgb(var(--svijetlo-tekst));
-  --isticanje-svijetlo: rgba(var(--isticanje), 0.425);
+  --isticanje-svijetlo: rgb(var(--isticanje));
   --iznad-objava: rgb(var(--isticanje));
-  --pozadina: rgb(var(--pozadina-svijetlo));
+  --pozadina: rgb(255, 255, 255);
 }
 
 /* Dark Theme */
 body.dark {
-  background-color: rgb(23, 23, 23);
+  background-color: rgb(14, 14, 15);
   color: #ffffff;
+  --navtop: rgb(17, 17, 17);
   --iznad: rgb(var(--tamno-iznad));
   --boxShadow: var(--sjena-tamno);
   --tekst: rgb(var(--tamno-tekst));
-  --isticanje-svijetlo: rgba(var(--isticanje), 0.425);
+  --isticanje-svijetlo: rgba(var(--isticanje), 0.6);
   --iznad-objava: rgb(var(--isticanje));
-  --pozadina: rgb(var(--pozadina-tamno));
 }
 *{
   font-family: 'My font', sans-serif;
   color: var(--tekst);
 }
-
-html{
-  background-color: var(--pozadina);
+.admin-gumb{
+  background-color: rgba(var(--isticanje),0.8);
+  padding: 10px;
+  border-radius: 10px;
 }
 input[type="text"]{
   color: black;
 }
 header{
+  z-index: 2;
     width: 3.5rem;
     height: 100%;
     position: fixed;
@@ -170,15 +172,16 @@ header{
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
-    transition: margin-left 0.2s ease;
+    transition: all 0.1s ease;
   }
   .icon{
-    color: #dfdfdf;
+    padding: 0.2rem;
   }
   nav div:hover{
     color: var(--pozadina);
     margin-left: 1rem;
     background-color: rgb(var(--isticanje));
+    outline: 8px solid var(--iznad);
   }
   nav div.otvoreno{
     margin-left: 2rem;
@@ -209,15 +212,18 @@ header{
     cursor: pointer;
   }
   .nav-top{
+    z-index: 1;
     position: fixed;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: row;
     top: 0;
-    width: 100%;
+    width: 100svw;
     padding: 0.5rem;
     height: 3.5rem;
+    box-shadow: var(--boxShadow);
+    background-color: var(--navtop);
 }
 .nav-top div{
   margin: 0.5rem;
@@ -255,6 +261,9 @@ h1{
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: url(../public/note.png);
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .main-login-signup{
   width: 50%;
@@ -262,7 +271,6 @@ h1{
   position: relative;
   float: right;
   flex-direction: column;
-  background-color: var(--pozadina);
 }
 .pokazatelj{
   width: 90%;
@@ -274,7 +282,6 @@ h1{
   background-color: var(--iznad);
 }
 .pokazatelj .p{
-  color: rgb(var(--tekst));
   font-weight: bold;
 }
 .glavna-forma{
@@ -367,7 +374,6 @@ color: var(--isticanje);
   justify-content: space-evenly;
   align-items: center;
   flex-direction: column;
-  padding-bottom: 10%;
 }
 .karticaZadatka{
   background-color: var(--iznad);
@@ -384,6 +390,17 @@ color: var(--isticanje);
   margin-bottom: 2%;
   transition: height 0.3s ease-in-out;
 }
+.profilDiv{
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+}
+.profilDiv p{
+  margin-bottom: 1rem;
+}
   @media only screen and (max-width: 1080px) {
     .icon{
       font-size: 2rem;
@@ -399,8 +416,7 @@ color: var(--isticanje);
       }
       .main{
         width: 100%;
-        display: flex;
-        align-items: center;
+        padding-bottom: 10%;
       }
       .karticaZadatka{
         width: 96%;
