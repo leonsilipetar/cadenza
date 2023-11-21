@@ -7,7 +7,6 @@ const UserInfoComponent = ({ user }) => {
           <p>Korisničko ime: {user.korisnickoIme}</p>
           <p>Ime: {user.ime} {user.prezime}</p>
           <p>Email: {user.email}</p>
-          <p>Password: {user.password}</p>
           <p>Class: {user.class}</p>
           <p>Uloga: {getUserRoles(user)}</p>
           <p>OIB: {user.oib}</p>
