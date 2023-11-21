@@ -9,6 +9,9 @@ import Profil from './scenes/Profile.jsx';
 import Chat from './scenes/Chat.jsx';
 import Racuni from './scenes/Racuni.jsx';
 import Raspored from './scenes/Raspored.jsx';
+import Admin from './scenes/administracija/Admin.jsx';
+import Korisnici from './scenes/administracija/Korisnici.jsx';
+import RacuniAdmin from './scenes/administracija/RacuniAdmin.jsx';
 
 function App() {
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -36,6 +39,9 @@ function App() {
       {isLoggedIn && <Route path="/chat" element={<Chat />} />}
       {isLoggedIn && <Route path="/racuni" element={<Racuni />} />}
       {isLoggedIn && <Route path="/raspored" element={<Raspored />} />}
+      {isLoggedIn && <Route path="/admin" element={<Admin />} />}
+      {isLoggedIn && <Route path="/korisnici" element={<Korisnici />} />}
+      {isLoggedIn && <Route path="/racuni-admin" element={<RacuniAdmin />} />}
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<Login />} />
     </Routes>

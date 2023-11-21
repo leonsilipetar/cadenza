@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store";
-const NavTop = ({user, naslov}) => {
+const NavTopAdministracija = ({user, naslov}) => {
 
     const dispatch = useDispatch();
   const sendLogoutRequest = async () => {
@@ -40,7 +40,7 @@ const NavTop = ({user, naslov}) => {
         <div className="nav-top">
           {user && user.isAdmin && (
             <div className="admin-gumb">
-              <Link className='link' to="/admin"><p>Administracija</p></Link>
+              <Link className='link' to="/user"><p>Aplikacija</p></Link>
             </div>
           )}
             <div>
@@ -54,4 +54,4 @@ const NavTop = ({user, naslov}) => {
         </>
     );
 }
-export default NavTop;
+export default NavTopAdministracija;
