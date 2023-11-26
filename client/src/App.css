@@ -364,6 +364,16 @@ color: var(--isticanje);
   text-decoration: underline;
   color: rgb(var(--isticanje));
 }
+.popup{
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0, 0, 0, 70%);
+  z-index: 5;
+}
 .main{
   position: relative;
   width: 93vw;
@@ -380,14 +390,11 @@ color: var(--isticanje);
   border-radius: var(--radius);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
   flex-direction: column;
   position: relative;
   width: 60%;
-  display: flex;
   align-items: flex-start;
   margin-bottom: 2%;
-  transition: height 0.3s ease-in-out;
 }
 .profilDiv{
   display: flex;
@@ -399,6 +406,23 @@ color: var(--isticanje);
 }
 .profilDiv p{
   margin-bottom: 1rem;
+}
+.tablica{
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 0.5rem;
+}
+.naziv{
+  background-color: var(--iznad-objava);
+  border-radius: 0.7rem 0.7rem 0.2rem 0.2rem;
+  padding: 0.5rem;
+}
+.tablica .tr{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--iznad);
+  padding: 0.5rem;
 }
   @media only screen and (max-width: 1080px) {
     .icon{

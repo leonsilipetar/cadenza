@@ -5,13 +5,15 @@ const {
      verifyToken, 
      getUser, 
      refreshToken, 
-     logout, 
+     logout,
+     getKorisnici, 
 } = require('../controllers/user-controller.js');
 const router = express.Router();
 
-router.post("/signup", signup);
+router.post("/signup",verifyToken, signup);
 router.post("/login", login);
 router.get("/user", verifyToken, getUser);
+router.get("/korisnici", verifyToken, getKorisnici);
 router.get("/profil", verifyToken, getUser);
 router.get("/refresh", refreshToken, verifyToken, getUser);
 router.post("/logout", verifyToken, logout);

@@ -3,38 +3,89 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const asyncWrapper = require("../middleware/asyncWrapper.js");
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
+const signup = async (req, res, next) => {
+    const {
+      korisnickoIme,
+      email,
+      program, // "class" is a reserved keyword in JavaScript, so use an alternative name like "userClass"
+      isAdmin,
+      isMentor,
+      isStudent,
+      oib,
+    } = req.body;
+  
+    // Generate a random password
+    const randomPassword = crypto.randomBytes(8).toString('hex');
+    console.log("password: ",randomPassword);
+  
+    let existingUser;
+  
+    try {
+      existingUser = await User.findOne({ email: email });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  
+    if (existingUser) {
+      return res.status(400).json({ message: "Korisnik već postoji!!" });
+    }
+  
+    const hashPassword = bcrypt.hashSync(randomPassword);
+  
+    const user = new User({
+      korisnickoIme,
+      email,
+      program,
+      isAdmin,
+      isMentor,
+      isStudent,
+      oib,
+      password: hashPassword,
+    });
+  
+    try {
+      await user.save();
+  
+      // Send the random password to the user's email
+      await sendPasswordEmail(email, randomPassword);
+  
+      return res.status(201).json({ message: "Uspješno ste registrirali korisnika, lozinka poslana na email." });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
 
 
-
-const signup = async(req, res, next) => {
-     const { korisnickoIme, email, password} = req.body;
-     let existingUser;
- 
-     try {
-         existingUser = await User.findOne({ email: email });
-     } catch (err) {
-         console.log(err);
-     }
-     if (existingUser) {
-         return res.status(400).json({message: "Korisnik već postoji! Prijavite se!"});
-     }
- 
-     const hashPassword = bcrypt.hashSync(password);
- 
-     const user = new User({
-         korisnickoIme,
-         email,
-         password: hashPassword
-     });
- 
-     try {
-         await user.save();
-     }catch (err) {
-         console.log(err);
-     }
- 
-     return res.status(201).json({message: "Uspješno ste registrirani!"});
- };
+  const sendPasswordEmail = async (email, password) => {
+    const transporter = nodemailer.createTransport({
+      service: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: '', // replace with your email
+        pass: '', // replace with your email password
+      },
+    });
+  
+    const mailOptions = {
+        from: '',
+        to: email,
+        subject: 'Vaša lozinka za MAI račun',
+        text: `Prijavljeni ste na našu platformu, a vaša lozinka je: ${password}`,
+      };
+    
+      try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent:', info);
+      } catch (error) {
+        console.error('Error sending email:', error);
+      }
+    };
  
  const login = async (req, res, next) => {
      const {email, password} = req.body;
@@ -149,6 +200,17 @@ const logout = (req, res, next) => {
         return res.status(200).json({message: "Successfully Logged Out"})
     })
 }
+const getKorisnici = async (req, res, next) => {
+  
+    try {
+      let korisnici = [];
+        korisnici = await User.find().limit(30);
+  
+      res.json(korisnici);
+    } catch (err) {
+      next(err);
+    }
+  };
 
 
 exports.signup = signup;
@@ -157,3 +219,4 @@ exports.verifyToken = verifyToken;
 exports.getUser = getUser;
 exports.refreshToken = refreshToken;
 exports.logout = logout;
+exports.getKorisnici = getKorisnici;
