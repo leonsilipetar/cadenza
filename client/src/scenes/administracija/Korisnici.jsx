@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import NavigacijaAdmin from './NavigacijaAdmin';
 import NavTopAdministracija from './NavtopAdministracija';
+import { Icon } from '@iconify/react';
 
 
 axios.defaults.withCredentials = true;
@@ -11,6 +12,7 @@ const Korisnici = () => {
   const [odabranoDodajKorisnika, setOdabranoDodajKOrisnika] = useState(false);
   const [korisnici, setKorisnici] = useState([]);
   const [user, setUser] = useState();
+  const [isHovered, setIsHovered] = useState(false);
   const otvoreno = "korisnici";
   const sendRequestUsers = async () => {
     const res = await axios.get('http://localhost:5000/api/korisnici', {
@@ -208,15 +210,26 @@ const handleSubmit = async (e) => {
       <div className='th'>program</div>
       <div className='th'>uloga</div>
       <div className='th'>oib</div>
+      <div></div>
     </div>
               {korisnici?.length > 0 ? (
   korisnici.map(korisnik => (
-    <div className='tr'>
+    <div className={`tr redak ${isHovered ? 'hovered' : ''}`}
+    onMouseEnter={() => setIsHovered(true)}
+    onMouseLeave={() => setIsHovered(false)}>
       <div className='th'>{korisnik.korisnickoIme}</div>
       <div className='th'>{korisnik.email}</div>
       <div className='th'>{korisnik.class}</div>
       <div className='th'>{getUserRoles(korisnik)}</div>
       <div className='th'>{korisnik.oib}</div>
+      <div className='th'>
+        <div className={`action-btn btn abEdit ${isHovered ? 'hovered' : ''}`} data-text="uredi">
+          <Icon icon="solar:pen-2-broken" fontSize="large" />
+        </div>
+        <div className={`action-btn btn abDelete ${isHovered ? 'hovered' : ''}`} data-text="obriši">
+          <Icon icon="solar:trash-bin-trash-broken" fontSize="large" />
+        </div>
+      </div>
     </div>
   ))
 ) : (

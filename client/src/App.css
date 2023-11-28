@@ -410,7 +410,6 @@ color: var(--isticanje);
 .tablica{
   display: grid;
   grid-template-rows: auto auto;
-  gap: 0.5rem;
 }
 .naziv{
   background-color: var(--iznad-objava);
@@ -423,6 +422,55 @@ color: var(--isticanje);
   gap: 1.5rem;
   border-bottom: 1px solid var(--iznad);
   padding: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.th{
+  flex: 1;
+}
+
+.redak:hover{
+  background-color:rgba(153, 153, 153, 0.195);
+}
+
+.action-btn {
+  cursor: pointer;
+  display: inline-flex; /* Use inline-flex to ensure they stay in a row */
+  align-items: center;
+  padding: 0.5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.abEdit:hover,
+.abDelete:hover {
+  border-radius: 10rem;
+}
+
+.abEdit:hover {
+  background-color: #4CAF50;
+}
+
+.abDelete:hover {
+  background-color: #f44336;
+}
+
+.abEdit:hover::after,
+.abDelete:hover::after {
+  content: attr(data-text);
+  display: inline-block;
+  opacity: 1;
+  margin-left: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+.abEdit::after,
+.abDelete::after {
+  content: '';
+  opacity: 0;
+  display: inline-block;
+  margin-left: 5px;
+  transition: all 0.3s ease-in-out;
 }
   @media only screen and (max-width: 1080px) {
     .icon{
