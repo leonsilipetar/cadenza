@@ -44,11 +44,7 @@ const NavTop = ({user, naslov}) => {
             </div>
           )}
             <div>
-                <button className="gumb-novo gumb-nav " onClick={toggleTheme}><i id='tema' className="uil uil-swatchbook">{theme === 'dark' ? 'Svijetla tema' : 'Tamna tema'}</i></button>
-            </div>
-
-            <div>
-                <Link className='link' to="/login" onClick={handleLogout}><p>Odjava</p></Link>
+              {naslov}
             </div>
         </div>
         </>

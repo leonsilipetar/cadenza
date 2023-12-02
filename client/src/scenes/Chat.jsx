@@ -54,7 +54,7 @@ const Chat = () => {
     return (
       <>
       <Navigacija user={user} otvoreno={otvoreno} />
-      <NavTop user={user}/>
+      <NavTop user={user} naslov={"Chat"}/>
       <div className="main">
 
   <div className="karticaZadatka">

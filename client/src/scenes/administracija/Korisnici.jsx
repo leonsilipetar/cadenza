@@ -130,7 +130,7 @@ const handleSubmit = async (e) => {
     return (
       <>
       <NavigacijaAdmin  otvoreno={otvoreno}/>
-      <NavTopAdministracija />
+      <NavTopAdministracija naslov={"Administracija - Korisnici"}/>
       {odabranoDodajKorisnika && 
         <div className="popup">
         <form onSubmit={handleSubmit}>

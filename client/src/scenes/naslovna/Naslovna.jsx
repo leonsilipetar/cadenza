@@ -53,7 +53,7 @@ const Naslovna = () => {
     return (
       <>
       <Navigacija user={user} otvoreno={otvoreno}/>
-      <NavTop user={user}/>
+      <NavTop user={user} naslov={"Naslovna"}/>
       <div className="main">
 
   <div className="karticaZadatka">

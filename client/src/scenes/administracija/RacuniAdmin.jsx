@@ -54,7 +54,7 @@ const RacuniAdmin = () => {
     return (
       <>
       <NavigacijaAdmin user={user} otvoreno={otvoreno}/>
-      <NavTopAdministracija user={user}/>
+      <NavTopAdministracija user={user} naslov={"Administracija - Računi"}/>
       <div className="main">
 
   <div className="karticaZadatka">

@@ -53,7 +53,7 @@ const Admin = () => {
     return (
       <>
       <NavigacijaAdmin user={user} otvoreno={otvoreno}/>
-      <NavTopAdministracija user={user}/>
+      <NavTopAdministracija user={user} naslov={"Administracija - naslovna"}/>
       <div className="main">
 
   <div className="karticaZadatka">

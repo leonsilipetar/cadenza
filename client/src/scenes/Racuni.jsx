@@ -54,7 +54,7 @@ const Racuni = () => {
     return (
       <>
       <Navigacija user={user} otvoreno={otvoreno}/>
-      <NavTop user={user}/>
+      <NavTop user={user} naslov={"Računi"}/>
       <div className="main">
 
   <div className="karticaZadatka">

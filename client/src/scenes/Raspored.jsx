@@ -53,7 +53,7 @@ const Raspored = () => {
     return (
       <>
       <Navigacija user={user} otvoreno={otvoreno}/>
-      <NavTop user={user}/>
+      <NavTop user={user} naslov={"Raspored"}/>
       <div className="main">
 
   <div className="karticaZadatka">
