@@ -7,12 +7,14 @@ import UserInfoComponent from '../components/UserInfo';
 import { Link } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/index";
+import { Icon } from '@iconify/react';
 
 
 axios.defaults.withCredentials = true;
 const Profil = () => {
 
   const [user, setUser] = useState();
+  const [isHovered, setIsHovered] = useState(false);
   const otvoreno = "profil";
 
   
@@ -66,7 +68,6 @@ const Profil = () => {
     
     
 
-
     useEffect(() => {
 
       
@@ -89,11 +90,18 @@ const Profil = () => {
       <Navigacija user={user} otvoreno={otvoreno}/>
       <NavTop user={user} naslov={"Postavke i profil"}/>
       <div className="main">
-        <div className="karticaZadatka inline">
-                      <button className="gumb-novo gumb-nav " onClick={toggleTheme}><i id='tema' className="uil uil-swatchbook">{theme === 'dark' ? 'Svijetla tema' : 'Tamna tema'}</i></button>
-          <div>
-              <Link className='link' to="/login" onClick={handleLogout}><p>Odjava</p></Link>
+        <div className="karticaZadatka sbtwn">
+
+          <div className={`action-btn btn ${isHovered ? 'hovered' : ''}`}>
+            <button className="gumb-novo gumb-nav " onClick={toggleTheme}><i id='tema' className="uil uil-swatchbook">{theme === 'dark' ? 'Svijetla tema' : 'Tamna tema'}</i></button>
           </div>
+
+          <div className={`action-btn btn abDelete ${isHovered ? 'hovered' : ''}`}>
+            <Link className='link' to="/login" onClick={handleLogout}>
+                  <Icon icon="solar:logout-2-broken" /> Odjavi se
+                  </Link>
+          </div>
+
         </div>
           <div className="karticaZadatka">
 
