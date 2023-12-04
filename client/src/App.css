@@ -108,7 +108,23 @@ select {
   --zelena: 132, 169, 140;
   --radius: 0.5rem;
 }
+@font-face {
+  font-family: 'fOstalo';
+  src: url('fonts/HedvigLettersSans-Regular.ttf') format('truetype');
+  font-weight: bold;
+  font-display: swap;
+}
 
+@font-face {
+  font-family: 'fNaslovi';
+  src: url('fonts/HeptaSlab-VariableFont_wght.ttf') format('truetype');
+  font-weight: lighter;
+  font-display: swap;
+}
+
+body {
+  font-family: 'fOstalo', sans-serif;
+}
 body.light {
   background-color: #ffffff;
   color: #000000;
@@ -132,9 +148,8 @@ body.dark {
   --isticanje-svijetlo: rgba(var(--isticanje), 0.6);
   --iznad-objava: rgb(var(--isticanje));
 }
-*{
-  font-family: 'My font', sans-serif;
-  color: var(--tekst);
+.accentColor > *{
+  color: rgb(var(--isticanje));
 }
 .admin-gumb{
   background-color: rgba(var(--isticanje),0.8);
@@ -246,7 +261,8 @@ header{
   text-decoration: none;
 }
 h1{
-  font-size: 3rem;
+  font-family: 'fNaslovi', sans-serif;
+  color: var(--tekst);
 }
 .login-signup{
   width: 100vw;
@@ -282,6 +298,7 @@ h1{
 }
 .pokazatelj .p{
   font-weight: bold;
+  padding: 1.2rem;
 }
 .glavna-forma{
   width: 90%;
@@ -358,7 +375,7 @@ a{
 color: var(--isticanje);
 }
 .p{
-  padding: 5%;
+  padding: 0.3rem;
 }
 .link-signup-login{
   text-decoration: underline;
@@ -395,6 +412,7 @@ color: var(--isticanje);
   width: 60%;
   align-items: flex-start;
   margin-bottom: 2%;
+  padding: 0.8rem;
 }
 .profilDiv{
   display: flex;

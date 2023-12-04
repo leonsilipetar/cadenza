@@ -38,11 +38,9 @@ const NavTopAdministracija = ({user, naslov}) => {
     return (
         <>  
         <div className="nav-top">
-          {user && user.isAdmin && (
             <div className="admin-gumb">
               <Link className='link' to="/user"><p>Aplikacija</p></Link>
             </div>
-          )}
             <div>
                 <button className="gumb-novo gumb-nav " onClick={toggleTheme}><i id='tema' className="uil uil-swatchbook">{theme === 'dark' ? 'Svijetla tema' : 'Tamna tema'}</i></button>
             </div>

@@ -196,13 +196,16 @@ const handleSubmit = async (e) => {
         id="kor-oib" 
         placeholder="OIB"/>
 
-        <button className='gumb' type="submit">Dodaj</button>
-        <button className='gumb' onClick={() => setOdabranoDodajKOrisnika(false)}>Odustani</button>
+        <div>
+          <button className='gumb action-btn abEdit' type="submit">Dodaj</button>
+        <button className='gumb action-btn abDelete' onClick={() => setOdabranoDodajKOrisnika(false)}>Odustani</button>
+        </div>
+        
         </form>
         </div>
       }
       <div className="main">
-      <div onClick={() => setOdabranoDodajKOrisnika(true)}>Dodaj korisnika</div>
+      <div className='gumb action-btn abEdit ' onClick={() => setOdabranoDodajKOrisnika(true)}><Icon icon="solar:user-plus-broken" fontSize="large" /> Dodaj korisnika</div>
   <div className="tablica">
     <div className='tr naziv'>
       <div className='th'>Korisničko ime</div>

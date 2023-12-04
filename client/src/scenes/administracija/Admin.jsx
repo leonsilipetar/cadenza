@@ -58,10 +58,10 @@ const Admin = () => {
 
   <div className="karticaZadatka">
     <div className="ikona_ime_kartica">
-      <i className="uil uil-polygon" id="uil">
+      <i>
         Administracija aplikacije
       </i>
-      <p></p>
+      <p className='p'>Administracija je trenutno dostupna samo u web formi za desktop (široke) zaslone</p>
     </div>
   </div>
 </div>

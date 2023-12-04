@@ -43,9 +43,9 @@ const NavTop = ({user, naslov}) => {
               <Link className='link' to="/admin"><p>Administracija</p></Link>
             </div>
           )}
-            <div>
+            <h1>
               {naslov}
-            </div>
+            </h1>
         </div>
         </>
     );
