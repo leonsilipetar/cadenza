@@ -113,7 +113,6 @@ const signup = async (req, res, next) => {
  
      res.cookie(String(existingUser._id), token, {
          path: '/',
-         expires: new Date(Date.now() + 1000 * 60 * 58),
          httpOnly: true,
          sameSite: 'lax',
      });
@@ -151,7 +150,7 @@ const signup = async (req, res, next) => {
      return res.status(200).json({ user });
  }
 
- 
+ /*
 const refreshToken = (req, res, next) => {
     const cookies = req.headers.cookie;
     const prevToken = cookies.split("=")[1];
@@ -182,7 +181,7 @@ const refreshToken = (req, res, next) => {
         next();
     })
 };
-
+*/
 const logout = (req, res, next) => {
     const cookies = req.headers.cookie;
     const prevToken = cookies.split("=")[1];
@@ -217,6 +216,6 @@ exports.signup = signup;
 exports.login = login;
 exports.verifyToken = verifyToken;
 exports.getUser = getUser;
-exports.refreshToken = refreshToken;
+//exports.refreshToken = refreshToken;
 exports.logout = logout;
 exports.getKorisnici = getKorisnici;

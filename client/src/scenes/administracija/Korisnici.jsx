@@ -117,13 +117,6 @@ const handleSubmit = async (e) => {
         sendRequest().then((data) => {
           setUser(data.user)
         });
-        let interval = setInterval(() => {
-          refreshToken().then((data) => {
-            setUser(data.user)
-          });
-        }, 1000 * 28 * 60 * 60);
-  
-        return () => clearInterval(interval);
 
     }, []);
     
@@ -211,7 +204,7 @@ const handleSubmit = async (e) => {
       <div className='th'>Korisničko ime</div>
       <div className='th'>email</div>
       <div className='th'>program</div>
-      <div className='th'>uloga</div>
+      <div className='th'>uloga u sustavu</div>
       <div className='th'>oib</div>
       <div></div>
     </div>
@@ -222,10 +215,13 @@ const handleSubmit = async (e) => {
     onMouseLeave={() => setIsHovered(false)}>
       <div className='th'>{korisnik.korisnickoIme}</div>
       <div className='th'>{korisnik.email}</div>
-      <div className='th'>{korisnik.class}</div>
+      <div className='th'>{korisnik.program}</div>
       <div className='th'>{getUserRoles(korisnik)}</div>
       <div className='th'>{korisnik.oib}</div>
       <div className='th'>
+      <div className={`action-btn btn abExpand ${isHovered ? 'hovered' : ''}`} data-text="više">
+          <Icon icon="solar:round-double-alt-arrow-down-broken" />
+        </div>
         <div className={`action-btn btn abEdit ${isHovered ? 'hovered' : ''}`} data-text="uredi">
           <Icon icon="solar:pen-2-broken" fontSize="large" />
         </div>

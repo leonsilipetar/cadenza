@@ -41,14 +41,6 @@ const Racuni = () => {
           setUser(data.user)
         });
 
-      let interval = setInterval(() => {
-        refreshToken().then((data) => {
-          setUser(data.user)
-        });
-      }, 1000 * 28 * 60 * 60);
-
-      return () => clearInterval(interval);
-
     }, []);
     
     return (

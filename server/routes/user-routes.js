@@ -4,7 +4,7 @@ const {
      login, 
      verifyToken, 
      getUser, 
-     refreshToken, 
+     //refreshToken, 
      logout,
      getKorisnici, 
 } = require('../controllers/user-controller.js');
@@ -15,7 +15,7 @@ router.post("/login", login);
 router.get("/user", verifyToken, getUser);
 router.get("/korisnici", verifyToken, getKorisnici);
 router.get("/profil", verifyToken, getUser);
-router.get("/refresh", refreshToken, verifyToken, getUser);
+//router.get("/refresh", refreshToken, verifyToken, getUser);
 router.post("/logout", verifyToken, logout);
 
 module.exports = router;

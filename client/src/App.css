@@ -461,12 +461,16 @@ color: var(--isticanje);
 }
 
 .abEdit:hover,
-.abDelete:hover {
+.abDelete:hover,
+.abExpand:hover {
   border-radius: 10rem;
 }
 
 .abEdit:hover {
   background-color: #4CAF50;
+}
+.abExpand:hover {
+  background-color: rgb(var(--isticanje));
 }
 
 .abDelete:hover {
@@ -474,7 +478,8 @@ color: var(--isticanje);
 }
 
 .abEdit:hover::after,
-.abDelete:hover::after {
+.abDelete:hover::after,
+.abExpand:hover::after {
   content: attr(data-text);
   display: inline-block;
   opacity: 1;
