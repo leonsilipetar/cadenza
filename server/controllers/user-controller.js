@@ -200,16 +200,29 @@ const logout = (req, res, next) => {
     })
 }
 const getKorisnici = async (req, res, next) => {
-  
-    try {
-      let korisnici = [];
-        korisnici = await User.find().limit(30);
-  
-      res.json(korisnici);
-    } catch (err) {
-      next(err);
-    }
-  };
+  try {
+    // Select only specific fields (ime, prezime, program) from the database
+    const korisnici = await User.find({}, 'korisnickoIme email program uloga oib').limit(30);
+
+    res.json(korisnici);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getDetaljiKorisnika = async (req, res, next) => {
+  try {
+    // Assuming req.params.userId contains the ID of the selected user
+    const userId = req.params.userId;
+
+    // Fetch more detailed data for the selected user
+    const detaljiKorisnika = await User.findById(userId);
+
+    res.json(detaljiKorisnika);
+  } catch (err) {
+    next(err);
+  }
+};
 
 
 exports.signup = signup;
@@ -219,3 +232,4 @@ exports.getUser = getUser;
 //exports.refreshToken = refreshToken;
 exports.logout = logout;
 exports.getKorisnici = getKorisnici;
+exports.getDetaljiKorisnika = getDetaljiKorisnika;

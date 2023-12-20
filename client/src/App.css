@@ -279,7 +279,7 @@ h1{
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url(../public/note.png);
+  background-image: url(../public/Logo12.png);
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -451,6 +451,9 @@ color: var(--isticanje);
 .tablica{
   display: grid;
   grid-template-rows: auto auto;
+}
+.fje{
+  width: 10rem;
 }
 .naziv{
   background-color: var(--iznad-objava);
