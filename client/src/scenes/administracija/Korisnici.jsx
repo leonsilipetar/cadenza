@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
 import NavigacijaAdmin from './NavigacijaAdmin';
 import NavTopAdministracija from './NavtopAdministracija';
 import DodajKorisnika from './DodajKorisnika';
+import KorisnikDetalji from './KorisnikDetalji';
 
 axios.defaults.withCredentials = true;
 
 const Korisnici = () => {
   const [odabranoDodajKorisnika, setOdabranoDodajKOrisnika] = useState(false);
+  const [korisnikDetaljiOtvoreno, setKorisnikDetaljiOtvoreno] = useState(null);
+
   const [korisnici, setKorisnici] = useState([]);
   const [user, setUser] = useState();
   const [isHovered, setIsHovered] = useState(false);
   const otvoreno = 'korisnici';
+  const navigate = useNavigate();
+  const params = useParams();
 
   const sendRequestUsers = async () => {
     try {
@@ -50,59 +56,8 @@ const Korisnici = () => {
     }
   };
 
-  const [inputs, setInputs] = useState({
-    korisnickoIme: '',
-    email: '',
-    ime: '',
-    prezime: '',
-    isAdmin: false,
-    isMentor: false,
-    isStudent: false,
-    oib: '',
-    program: '',
-    brojMobitela: '',
-    mentor: '',
-    datumRodjenja: '',
-    adresa: {
-      ulica: '',
-      kucniBroj: '',
-      mjesto: '',
-    },
-    pohadjaTeoriju: false,
-    napomene: [],
-    maloljetniClan: false,
-    roditelj1: {
-      ime: '',
-      prezime: '',
-      brojMobitela: '',
-    },
-    roditelj2: {
-      ime: '',
-      prezime: '',
-      brojMobitela: '',
-    },
-  });
-  
 
-  const handleChange = (e) => {
-    setInputs((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const dodajKorisnika = async () => {
-    try {
-      const res = await axios.post('http://localhost:5000/api/signup', inputs);
-      const data = res.data;
-      return data;
-    } catch (err) {
-      console.error(err);
-      return null;
-    }
-  };
-
-const handleDodajKorisnika = () => {
+  const handleDodajKorisnika = () => {
     // Logic for handling the addition of a new user
     // e.g., refetch the user list or perform other actions
     console.log('Adding user logic here');
@@ -142,11 +97,15 @@ const handleDodajKorisnika = () => {
     <>
       <NavigacijaAdmin otvoreno={otvoreno} />
       <NavTopAdministracija naslov={'Administracija - Korisnici'} />
-      {odabranoDodajKorisnika &&
+      {korisnikDetaljiOtvoreno && (
+  <KorisnikDetalji korisnik={korisnikDetaljiOtvoreno} onCancel={() => setKorisnikDetaljiOtvoreno(false)} />
+)}
+      {odabranoDodajKorisnika && (
         <DodajKorisnika
           onDodajKorisnika={handleDodajKorisnika}
           onCancel={handleCancelDodajKorisnika}
-        />}
+        />
+      )}
       <div className="main">
         <div
           className="gumb action-btn abEdit "
@@ -181,9 +140,10 @@ const handleDodajKorisnika = () => {
                     className={`action-btn btn abExpand ${
                       isHovered ? 'hovered' : ''
                     }`}
+                    onClick={() => setKorisnikDetaljiOtvoreno(korisnik._id)}
                     data-text="više"
                   >
-                    <Icon icon="solar:round-double-alt-arrow-down-broken" />
+                      <Icon icon="solar:round-double-alt-arrow-down-broken" />
                   </div>
                   <div
                     className={`action-btn btn abEdit ${

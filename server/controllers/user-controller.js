@@ -202,7 +202,7 @@ const logout = (req, res, next) => {
 const getKorisnici = async (req, res, next) => {
   try {
     // Select only specific fields (ime, prezime, program) from the database
-    const korisnici = await User.find({}, 'korisnickoIme email program uloga oib').limit(30);
+    const korisnici = await User.find({}, 'korisnickoIme email program isAdmin isMentor isStudent oib').limit(30);
 
     res.json(korisnici);
   } catch (err) {
@@ -212,11 +212,17 @@ const getKorisnici = async (req, res, next) => {
 
 const getDetaljiKorisnika = async (req, res, next) => {
   try {
-    // Assuming req.params.userId contains the ID of the selected user
     const userId = req.params.userId;
 
-    // Fetch more detailed data for the selected user
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
     const detaljiKorisnika = await User.findById(userId);
+
+    if (!detaljiKorisnika) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
     res.json(detaljiKorisnika);
   } catch (err) {
