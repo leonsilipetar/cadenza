@@ -529,9 +529,28 @@ color: var(--isticanje);
 }
 .sbtwn{
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   flex-direction: row;
+}
+.checkbox-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.checkbox-item {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin: 1rem;
+  cursor: pointer;
+  border-radius: var(--radius);
+  background-color: rgba(var(--isticanje),0.2);
+}
+
+.checkbox-item.checked {
+  border: none;
+  outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
 }
   @media only screen and (max-width: 1080px) {
     .icon{
@@ -602,6 +621,9 @@ color: var(--isticanje);
   }
 input{
     width: 100%;
+}
+.checkbox-group{
+  flex-direction: column;
 }
   }
   .error{

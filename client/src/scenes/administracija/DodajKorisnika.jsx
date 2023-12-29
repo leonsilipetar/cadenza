@@ -45,6 +45,14 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
           [e.target.name]: e.target.value,
         }));
       };
+      const formatDateString = (isoDateString) => {
+        const date = new Date(isoDateString);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+        const year = date.getFullYear();
+      
+        return `${day}/${month}/${year}`;
+      };
     
       const dodajKorisnika = async () => {
         try {
@@ -129,15 +137,16 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
           </div>
           <div>
           
-          <input
-          className="input-login-signup"
-          value={inputs.datumRodjenja}
-          onChange={(e) => setInputs({ ...inputs, datumRodjenja: e.target.value })}
-          type="date"
-          name="datumRodjenja"
-          id="kor-datum-rodjenja"
-          placeholder="datum rođenja"
-          />
+          <label htmlFor="kor-datum-rodjenja">Datum rođenja:</label>
+<input
+  className="input-login-signup"
+  value={inputs.datumRodjenja ? formatDateString(inputs.datumRodjenja) : ''}
+  onChange={(e) => setInputs({ ...inputs, datumRodjenja: e.target.value })}
+  type="text"
+  name="datumRodjenja"
+  id="kor-datum-rodjenja"
+  placeholder="dd/mm/yyyy"
+/>
 
           <input
             className="input-login-signup"

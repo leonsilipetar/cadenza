@@ -5,8 +5,7 @@ axios.defaults.withCredentials = true;
 
 const KorisnikDetalji = ({ korisnikId, onCancel }) => {
 
-    const [korisnik, setKorisnik] = useState({});
-
+  const [isSaving, setIsSaving] = useState(false);
     const getDetaljiKorisnika = async (korisnikId) => {
         try {
           // Assuming userId is the ID of the selected user
@@ -21,7 +20,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           throw err; // Propagate the error to the caller
         }
       };
-    const [inputs, setInputs] = useState({
+      const [inputs, setInputs] = useState({
         korisnickoIme: '',
         email: '',
         ime: '',
@@ -40,12 +39,12 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           mjesto: '',
         },
         pohadjaTeoriju: false,
-        napomene: [],
+        napomene: '',
         maloljetniClan: false,
         roditelj1: {
           ime: '',
           prezime: '',
-          brojMobitela: ''
+          brojMobitela: '',
         },
         roditelj2: {
           ime: '',
@@ -53,6 +52,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           brojMobitela: '',
         },
       });
+      
       
     
       const handleChange = (e) => {
@@ -62,9 +62,9 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
         }));
       };
     
-      const dodajKorisnika = async () => {
+      const urediKorisnika = async () => {
         try {
-          const res = await axios.post('http://localhost:5000/api/signup', inputs);
+          const res = await axios.put(`http://localhost:5000/api/update-korisnik/${korisnikId}`, inputs);
           const data = res.data;
           return data;
         } catch (err) {
@@ -72,21 +72,61 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           return null;
         }
       };
+      
     
       const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await dodajKorisnika();
+        setIsSaving(true);
+    
+        const result = await urediKorisnika();
     
         if (result) {
-          console.log('User registered successfully:', result);
+          console.log('User updated successfully:', result);
         } else {
-          console.log('User registration failed.');
+          console.log('User update failed.');
         }
+    
+        // Simulate a delay (you can replace this with your actual save logic)
+        setTimeout(() => {
+          setIsSaving(false);
+        }, 1000); // Adjust the delay as needed
       };
 
       useEffect(() => {
         getDetaljiKorisnika(korisnikId).then((data) => {
-          setKorisnik(data);
+          const formattedDate = data.datumRodjenja ? new Date(data.datumRodjenja).toISOString().split('T')[0] : '';
+          setInputs({
+            korisnickoIme: data.korisnickoIme,
+            email: data.email,
+            ime: data.ime,
+            prezime: data.prezime,
+            isAdmin: data.isAdmin,
+            isMentor: data.isMentor,
+            isStudent: data.isStudent,
+            oib: data.oib,
+            program: data.program,
+            brojMobitela: data.brojMobitela,
+            mentor: data.mentor,
+            datumRodjenja: formattedDate,
+            adresa: {
+              ulica: data.adresa?.ulica || '',
+              kucniBroj: data.adresa?.kucniBroj || '',
+              mjesto: data.adresa?.mjesto || '',
+            },
+            pohadjaTeoriju: data.pohadjaTeoriju,
+            napomene: data.napomene,
+            maloljetniClan: data.maloljetniClan,
+            roditelj1: {
+              ime: data.roditelj1?.ime || '',
+              prezime: data.roditelj1?.prezime || '',
+              brojMobitela: data.roditelj1?.brojMobitela || '',
+            },
+            roditelj2: {
+              ime: data.roditelj2?.ime || '',
+              prezime: data.roditelj2?.prezime || '',
+              brojMobitela: data.roditelj2?.brojMobitela || '',
+            },
+          });
         });
       }, [korisnikId]);
     return(
@@ -98,7 +138,6 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
             className="input-login-signup"
             value={inputs.korisnickoIme}
             onChange={handleChange}
-            defaultValue={korisnik.korisnickoIme}
             type="text"
             name="korisnickoIme"
             id="kor-Korime"
@@ -108,7 +147,6 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           <input
             className="input-login-signup"
             value={inputs.email}
-            defaultValue={korisnik.email}
             onChange={handleChange}
             type="email"
             name="email"
@@ -119,7 +157,6 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           <input
           className="input-login-signup"
           value={inputs.oib}
-          defaultValue={korisnik.oib}
           onChange={(e) => setInputs({ ...inputs, oib: e.target.value })}
           type="text"
           name="oib"
@@ -137,7 +174,6 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           <input
             className="input-login-signup"
             value={inputs.ime}
-            defaultValue={korisnik.ime}
             onChange={handleChange}
             type="text"
             name="ime"
@@ -148,7 +184,6 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           <input
             className="input-login-signup"
             value={inputs.prezime}
-            defaultValue={korisnik.prezime}
             onChange={handleChange}
             type="text"
             name="prezime"
@@ -156,21 +191,19 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
             placeholder="prezime"
           />
           <label htmlFor="kor-datum-rodjenja">Datum rođenja:</label>
-          <input
-          className="input-login-signup"
-          value={inputs.datumRodjenja}
-          defaultValue={korisnik.datumRodjenja}
-          onChange={(e) => setInputs({ ...inputs, datumRodjenja: e.target.value })}
-          type="date"
-          name="datumRodjenja"
-          id="kor-datum-rodjenja"
-          placeholder="datum rođenja"
-          />
+            <input
+              className="input-login-signup"
+              value={inputs.datumRodjenja}
+              onChange={(e) => setInputs({ ...inputs, datumRodjenja: e.target.value })}
+              type="date"
+              name="datumRodjenja"
+              id="kor-datum-rodjenja"
+              placeholder="datum rođenja"
+            />
 <label htmlFor="kor-brojMobitela">Broj mobitela:</label>
           <input
             className="input-login-signup"
             value={inputs.brojMobitela}
-            defaultValue={korisnik.brojMobitela}
             onChange={handleChange}
             type="text"
             name="brojMobitela"
@@ -184,7 +217,6 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           <input
             className="input-login-signup"
             value={inputs.program}
-            defaultValue={korisnik.program}
             onChange={handleChange}
             type="text"
             name="program"
@@ -195,7 +227,6 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           <input
             className="input-login-signup"
             value={inputs.mentor}
-            defaultValue={korisnik.mentor}
             onChange={handleChange}
             type="text"
             name="mentor"
@@ -214,6 +245,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
             name="ulica"
             id="kor-ulica"
             placeholder="ulica"
+            value={inputs.adresa.ulica}
           />
       <label htmlFor="kor-kucni-broj">Kućni broj:</label>
           <input
@@ -223,6 +255,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
             name="kucniBroj"
             id="kor-kucni-broj"
             placeholder="kućni broj"
+            value={inputs.adresa.kucniBroj}
           />
       <label htmlFor="kor-mjesto">Mjesto:</label>
           <input
@@ -232,68 +265,68 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
             name="mjesto"
             id="kor-mjesto"
             placeholder="mjesto"
+            value={inputs.adresa.mjesto}
           />
           </div>
 
 
-          <div className='div-radio'>
-          <div className='div'>
-            <div>
-              <input
-                className="input-login-signup"
-                type="checkbox"
-                id='isAdmin'
-                checked={inputs.isAdmin}
-                    defaultValue={korisnik.isAdmin}
-                onChange={(e) => setInputs({ ...inputs, isAdmin: e.target.checked })}
-              />
-              <label htmlFor="isAdmin">Admin</label>
-            </div>
-      
-            <div>
-              <input
-                className="input-login-signup"
-                type="checkbox"
-                id='isMentor'
-                checked={inputs.isMentor}
-                defaultValue={korisnik.isMentor}
-                onChange={(e) => setInputs({ ...inputs, isMentor: e.target.checked })}
-              />
-              <label htmlFor="isMentor">Mentor</label>
-            </div>
-      
-            <div>
-              <input
-                className="input-login-signup"
-                type="checkbox"
-                id='isStudent'
-                checked={inputs.isStudent}
-                defaultValue={korisnik.isStudent}
-                onChange={(e) => setInputs({ ...inputs, isStudent: e.target.checked })}
-              />
-              <label htmlFor="isStudent">Student</label>
-            </div>
-            </div>
-            <div className='div'>
-              <div>
-              <input
-                className="input-login-signup"
-                type="checkbox"
-                id='pohadjaTeoriju'
-                checked={inputs.pohadjaTeoriju}
-                defaultValue={korisnik.pohadjaTeoriju}
-                onChange={(e) => setInputs({ ...inputs, pohadjaTeoriju: e.target.checked })}
-              />
-              <label htmlFor="pohadjaTeoriju">Pohađa teoriju</label>
-            </div>
-            </div>
-          </div>
+          <div className="div-radio">
+            
+  <div className="checkbox-group">
+    <label>Uloga u sustavu:</label>
+    <div className={`checkbox-item ${inputs.isAdmin ? 'checked' : ''}`} onClick={() => setInputs({ ...inputs, isAdmin: !inputs.isAdmin })}>
+      <input
+        type="checkbox"
+        id="isAdmin"
+        checked={inputs.isAdmin}
+        onChange={() => setInputs({ ...inputs, isAdmin: !inputs.isAdmin })}
+        style={{ display: 'none' }}
+      />
+      Admin
+    </div>
+
+    <div className={`checkbox-item ${inputs.isMentor ? 'checked' : ''}`} onClick={() => setInputs({ ...inputs, isMentor: !inputs.isMentor })}>
+      <input
+        type="checkbox"
+        id="isMentor"
+        checked={inputs.isMentor}
+        onChange={() => setInputs({ ...inputs, isMentor: !inputs.isMentor })}
+        style={{ display: 'none' }}
+      />
+      Mentor
+    </div>
+
+    <div className={`checkbox-item ${inputs.isStudent ? 'checked' : ''}`} onClick={() => setInputs({ ...inputs, isStudent: !inputs.isStudent })}>
+      <input
+        type="checkbox"
+        id="isStudent"
+        checked={inputs.isStudent}
+        onChange={() => setInputs({ ...inputs, isStudent: !inputs.isStudent })}
+        style={{ display: 'none' }}
+      />
+      Student
+    </div>
+<div className="checkbox-group">
+<label>Teorija:</label>
+<div className={`checkbox-item ${inputs.pohadjaTeoriju ? 'checked' : ''}`} onClick={() => setInputs({ ...inputs, pohadjaTeoriju: !inputs.pohadjaTeoriju })}>
+  <input
+    type="checkbox"
+    id="pohadjaTeoriju"
+    checked={inputs.pohadjaTeoriju}
+    onChange={() => setInputs({ ...inputs, pohadjaTeoriju: !inputs.pohadjaTeoriju })}
+    style={{ display: 'none' }}
+  />
+  {inputs.pohadjaTeoriju ? 'Pohađa teoriju' : 'Ne pohađa teoriju'}
+</div>
+    </div>
+  </div>
+</div>
+
           <div className="div">
           <label htmlFor="kor-napomene">Napomene:</label>
             <textarea
               className="input-login-signup"
               value={inputs.napomene}
-              defaultValue={korisnik.napomene}
               onChange={(e) => setInputs({ ...inputs, napomene: e.target.value })}
               name="napomene"
               id="kor-napomene"
@@ -304,14 +337,14 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
  
       
           <div className='div-radio'>
-          <button className="gumb action-btn abEdit" type="submit">
-            Dodaj
-          </button>
+          <button className="gumb action-btn abEdit" type="submit" onClick={handleSubmit}>
+      {isSaving ? 'Spremanje...' : 'Spremi promjene'}
+    </button>
           <button
             className="gumb action-btn abDelete"
             onClick={() => onCancel()}
           >
-            Odustani
+            Zatvori
           </button>
           </div>
         </form>

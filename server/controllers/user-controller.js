@@ -5,60 +5,84 @@ const mongoose = require('mongoose');
 const asyncWrapper = require("../middleware/asyncWrapper.js");
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-
 const signup = async (req, res, next) => {
-    const {
-      korisnickoIme,
-      email,
-      program, // "class" is a reserved keyword in JavaScript, so use an alternative name like "userClass"
-      isAdmin,
-      isMentor,
-      isStudent,
-      oib,
-    } = req.body;
-  
-    // Generate a random password
-    const randomPassword = crypto.randomBytes(8).toString('hex');
-    console.log("password: ",randomPassword);
-  
-    let existingUser;
-  
-    try {
-      existingUser = await User.findOne({ email: email });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({ message: "Internal Server Error" });
-    }
-  
-    if (existingUser) {
-      return res.status(400).json({ message: "Korisnik već postoji!!" });
-    }
-  
-    const hashPassword = bcrypt.hashSync(randomPassword);
-  
-    const user = new User({
-      korisnickoIme,
-      email,
-      program,
-      isAdmin,
-      isMentor,
-      isStudent,
-      oib,
-      password: hashPassword,
-    });
-  
-    try {
-      await user.save();
-  
-      // Send the random password to the user's email
-      await sendPasswordEmail(email, randomPassword);
-  
-      return res.status(201).json({ message: "Uspješno ste registrirali korisnika, lozinka poslana na email." });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({ message: "Internal Server Error" });
-    }
-  };
+  const {
+    korisnickoIme,
+    email,
+    program,
+    isAdmin,
+    isMentor,
+    isStudent,
+    oib,
+    ime,
+    prezime,
+    brojMobitela,
+    mentor,
+    datumRodjenja,
+    adresa,
+    pohadjaTeoriju,
+    napomene,
+    maloljetniClan,
+    roditelj1,
+    roditelj2,
+  } = req.body;
+
+  // Generate a random password
+  const randomPassword = crypto.randomBytes(8).toString('hex');
+  console.log('password: ', randomPassword);
+
+  let existingUser;
+
+  try {
+    existingUser = await User.findOne({ email: email });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+
+  if (existingUser) {
+    return res.status(400).json({ message: 'Korisnik već postoji!!' });
+  }
+
+  const hashPassword = bcrypt.hashSync(randomPassword);
+
+  const user = new User({
+    korisnickoIme,
+    email,
+    program,
+    isAdmin,
+    isMentor,
+    isStudent,
+    oib,
+    ime,
+    prezime,
+    brojMobitela,
+    mentor,
+    datumRodjenja,
+    adresa,
+    pohadjaTeoriju,
+    napomene,
+    maloljetniClan,
+    roditelj1,
+    roditelj2,
+    password: hashPassword,
+  });
+
+  try {
+    await user.save();
+
+    // Send the random password to the user's email
+    await sendPasswordEmail(email, randomPassword);
+
+    return res
+      .status(201)
+      .json({ message: 'Uspješno ste registrirali korisnika, lozinka poslana na email.' });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 
 
   const sendPasswordEmail = async (email, password) => {
@@ -231,6 +255,33 @@ const getDetaljiKorisnika = async (req, res, next) => {
 };
 
 
+const updateDetaljiKorisnika = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const updateData = req.body; // Assuming the update data is sent in the request body
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    const detaljiKorisnika = await User.findById(userId);
+
+    if (!detaljiKorisnika) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update user fields with the values from the request body
+    Object.assign(detaljiKorisnika, updateData);
+
+    // Save the updated user
+    await detaljiKorisnika.save();
+
+    res.json({ message: 'User updated successfully', user: detaljiKorisnika });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.signup = signup;
 exports.login = login;
 exports.verifyToken = verifyToken;
@@ -239,3 +290,4 @@ exports.getUser = getUser;
 exports.logout = logout;
 exports.getKorisnici = getKorisnici;
 exports.getDetaljiKorisnika = getDetaljiKorisnika;
+exports.updateDetaljiKorisnika = updateDetaljiKorisnika;

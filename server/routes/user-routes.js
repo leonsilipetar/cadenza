@@ -7,11 +7,13 @@ const {
      //refreshToken, 
      logout,
      getKorisnici, 
-     getDetaljiKorisnika
+     getDetaljiKorisnika,
+     updateDetaljiKorisnika
 } = require('../controllers/user-controller.js');
 const router = express.Router();
 
 router.post("/signup",verifyToken, signup);
+router.put("/update-korisnik/:userId", verifyToken, updateDetaljiKorisnika);
 router.post("/login", login);
 router.get("/user", verifyToken, getUser);
 router.get("/korisnici", verifyToken, getKorisnici);

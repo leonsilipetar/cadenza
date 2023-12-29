@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
 import NavigacijaAdmin from './NavigacijaAdmin';
@@ -17,8 +16,6 @@ const Korisnici = () => {
   const [user, setUser] = useState();
   const [isHovered, setIsHovered] = useState(false);
   const otvoreno = 'korisnici';
-  const navigate = useNavigate();
-  const params = useParams();
 
   const sendRequestUsers = async () => {
     try {
@@ -98,7 +95,8 @@ const Korisnici = () => {
       <NavigacijaAdmin otvoreno={otvoreno} />
       <NavTopAdministracija naslov={'Administracija - Korisnici'} />
       {korisnikDetaljiOtvoreno && (
-  <KorisnikDetalji korisnik={korisnikDetaljiOtvoreno} onCancel={() => setKorisnikDetaljiOtvoreno(false)} />
+        console.log('Korisnik detalji otvoren', korisnikDetaljiOtvoreno),
+  <KorisnikDetalji korisnikId={korisnikDetaljiOtvoreno} onCancel={() => setKorisnikDetaljiOtvoreno(false)} />
 )}
       {odabranoDodajKorisnika && (
         <DodajKorisnika
@@ -144,22 +142,6 @@ const Korisnici = () => {
                     data-text="više"
                   >
                       <Icon icon="solar:round-double-alt-arrow-down-broken" />
-                  </div>
-                  <div
-                    className={`action-btn btn abEdit ${
-                      isHovered ? 'hovered' : ''
-                    }`}
-                    data-text="uredi"
-                  >
-                    <Icon icon="solar:pen-2-broken" fontSize="large" />
-                  </div>
-                  <div
-                    className={`action-btn btn abDelete ${
-                      isHovered ? 'hovered' : ''
-                    }`}
-                    data-text="obriši"
-                  >
-                    <Icon icon="solar:trash-bin-trash-broken" fontSize="large" />
                   </div>
                 </div>
               </div>
