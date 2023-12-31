@@ -3,8 +3,8 @@ import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 
-const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
-  const [mentors, setMentors] = useState([]);
+const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
+  const [students, setStudents] = useState([]);
     const [odabranoDodajKorisnika, setOdabranoDodajKOrisnika] = useState(false);
     const [inputs, setInputs] = useState({
         korisnickoIme: '',
@@ -13,9 +13,10 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
         prezime: '',
         isAdmin: false,
         isMentor: false,
-        isStudent: true,
+        isStudent: false,
         oib: '',
         program: '',
+        students: [],
         brojMobitela: '',
         datumRodjenja: '',
         adresa: {
@@ -23,19 +24,7 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
           kucniBroj: '',
           mjesto: '',
         },
-        pohadjaTeoriju: false,
         napomene: [],
-        maloljetniClan: false,
-        roditelj1: {
-          ime: '',
-          prezime: '',
-          brojMobitela: ''
-        },
-        roditelj2: {
-          ime: '',
-          prezime: '',
-          brojMobitela: '',
-        },
       });
       
     
@@ -45,18 +34,10 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
           [e.target.name]: e.target.value,
         }));
       };
-      const formatDateString = (isoDateString) => {
-        const date = new Date(isoDateString);
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-        const year = date.getFullYear();
-      
-        return `${day}/${month}/${year}`;
-      };
     
-      const dodajKorisnika = async () => {
+      const dodajMentora = async () => {
         try {
-          const res = await axios.post('http://localhost:5000/api/signup', inputs);
+          const res = await axios.post('http://localhost:5000/api/signup-mentori', inputs);
           const data = res.data;
           return data;
         } catch (err) {
@@ -67,34 +48,20 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
     
       const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        // If isMentor is true, create a mentor user
-        if (inputs.isMentor) {
-          // Adjust the endpoint and payload based on your backend API
-          const result = await axios.post('http://localhost:5000/api/signup-mentor', inputs);
-    
-          if (result.data) {
-            console.log('Mentor registered successfully:', result.data);
-          } else {
-            console.log('Mentor registration failed.');
-          }
-        } else {
-          // Proceed with regular user registration
-          const result = await dodajKorisnika();
+          const result = await dodajMentora();
     
           if (result) {
             console.log('User registered successfully:', result);
           } else {
             console.log('User registration failed.');
           }
-        }
       };
       useEffect(() => {
         const fetchMentors = async () => {
           try {
-            const res = await axios.get('http://localhost:5000/api/mentori'); // replace with your mentor endpoint
+            const res = await axios.get('http://localhost:5000/api/korsnici'); // replace with your mentor endpoint
             const data = res.data;
-            setMentors(data);
+            setStudents(data);
           } catch (err) {
             console.error(err);
           }
@@ -197,10 +164,10 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
           id="kor-program"
           placeholder="program"
         />
-<label htmlFor="kor-mentor">Mentor:</label>
+<label htmlFor="kor-mentor">Učenici:</label>
         <input
           className="input-login-signup"
-          value={inputs.mentor}
+          value={inputs.students}
           onChange={handleChange}
           type="text"
           name="mentor"
@@ -245,21 +212,20 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
 
 
         <div className="div-radio">
-
-<div className="checkbox-group">
-<label>Teorija:</label>
-<div className={`checkbox-item ${inputs.pohadjaTeoriju ? 'checked' : ''}`} onClick={() => setInputs({ ...inputs, pohadjaTeoriju: !inputs.pohadjaTeoriju })}>
-<input
-  type="checkbox"
-  id="pohadjaTeoriju"
-  checked={inputs.pohadjaTeoriju}
-  onChange={() => setInputs({ ...inputs, pohadjaTeoriju: !inputs.pohadjaTeoriju })}
-  style={{ display: 'none' }}
-/>
-{inputs.pohadjaTeoriju ? 'Pohađa teoriju' : 'Ne pohađa teoriju'}
-</div>
-  </div>
-</div>
+          <div
+            className={`radio-item ${inputs.isAdmin ? 'checked' : ''}`}
+            onClick={() => setInputs({ ...inputs, isAdmin: !inputs.isAdmin })}
+          >
+            <input
+              type="radio"
+              id="isAdmin"
+              checked={inputs.isAdmin}
+              onChange={() => setInputs({ ...inputs, isAdmin: !inputs.isAdmin })}
+              style={{ display: 'none' }}
+            />
+            {inputs.isAdmin ? 'Administrator' : 'Nije administrator'}
+          </div>
+        </div>
 
 
         <div className="div">
@@ -293,4 +259,4 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
 
 };
 
-export default DodajKorisnika;
+export default DodajMentora;

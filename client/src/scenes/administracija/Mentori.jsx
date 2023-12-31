@@ -5,21 +5,22 @@ import NavigacijaAdmin from './NavigacijaAdmin';
 import NavTopAdministracija from './NavtopAdministracija';
 import DodajKorisnika from './DodajKorisnika';
 import KorisnikDetalji from './KorisnikDetalji';
+import DodajMentora from './DodajMentora';
 
 axios.defaults.withCredentials = true;
 
-const Korisnici = () => {
+const Mentori = () => {
   const [odabranoDodajKorisnika, setOdabranoDodajKOrisnika] = useState(false);
   const [korisnikDetaljiOtvoreno, setKorisnikDetaljiOtvoreno] = useState(null);
 
   const [korisnici, setKorisnici] = useState([]);
   const [user, setUser] = useState();
   const [isHovered, setIsHovered] = useState(false);
-  const otvoreno = 'korisnici';
+  const otvoreno = 'mentori';
 
   const sendRequestUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/korisnici', {
+      const res = await axios.get('http://localhost:5000/api/mentori', {
         withCredentials: true,
       });
       const data = res.data;
@@ -99,7 +100,7 @@ const Korisnici = () => {
   <KorisnikDetalji korisnikId={korisnikDetaljiOtvoreno} onCancel={() => setKorisnikDetaljiOtvoreno(false)} />
 )}
       {odabranoDodajKorisnika && (
-        <DodajKorisnika
+        <DodajMentora
           onDodajKorisnika={handleDodajKorisnika}
           onCancel={handleCancelDodajKorisnika}
         />
@@ -109,7 +110,7 @@ const Korisnici = () => {
           className="gumb action-btn abEdit "
           onClick={() => setOdabranoDodajKOrisnika(true)}
         >
-          <Icon icon="solar:user-plus-broken" fontSize="large" /> Dodaj učenika
+          <Icon icon="solar:user-plus-broken" fontSize="large" /> Dodaj mentora
         </div>
         <div className="tablica">
           <div className="tr naziv">
@@ -157,4 +158,4 @@ const Korisnici = () => {
   );
 };
 
-export default Korisnici;
+export default Mentori;

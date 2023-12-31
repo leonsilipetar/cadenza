@@ -33,6 +33,11 @@ const NavigacijaAdmin = ({ user, otvoreno}) => {
           <Icon className="icon" icon="solar:users-group-rounded-broken" />
           </Link>
         </div>
+        <div className={activeItem === 'mentori' ? 'otvoreno' : ''} onClick={() => handleItemClick('mentori')}>
+          <Link className="link" to="/mentori">
+          <Icon className="icon" icon="solar:users-group-rounded-broken" />
+          </Link>
+        </div>
         <div className={activeItem === 'racuni' ? 'otvoreno' : ''} onClick={() => handleItemClick('racuni')}>
           <Link className="link" to="/racuni-admin">
           <Icon className="icon" icon="solar:file-check-broken" />
@@ -44,6 +49,7 @@ const NavigacijaAdmin = ({ user, otvoreno}) => {
         <Route path="/admin" element={<Admin />} />
         <Route path="/korisnici" element={<Profil />} />
         <Route path="/racuni-admin" element={<RacuniAdmin />} />
+        <Route path="/mentori" element={<Profil />} />
     </Routes>
         </>
     )

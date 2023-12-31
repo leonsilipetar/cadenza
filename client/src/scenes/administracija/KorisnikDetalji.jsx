@@ -27,7 +27,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
         prezime: '',
         isAdmin: false,
         isMentor: false,
-        isStudent: false,
+        isStudent: true,
         oib: '',
         program: '',
         brojMobitela: '',

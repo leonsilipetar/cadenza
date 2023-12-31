@@ -552,6 +552,26 @@ color: var(--isticanje);
   border: none;
   outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
 }
+.div-radio {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.radio-item {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin: 1rem;
+  cursor: pointer;
+  border-radius: var(--radius);
+  background-color: rgba(var(--isticanje), 0.2);
+}
+
+.radio-item.checked {
+  border: none;
+  outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
+}
   @media only screen and (max-width: 1080px) {
     .icon{
       font-size: 2rem;
