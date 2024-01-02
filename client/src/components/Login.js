@@ -32,7 +32,7 @@ function Login() {
 
   const sendRequest = async () => {
     try {
-      const res = await axios.post('https://musicartincubator-cadenza.onrender.com/api/login', {
+      const res = await axios.post('http://localhost:5000/api/login', {
         email: inputs.email,
         password: inputs.password,
       });
