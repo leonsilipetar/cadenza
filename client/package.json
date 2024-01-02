@@ -1,5 +1,6 @@
 {
   "name": "client",
+  "homepage": "https://mai-cadenza.onrender.com/login",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
