@@ -66,19 +66,7 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
       };
     
       const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        // If isMentor is true, create a mentor user
-        if (inputs.isMentor) {
-          // Adjust the endpoint and payload based on your backend API
-          const result = await axios.post('http://localhost:5000/api/signup-mentor', inputs);
-    
-          if (result.data) {
-            console.log('Mentor registered successfully:', result.data);
-          } else {
-            console.log('Mentor registration failed.');
-          }
-        } else {
+       
           // Proceed with regular user registration
           const result = await dodajKorisnika();
     
@@ -87,7 +75,6 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
           } else {
             console.log('User registration failed.');
           }
-        }
       };
       useEffect(() => {
         const fetchMentors = async () => {
@@ -277,15 +264,16 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
 
     
         <div className='div-radio'>
-        <button className="gumb action-btn abEdit" type="submit" onClick={handleSubmit}>
-          Dodaj učenika
-  </button>
         <button
-          className="gumb action-btn abDelete"
+          className="gumb action-btn zatvoriBtn"
           onClick={() => onCancel()}
         >
           Zatvori
         </button>
+        <button className="gumb action-btn spremiBtn" type="submit" onClick={handleSubmit}>
+          Dodaj učenika
+  </button>
+        
         </div>
       </form>
     </div>

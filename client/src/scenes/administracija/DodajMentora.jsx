@@ -170,9 +170,9 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
           value={inputs.students}
           onChange={handleChange}
           type="text"
-          name="mentor"
+          name="ucenici"
           id="kor-mrntor"
-          placeholder="mentor"
+          placeholder="učenici"
         />
 </div>
         
@@ -243,15 +243,16 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
 
     
         <div className='div-radio'>
-        <button className="gumb action-btn abEdit" type="submit" onClick={handleSubmit}>
-          Dodaj učenika
-  </button>
         <button
-          className="gumb action-btn abDelete"
+          className="gumb action-btn zatvoriBtn"
           onClick={() => onCancel()}
         >
           Zatvori
         </button>
+        <button className="gumb action-btn spremiBtn" type="submit" onClick={handleSubmit}>
+          Dodaj mentora
+  </button>
+        
         </div>
       </form>
     </div>

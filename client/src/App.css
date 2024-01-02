@@ -184,13 +184,17 @@ header{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 1.2rem;
+    flex-direction: column;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 1rem;
     transition: all 0.1s ease;
   }
+  nav div p{
+    font-size: 0.6rem;
+  }
   .icon{
-    padding: 0.2rem;
+    padding: 0.2rem 0 0 0;
   }
   nav div:hover{
     color: var(--pozadina);

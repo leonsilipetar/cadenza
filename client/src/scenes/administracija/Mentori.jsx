@@ -6,6 +6,7 @@ import NavTopAdministracija from './NavtopAdministracija';
 import DodajKorisnika from './DodajKorisnika';
 import KorisnikDetalji from './KorisnikDetalji';
 import DodajMentora from './DodajMentora';
+import MentorDetalji from './MentoriDetalji';
 
 axios.defaults.withCredentials = true;
 
@@ -97,7 +98,7 @@ const Mentori = () => {
       <NavTopAdministracija naslov={'Administracija - Korisnici'} />
       {korisnikDetaljiOtvoreno && (
         console.log('Korisnik detalji otvoren', korisnikDetaljiOtvoreno),
-  <KorisnikDetalji korisnikId={korisnikDetaljiOtvoreno} onCancel={() => setKorisnikDetaljiOtvoreno(false)} />
+  <MentorDetalji korisnikId={korisnikDetaljiOtvoreno} onCancel={() => setKorisnikDetaljiOtvoreno(false)} />
 )}
       {odabranoDodajKorisnika && (
         <DodajMentora

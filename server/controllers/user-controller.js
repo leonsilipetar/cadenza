@@ -1,4 +1,5 @@
 const User = require('../model/User.js');
+const Mentor = require('../model/Mentor.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
@@ -111,38 +112,50 @@ const signup = async (req, res, next) => {
       }
     };
  
- const login = async (req, res, next) => {
-     const {email, password} = req.body;
- 
-     let existingUser;
-     try {
-         existingUser = await User.findOne({email: email});
-     } catch (err){
-         return new Error(err);
-     }
-     if (!existingUser) {
-         return res.status(400).json({message: "User not found. Sign up!"})
-     }
-     const isPasswordCorrect = bcrypt.compareSync(password, existingUser.password);
-     if (!isPasswordCorrect) {
-         return res.status(400).json({message: "Invalid email/password!"})
-     }
-     const token = jwt.sign({id: existingUser._id}, process.env.JWT_SECRET, {expiresIn: "1h",});
- 
-     console.log("generated token\n", token);
- 
-     if(req.cookies[`${existingUser._id}`]) {
-         req.cookies[`${existingUser._id}`] = ""
-     }
- 
-     res.cookie(String(existingUser._id), token, {
-         path: '/',
-         httpOnly: true,
-         sameSite: 'lax',
-     });
- 
-     return res.status(200).json({message: "Successfully logged in! :)", user: existingUser, token});
- };
+    const login = async (req, res, next) => {
+      const { email, password } = req.body;
+    
+      let existingUser;
+    
+      try {
+        // Try to find the user in the User collection
+        existingUser = await User.findOne({ email: email });
+    
+        // If not found in User collection, try to find in Mentor collection
+        if (!existingUser) {
+          existingUser = await Mentor.findOne({ email: email });
+        }
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+    
+      if (!existingUser) {
+        return res.status(400).json({ message: 'User not found. Sign up!' });
+      }
+    
+      const isPasswordCorrect = bcrypt.compareSync(password, existingUser.password);
+      if (!isPasswordCorrect) {
+        return res.status(400).json({ message: 'Invalid email/password!' });
+      }
+    
+      const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {expiresIn: '1h'});
+    
+      console.log('generated token\n', token);
+    
+      if (req.cookies[`${existingUser._id}`]) {
+        req.cookies[`${existingUser._id}`] = '';
+      }
+    
+      res.cookie(String(existingUser._id), token, {
+        path: '/',
+        httpOnly: true,
+        sameSite: 'lax',
+      });
+    
+      return res.status(200).json({ message: 'Successfully logged in! :)', user: existingUser, token });
+    };
+    
  
  const verifyToken = (req, res, next) => {
    const cookies = req.headers.cookie;
@@ -161,18 +174,30 @@ const signup = async (req, res, next) => {
  };
  
  async function getUser(req, res, next) {
-     const userId = req.id;
-     let user;
-     try {
-         user = await User.findById(userId, "-password");
-     } catch (err) {
-         return new Error(err);
-     }
-     if (!user) {
-         return res.status(404).json({ message: "user not found" });
-     }
-     return res.status(200).json({ user });
- }
+  const userId = req.id; // Assuming you have a user or mentor ID in the request
+
+  let user;
+
+  try {
+    // Try to find the user in the User collection
+    user = await User.findById(userId, "-password");
+
+    // If not found in User collection, try to find in Mentor collection
+    if (!user) {
+      user = await Mentor.findById(userId, "-password");
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+
+  if (!user) {
+    return res.status(404).json({ message: "User or Mentor not found" });
+  }
+
+  return res.status(200).json({ user });
+}
+
 
  /*
 const refreshToken = (req, res, next) => {
@@ -242,10 +267,18 @@ const getDetaljiKorisnika = async (req, res, next) => {
       return res.status(400).json({ message: 'Invalid user ID' });
     }
 
-    const detaljiKorisnika = await User.findById(userId);
+    let detaljiKorisnika;
+
+    // Check in the User collection
+    detaljiKorisnika = await User.findById(userId);
+
+    // If not found in User collection, check in the Mentor collection
+    if (!detaljiKorisnika) {
+      detaljiKorisnika = await Mentor.findById(userId);
+    }
 
     if (!detaljiKorisnika) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User/Mentor not found' });
     }
 
     res.json(detaljiKorisnika);
@@ -253,6 +286,7 @@ const getDetaljiKorisnika = async (req, res, next) => {
     next(err);
   }
 };
+
 
 
 const updateDetaljiKorisnika = async (req, res, next) => {

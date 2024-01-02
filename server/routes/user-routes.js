@@ -10,7 +10,11 @@ const {
   getDetaljiKorisnika,
   updateDetaljiKorisnika,
 } = require('../controllers/user-controller.js');
-const {signupMentor}= require('../controllers/mentor-controller.js');
+const {
+  signupMentor,
+  getMentori,
+  updateDetaljiMentora
+}= require('../controllers/mentor-controller.js');
 
 const router = express.Router();
 
@@ -25,6 +29,9 @@ router.get("/korisnik/:userId", verifyToken, getDetaljiKorisnika);
 // router.get("/refresh", refreshToken, verifyToken, getUser);
 router.post("/logout", verifyToken, logout);
 
-router.post('/signup-mentors', );
+router.post('/signup-mentori', verifyToken, signupMentor);
+router.get("/mentori", verifyToken, getMentori);
+router.put("/update-mentor/:mentorId", verifyToken, updateDetaljiMentora);
+
 
 module.exports = router;

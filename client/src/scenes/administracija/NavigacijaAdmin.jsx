@@ -27,21 +27,25 @@ const NavigacijaAdmin = ({ user, otvoreno}) => {
           <Link className="link" to="/admin">
           <Icon className="icon" icon="solar:music-notes-broken" />
           </Link>
+          <p>Naslovna</p>
         </div>
         <div className={activeItem === 'korisnici' ? 'otvoreno' : ''} onClick={() => handleItemClick('korisnici')}>
           <Link className="link" to="/korisnici">
           <Icon className="icon" icon="solar:users-group-rounded-broken" />
           </Link>
+          <p>Učenici</p>
         </div>
         <div className={activeItem === 'mentori' ? 'otvoreno' : ''} onClick={() => handleItemClick('mentori')}>
           <Link className="link" to="/mentori">
           <Icon className="icon" icon="solar:users-group-rounded-broken" />
           </Link>
+          <p>Mentori</p>
         </div>
         <div className={activeItem === 'racuni' ? 'otvoreno' : ''} onClick={() => handleItemClick('racuni')}>
           <Link className="link" to="/racuni-admin">
           <Icon className="icon" icon="solar:file-check-broken" />
           </Link>
+          <p>Racuni</p>
         </div>
       </nav>
     </header>
