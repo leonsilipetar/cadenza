@@ -87,7 +87,7 @@ select {
   --tekst: rgb(var(--svijetlo-tekst));
 
   --tamno-iznad: 66, 68, 66;
-  --svijetlo-iznad: 218, 218, 218;
+  --svijetlo-iznad: 255,255,255;
 
   --tamno-tekst: 218, 214, 214;
   --svijetlo-tekst: 15, 15, 15;
@@ -97,7 +97,7 @@ select {
   --boxShadow: var(--sjena-svijetlo);
   --sjena-tamno-navtop: 0px 0px 40px 1px rgba(0, 0, 0, 0.6);
   --sjena-tamno: none;
-  --sjena-svijetlo: 0px 0px 40px 1px rgba(63, 63, 63, 0.219);
+  --sjena-svijetlo: 0px 0px 10px 2px rgba(63, 63, 63, 0.219);
   /* boje isticanja:*/
   --ljubicasta: 150, 103, 224;
   --crvena: 255, 104, 107;
@@ -126,7 +126,6 @@ body {
   font-family: 'fOstalo', sans-serif;
 }
 body.light {
-  background-color: #ffffff;
   color: #000000;
   --navtop: rgb(255, 255, 255);
   --iznad: rgb(var(--svijetlo-iznad));
@@ -135,6 +134,7 @@ body.light {
   --isticanje-svijetlo: rgb(var(--isticanje));
   --iznad-objava: rgb(var(--isticanje));
   --pozadina: rgb(255, 255, 255);
+  background-color: #eeeeee;
 }
 
 /* Dark Theme */
@@ -571,6 +571,23 @@ color: var(--isticanje);
 .radio-item.checked {
   border: none;
   outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
+}
+.spremiBtn{
+  padding: 0.8rem;
+  border-radius: 5rem;
+  background-color: rgb(var(--isticanje));
+}
+.spremiBtn:hover{
+  background-color: var(--pozadina-svijetlo);
+  outline: 3px solid rgb(var(--isticanje));
+  color: rgb(var(--isticanje));
+}
+.zatvoriBtn{
+  background-color: var(--pozadina-svijetlo);
+  color: rgb(var(--isticanje));
+}
+.zatvoriBtn:hover{
+  text-decoration: underline;
 }
   @media only screen and (max-width: 1080px) {
     .icon{

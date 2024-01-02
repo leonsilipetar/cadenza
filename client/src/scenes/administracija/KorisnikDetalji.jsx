@@ -272,42 +272,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
 
           <div className="div-radio">
             
-  <div className="checkbox-group">
-    <label>Uloga u sustavu:</label>
-    <div className={`checkbox-item ${inputs.isAdmin ? 'checked' : ''}`} onClick={() => setInputs({ ...inputs, isAdmin: !inputs.isAdmin })}>
-      <input
-        type="checkbox"
-        id="isAdmin"
-        checked={inputs.isAdmin}
-        onChange={() => setInputs({ ...inputs, isAdmin: !inputs.isAdmin })}
-        style={{ display: 'none' }}
-      />
-      Admin
-    </div>
-
-    <div className={`checkbox-item ${inputs.isMentor ? 'checked' : ''}`} onClick={() => setInputs({ ...inputs, isMentor: !inputs.isMentor })}>
-      <input
-        type="checkbox"
-        id="isMentor"
-        checked={inputs.isMentor}
-        onChange={() => setInputs({ ...inputs, isMentor: !inputs.isMentor })}
-        style={{ display: 'none' }}
-      />
-      Mentor
-    </div>
-
-    <div className={`checkbox-item ${inputs.isStudent ? 'checked' : ''}`} onClick={() => setInputs({ ...inputs, isStudent: !inputs.isStudent })}>
-      <input
-        type="checkbox"
-        id="isStudent"
-        checked={inputs.isStudent}
-        onChange={() => setInputs({ ...inputs, isStudent: !inputs.isStudent })}
-        style={{ display: 'none' }}
-      />
-      Student
-    </div>
 <div className="checkbox-group">
-<label>Teorija:</label>
 <div className={`checkbox-item ${inputs.pohadjaTeoriju ? 'checked' : ''}`} onClick={() => setInputs({ ...inputs, pohadjaTeoriju: !inputs.pohadjaTeoriju })}>
   <input
     type="checkbox"
@@ -320,7 +285,6 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
 </div>
     </div>
   </div>
-</div>
 
           <div className="div">
           <label htmlFor="kor-napomene">Napomene:</label>
@@ -337,15 +301,16 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
  
       
           <div className='div-radio'>
-          <button className="gumb action-btn abEdit" type="submit" onClick={handleSubmit}>
-      {isSaving ? 'Spremanje...' : 'Spremi promjene'}
-    </button>
           <button
-            className="gumb action-btn abDelete"
+            className="gumb action-btn zatvoriBtn"
             onClick={() => onCancel()}
           >
             Zatvori
           </button>
+          <button className="gumb action-btn spremiBtn" type="submit" onClick={handleSubmit}>
+      {isSaving ? 'Spremanje...' : 'Spremi promjene'}
+    </button>
+          
           </div>
         </form>
       </div>
