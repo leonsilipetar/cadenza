@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Login from "./components/Login";
 import Naslovna from "./scenes/naslovna/Naslovna";
 import { authActions } from "./store/index.js";
@@ -19,7 +18,7 @@ function App() {
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const dispatch = useDispatch();
   const location = useLocation();
-  
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -30,9 +29,9 @@ function App() {
 
   useEffect(() => {
     if (!isLoggedIn && location.pathname !== "/login" && location.pathname !== "/signup") {
-      window.location.href = "/login";
+      navigate('/login');
     }
-  }, [isLoggedIn, location]);
+  }, [isLoggedIn, location, navigate]);
 
   return (
     <Routes>
