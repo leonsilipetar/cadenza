@@ -31,25 +31,35 @@ function Login() {
   };
 
   const sendRequest = async () => {
-    const res = await axios
-      .post('http://localhost:5000/api/login', {
+    try {
+      const res = await axios.post('http://localhost:5000/api/login', {
         email: inputs.email,
         password: inputs.password,
-      })
-      .catch((err) => {
-        console.log(err);
-        handleErrorM();
       });
-    const data = await res.data;
-    return data;
+
+      if (res.data) {
+        return res.data;
+      } else {
+        handleErrorM();
+        return null;
+      }
+    } catch (err) {
+      console.error(err);
+      handleErrorM();
+      return null;
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    sendRequest()
-      .then(() => dispatch(authActions.login()))
-      .then(() => history('/user'));
+    const data = await sendRequest();
+
+    if (data) {
+      dispatch(authActions.login());
+      history('/user');
+    }
   };
+
 
   return (
     <div className="login-signup">
