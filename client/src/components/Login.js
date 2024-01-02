@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { authActions } from '../store';
 import '../App.css';
+import ApiConfig from '../components/apiConfig.js';
 
 function Login() {
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ function Login() {
 
   const sendRequest = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/api/login', {
+      const res = await axios.post(`${ApiConfig.baseUrl}/api/login`, {
         email: inputs.email,
         password: inputs.password,
       });

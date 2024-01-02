@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import NavigacijaAdmin from './NavigacijaAdmin';
 import NavTopAdministracija from './NavtopAdministracija';
-
+import ApiConfig from '../../components/apiConfig';	
 
 axios.defaults.withCredentials = true;
 const RacuniAdmin = () => {
@@ -13,7 +13,7 @@ const RacuniAdmin = () => {
 
 
   const sendRequest = async () => {
-      const res = await axios.get('http://localhost:5000/api/user', {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/user`, {
           withCredentials: true
       }).catch((err) => console.log(err));
       const data = await res.data;
@@ -22,7 +22,7 @@ const RacuniAdmin = () => {
 
   const refreshToken = async () => {
       const res = await axios
-        .get("http://localhost:5000/api/refresh", {
+        .get(`${ApiConfig.baseUrl}/api/refresh`, {
           withCredentials: true,
         })
         .catch((err) => console.log(err));

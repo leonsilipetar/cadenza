@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/index";
 import { Icon } from '@iconify/react';
+import ApiConfig from '../components/apiConfig.js';
 
 
 axios.defaults.withCredentials = true;
@@ -19,7 +20,7 @@ const Profil = () => {
 
   
   const sendRequest = async () => {
-      const res = await axios.get('http://localhost:5000/api/profil', {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/profil`, {
           withCredentials: true
       }).catch((err) => console.log(err));
       const data = await res.data;
@@ -28,7 +29,7 @@ const Profil = () => {
 
   const refreshToken = async () => {
       const res = await axios
-        .get("http://localhost:5000/api/refresh", {
+        .get(`${ApiConfig.baseUrl}/api/refresh`, {
           withCredentials: true,
         })
         .catch((err) => console.log(err));
@@ -39,7 +40,7 @@ const Profil = () => {
     const dispatch = useDispatch();
     const sendLogoutRequest = async () => {
       axios.defaults.withCredentials = true
-    const res = await axios.post("http://localhost:5000/api/logout", null, {
+    const res = await axios.post(`${ApiConfig.baseUrl}/api/logout`, null, {
       withCredentials: true
     })
     if(res.status === 200) {

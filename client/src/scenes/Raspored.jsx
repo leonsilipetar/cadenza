@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Navigacija from "./navigacija";
 import NavTop from './nav-top';
+import ApiConfig from '../components/apiConfig.js';
 
 
 axios.defaults.withCredentials = true;
@@ -12,7 +13,7 @@ const Raspored = () => {
   const otvoreno = "raspored";
 
   const sendRequest = async () => {
-      const res = await axios.get('http://localhost:5000/api/user', {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/user`, {
           withCredentials: true
       }).catch((err) => console.log(err));
       const data = await res.data;
@@ -21,7 +22,7 @@ const Raspored = () => {
 
   const refreshToken = async () => {
       const res = await axios
-        .get("http://localhost:5000/api/refresh", {
+        .get(`${ApiConfig.baseUrl}/api/refresh`, {
           withCredentials: true,
         })
         .catch((err) => console.log(err));

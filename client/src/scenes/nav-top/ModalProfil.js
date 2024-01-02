@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store";
+import ApiConfig from "../components/apiConfig.js";
 
 function ModalProfil({open, onClose}) {
   const dispatch = useDispatch();
   const sendLogoutRequest = async () => {
     axios.defaults.withCredentials = true
-  const res = await axios.post("http://localhost:5000/api/logout", null, {
+  const res = await axios.post(`${ApiConfig.baseUrl}/api/logout`, null, {
     withCredentials: true
   })
   if(res.status === 200) {

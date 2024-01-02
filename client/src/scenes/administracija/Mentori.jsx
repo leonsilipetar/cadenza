@@ -7,6 +7,7 @@ import DodajKorisnika from './DodajKorisnika';
 import KorisnikDetalji from './KorisnikDetalji';
 import DodajMentora from './DodajMentora';
 import MentorDetalji from './MentoriDetalji';
+import ApiConfig from '../../components/apiConfig';
 
 axios.defaults.withCredentials = true;
 
@@ -21,7 +22,7 @@ const Mentori = () => {
 
   const sendRequestUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/mentori', {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/mentori`, {
         withCredentials: true,
       });
       const data = res.data;
@@ -33,7 +34,7 @@ const Mentori = () => {
 
   const refreshToken = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/refresh', {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/refresh`, {
         withCredentials: true,
       });
       const data = res.data;
@@ -45,7 +46,7 @@ const Mentori = () => {
 
   const sendRequest = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/profil', {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/profil`, {
         withCredentials: true,
       });
       const data = res.data;

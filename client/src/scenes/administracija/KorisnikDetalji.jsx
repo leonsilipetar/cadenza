@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import ApiConfig from '../../components/apiConfig';
 
 axios.defaults.withCredentials = true;
 
@@ -9,7 +10,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
     const getDetaljiKorisnika = async (korisnikId) => {
         try {
           // Assuming userId is the ID of the selected user
-          const res = await axios.get(`http://localhost:5000/api/korisnik/${korisnikId}`, {
+          const res = await axios.get(`${ApiConfig.baseUrl}/api/korisnik/${korisnikId}`, {
             withCredentials: true,
           });
       
@@ -64,7 +65,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
     
       const urediKorisnika = async () => {
         try {
-          const res = await axios.put(`http://localhost:5000/api/update-korisnik/${korisnikId}`, inputs);
+          const res = await axios.put(`${ApiConfig.baseUrl}/api/update-korisnik/${korisnikId}`, inputs);
           const data = res.data;
           return data;
         } catch (err) {

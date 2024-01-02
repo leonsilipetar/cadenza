@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ApiConfig from '../../components/apiConfig';
 
 axios.defaults.withCredentials = true;
 
@@ -37,7 +38,7 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
     
       const dodajMentora = async () => {
         try {
-          const res = await axios.post('http://localhost:5000/api/signup-mentori', inputs);
+          const res = await axios.post(`${ApiConfig.baseUrl}/api/signup-mentori`, inputs);
           const data = res.data;
           return data;
         } catch (err) {
@@ -59,7 +60,7 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
       useEffect(() => {
         const fetchMentors = async () => {
           try {
-            const res = await axios.get('http://localhost:5000/api/korsnici'); // replace with your mentor endpoint
+            const res = await axios.get(`${ApiConfig.baseUrl}/api/korsnici`); // replace with your mentor endpoint
             const data = res.data;
             setStudents(data);
           } catch (err) {

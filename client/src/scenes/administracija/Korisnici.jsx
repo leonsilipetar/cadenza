@@ -5,6 +5,7 @@ import NavigacijaAdmin from './NavigacijaAdmin';
 import NavTopAdministracija from './NavtopAdministracija';
 import DodajKorisnika from './DodajKorisnika';
 import KorisnikDetalji from './KorisnikDetalji';
+import ApiConfig from '../../components/apiConfig';
 
 axios.defaults.withCredentials = true;
 
@@ -19,7 +20,7 @@ const Korisnici = () => {
 
   const sendRequestUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/korisnici', {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/korisnici`, {
         withCredentials: true,
       });
       const data = res.data;
@@ -31,7 +32,7 @@ const Korisnici = () => {
 
   const refreshToken = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/refresh', {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/refresh`, {
         withCredentials: true,
       });
       const data = res.data;
@@ -43,7 +44,7 @@ const Korisnici = () => {
 
   const sendRequest = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/profil', {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/profil`, {
         withCredentials: true,
       });
       const data = res.data;
