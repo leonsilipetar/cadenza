@@ -12,7 +12,7 @@ const Admin = () => {
   const otvoreno = "naslovna";
 
   const sendRequest = async () => {
-      const res = await axios.get('https://musicartincubator-cadenza.onrender.com/api/user', {
+      const res = await axios.get('https:localhost:5000/api/user', {
           withCredentials: true
       }).catch((err) => console.log(err));
       const data = await res.data;
