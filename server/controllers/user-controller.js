@@ -142,6 +142,7 @@ const signup = async (req, res, next) => {
           expires: new Date(Date.now() + 1000 * 60 * 58),
           httpOnly: true,
           sameSite: 'lax',
+          secure: process.env.NODE_ENV === 'production',
         });
     
         return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });
@@ -153,6 +154,7 @@ const signup = async (req, res, next) => {
     
   
     const verifyToken = (req, res, next) => {
+      console.log('Headers:', req.headers);
       const cookies = req.headers.cookie;
     
       if (!cookies) {
