@@ -8,12 +8,10 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(
-  cors({
-    credentials: true,
-    origin: 'https://mai-cadenza.onrender.com', // Change this to your frontend URL
-  })
-);
+app.use(cors({
+  credentials: true,
+  origin: 'http://localhost:3000',
+}));
 app.use(cookieParser());
 app.use(express.json());
 app.use('/api', router);
