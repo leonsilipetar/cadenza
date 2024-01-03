@@ -16,6 +16,7 @@ const Naslovna = () => {
       const res = await axios.get(`${ApiConfig.baseUrl}/api/user`, {
           withCredentials: true
       }).catch((err) => console.log(err));
+      console.log(res.data);
       const data = await res.data;
       return data;
   }
