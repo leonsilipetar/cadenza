@@ -161,19 +161,18 @@ const signup = async (req, res, next) => {
     const verifyToken = (req, res, next) => {
       const cookies = req.cookies;
     
-      if (!cookies || !cookies[`${existingUser._id}`]) {
+      if (!cookies || !cookies['yourUserIdCookieName']) {
         return res.status(404).json({ message: 'No token found' });
       }
     
-      const tokenString = cookies[`${existingUser._id}`];
+      const tokenString = cookies['yourUserIdCookieName'];
     
       jwt.verify(tokenString, process.env.JWT_SECRET, (err, user) => {
         if (err) {
           return res.status(400).json({ message: 'Invalid Token' });
         }
     
-        console.log('User ID:', user.id);
-        req.id = user.id;
+        req.id = user.id; // Set user ID in the request for later use
         next();
       });
     };
@@ -182,6 +181,10 @@ const signup = async (req, res, next) => {
  
     async function getUser(req, res, next) {
       const userId = req.id; // Assuming you have a user or mentor ID in the request
+    
+      if (!userId) {
+        return res.status(404).json({ message: 'No user ID found in the request' });
+      }
     
       let user;
     
