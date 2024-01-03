@@ -8,7 +8,7 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(cors({credentials: true, origin: "https://mai-cadenza.onrender.com"}));
+app.use(cors({credentials: true, origin: "https://mai-cadenza.onrender.com"}));//stavi: http://localhost:3000 za localhost
 app.use(cookieParser());
 app.use(express.json());
 app.use('/api', router);
