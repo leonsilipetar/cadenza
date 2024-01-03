@@ -180,30 +180,30 @@ const signup = async (req, res, next) => {
     
     
  
- async function getUser(req, res, next) {
-  const userId = req.id; // Assuming you have a user or mentor ID in the request
-
-  let user;
-
-  try {
-    // Try to find the user in the User collection
-    user = await User.findById(userId, "-password");
-
-    // If not found in User collection, try to find in Mentor collection
-    if (!user) {
-      user = await Mentor.findById(userId, "-password");
+    async function getUser(req, res, next) {
+      const userId = req.id; // Assuming you have a user or mentor ID in the request
+    
+      let user;
+    
+      try {
+        // Try to find the user in the User collection
+        user = await User.findById(userId, '-password');
+    
+        // If not found in User collection, try to find in Mentor collection
+        if (!user) {
+          user = await Mentor.findById(userId, '-password');
+        }
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+    
+      if (!user) {
+        return res.status(404).json({ message: 'User or Mentor not found' });
+      }
+    
+      return res.status(200).json({ user });
     }
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Internal Server Error" });
-  }
-
-  if (!user) {
-    return res.status(404).json({ message: "User or Mentor not found" });
-  }
-
-  return res.status(200).json({ user });
-}
 
 
  
