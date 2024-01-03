@@ -141,7 +141,7 @@ const signup = async (req, res, next) => {
           path: '/',
           expires: new Date(Date.now() + 1000 * 60 * 58),
           httpOnly: true,
-          sameSite: 'lax',
+          sameSite: 'none',
           secure: process.env.NODE_ENV === 'production',
         });
     
