@@ -114,11 +114,11 @@ const signup = async (req, res, next) => {
     
       try {
         // Try to find the user in the User collection
-        existingUser = await User.findOne({ email: email });
+        existingUser = await User.findOne({ email });
     
         // If not found in User collection, try to find in Mentor collection
         if (!existingUser) {
-          existingUser = await Mentor.findOne({ email: email });
+          existingUser = await Mentor.findOne({ email });
         }
       } catch (err) {
         console.error(err);
@@ -134,43 +134,45 @@ const signup = async (req, res, next) => {
         return res.status(400).json({ message: 'Invalid email/password!' });
       }
     
-      const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {expiresIn: '1h'});
+      const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     
-      console.log('generated token\n', token);
+      console.log('Generated token:', token);
     
-      if (req.cookies[`${existingUser._id}`]) {
-        req.cookies[`${existingUser._id}`] = '';
-      }
-    
-      res.cookie(String(existingUser._id), token, {
+      // Clear the existing cookie by setting its expiration to a past date
+      res.cookie(String(existingUser._id), '', {
+        expires: new Date(0),
         path: '/',
         httpOnly: true,
         sameSite: 'lax',
       });
     
-      return res.status(200).json({ message: 'Successfully logged in! :)', user: existingUser, token });
+      // Set the new token cookie
+      res.cookie(String(existingUser._id), token, {
+        path: '/',
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production', // Set to true in production
+      });
+    
+      return res.status(200).json({ message: 'Successfully logged in!', user: existingUser, token });
     };
     
  
     const verifyToken = (req, res, next) => {
-      const cookies = req.headers.cookie;
+      const cookies = req.cookies;
     
-      if (!cookies) {
-        return res.status(404).json({ message: "No cookies found" });
+      if (!cookies || !cookies[`${existingUser._id}`]) {
+        return res.status(404).json({ message: 'No token found' });
       }
     
-      const tokenString = cookies.split("=")[1];
-    
-      if (!tokenString) {
-        return res.status(404).json({ message: "No token found" });
-      }
+      const tokenString = cookies[`${existingUser._id}`];
     
       jwt.verify(tokenString, process.env.JWT_SECRET, (err, user) => {
         if (err) {
-          return res.status(400).json({ message: "Invalid Token" });
+          return res.status(400).json({ message: 'Invalid Token' });
         }
     
-        console.log(user.id);
+        console.log('User ID:', user.id);
         req.id = user.id;
         next();
       });
