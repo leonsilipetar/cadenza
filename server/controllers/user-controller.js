@@ -36,16 +36,12 @@ const signup = async (req, res, next) => {
 
   try {
     existingUser = await User.findOne({ email: email });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: 'Internal Server Error' });
-  }
 
-  if (existingUser) {
-    return res.status(400).json({ message: 'Korisnik već postoji!!' });
-  }
+    if (existingUser) {
+      return res.status(400).json({ message: 'Korisnik već postoji!!' });
+    }
 
-  const hashPassword = bcrypt.hashSync(randomPassword);
+    const hashPassword = bcrypt.hashSync(randomPassword);
 
   const user = new User({
     korisnickoIme,
@@ -69,17 +65,16 @@ const signup = async (req, res, next) => {
     password: hashPassword,
   });
 
-  try {
-    await user.save();
+  await user.save();
 
     // Send the random password to the user's email
     await sendPasswordEmail(email, randomPassword);
 
-    return res
-      .status(201)
-      .json({ message: 'Uspješno ste registrirali korisnika, lozinka poslana na email.' });
+    return res.status(201).json({
+      message: 'Uspješno ste registrirali korisnika, lozinka poslana na email.',
+    });
   } catch (err) {
-    console.log(err);
+    console.error('Error during signup:', err);
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
