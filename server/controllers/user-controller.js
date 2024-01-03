@@ -110,103 +110,86 @@ const signup = async (req, res, next) => {
     const login = async (req, res, next) => {
       const { email, password } = req.body;
     
-      let existingUser;
-    
       try {
         // Try to find the user in the User collection
-        existingUser = await User.findOne({ email });
+        let existingUser = await User.findOne({ email });
     
-        // If not found in User collection, try to find in Mentor collection
+        // If not found in the User collection, try to find in Mentor collection
         if (!existingUser) {
           existingUser = await Mentor.findOne({ email });
         }
-      } catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Internal Server Error' });
-      }
     
-      if (!existingUser) {
-        return res.status(400).json({ message: 'User not found. Sign up!' });
-      }
-    
-      const isPasswordCorrect = bcrypt.compareSync(password, existingUser.password);
-      if (!isPasswordCorrect) {
-        return res.status(400).json({ message: 'Invalid email/password!' });
-      }
-    
-      const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    
-      console.log('Generated token:', token);
-    
-      // Clear the existing cookie by setting its expiration to a past date
-      res.cookie(String(existingUser._id), '', {
-        expires: new Date(0),
-        path: '/',
-        httpOnly: true,
-        sameSite: 'lax',
-      });
-    
-      // Set the new token cookie
-      res.cookie(String(existingUser._id), token, {
-        path: '/',
-        httpOnly: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production', // Set to true in production
-      });
-    
-      return res.status(200).json({ message: 'Successfully logged in!', user: existingUser, token });
-    };
-    
- 
-    const verifyToken = (req, res, next) => {
-      const cookies = req.cookies;
-    
-      if (!cookies || !cookies['yourUserIdCookieName']) {
-        return res.status(404).json({ message: 'No token found' });
-      }
-    
-      const tokenString = cookies['yourUserIdCookieName'];
-    
-      jwt.verify(tokenString, process.env.JWT_SECRET, (err, user) => {
-        if (err) {
-          return res.status(400).json({ message: 'Invalid Token' });
+        if (!existingUser) {
+          return res.status(400).json({ message: "User not found. Sign up!" });
         }
     
-        req.id = user.id; // Set user ID in the request for later use
-        next();
-      });
+        const isPasswordCorrect = bcrypt.compareSync(password, existingUser.password);
+        if (!isPasswordCorrect) {
+          return res.status(400).json({ message: "Invalid email/password!" });
+        }
+    
+        const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    
+        console.log("Generated token\n", token);
+    
+        // Clear the existing cookie (if any)
+        if (req.cookies[`${existingUser._id}`]) {
+          res.clearCookie(`${existingUser._id}`);
+        }
+    
+        res.cookie(String(existingUser._id), token, {
+          path: '/',
+          expires: new Date(Date.now() + 1000 * 60 * 58),
+          httpOnly: true,
+          sameSite: 'lax',
+        });
+    
+        return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal Server Error" });
+      }
     };
     
-    
- 
-    async function getUser(req, res, next) {
-      const userId = req.id; // Assuming you have a user or mentor ID in the request
-    
-      if (!userId) {
-        return res.status(404).json({ message: 'No user ID found in the request' });
+  
+  const verifyToken = (req, res, next) => {
+    const cookies = req.headers.cookie;
+    const token = cookies.split("=")[1];
+    if (!token) {
+      return res.status(404).json({ message: "No token found" });
+    }
+    jwt.verify(String(token), process.env.JWT_SECRET, (err, user) => {
+      if (err) {
+        return res.status(400).json({ message: "Invalid Token" });
       }
-    
-      let user;
-    
-      try {
+      console.log(user.id);
+      req.id = user.id;
+      next();
+    });
+  };
+  
+  async function getUser(req, res, next) {
+    const userId = req.id;
+    let user;
+
+    try {
         // Try to find the user in the User collection
-        user = await User.findById(userId, '-password');
-    
+        user = await User.findById(userId, "-password");
+
         // If not found in User collection, try to find in Mentor collection
         if (!user) {
-          user = await Mentor.findById(userId, '-password');
+            user = await Mentor.findById(userId, "-password");
         }
-      } catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Internal Server Error' });
-      }
-    
-      if (!user) {
-        return res.status(404).json({ message: 'User or Mentor not found' });
-      }
-    
-      return res.status(200).json({ user });
+    } catch (err) {
+        return res.status(500).json({ message: "Internal Server Error" });
     }
+
+    if (!user) {
+        return res.status(404).json({ message: "User or Mentor not found" });
+    }
+
+    return res.status(200).json({ user });
+}
 
 
  
