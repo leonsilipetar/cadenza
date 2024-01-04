@@ -239,7 +239,7 @@ const logout = (req, res, next) => {
           return res.status(403).json({ message: "Authentication failed" });
       }
 
-      req.clearCookie(`${user.id}`);
+      res.clearCookie(`${user.id}`);
       return res.status(200).json({ message: "Successfully Logged Out" });
   });
 };
