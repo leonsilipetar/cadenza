@@ -81,7 +81,7 @@ const Profil = () => {
     return (
       <>
       <Navigacija user={user} otvoreno={otvoreno}/>
-      <NavTop user={user} naslov={"Postavke i profil"}/>
+      <NavTop user={user} naslov={"Profil"}/>
       <div className="main">
         <div className="karticaZadatka sbtwn">
 
