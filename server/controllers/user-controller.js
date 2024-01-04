@@ -128,21 +128,20 @@ const signup = async (req, res, next) => {
           return res.status(400).json({ message: "Invalid email/password!" });
         }
     
+        // Clear all existing cookies
+        Object.keys(req.cookies).forEach(cookieName => {
+          res.clearCookie(cookieName);
+        });
+    
         const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
     
         console.log("Generated token\n", token);
-    
-        // Clear the existing cookie (if any)
-        if(req.cookies[`${existingUser._id}`]) {
-          req.cookies[`${existingUser._id}`] = ""
-      }
     
         res.cookie(String(existingUser._id), token, {
           path: '/',
           expires: new Date(Date.now() + 1000 * 60 * 58),
           httpOnly: true,
-          sameSite: 'none', //on localhost is lax, on render is none
-          secure: process.env.NODE_ENV === 'production',/* on localhost is false*/
+          sameSite: 'lax',
         });
     
         return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });
@@ -152,13 +151,21 @@ const signup = async (req, res, next) => {
       }
     };
     
+    
   
     const verifyToken = (req, res, next) => {
       const cookies = req.headers.cookie;
+    
+      if (!cookies) {
+        return res.status(404).json({ message: "No cookies found" });
+      }
+    
       const token = cookies.split("=")[1];
+    
       if (!token) {
         return res.status(404).json({ message: "No token found" });
       }
+    
       jwt.verify(String(token), process.env.JWT_SECRET, (err, user) => {
         if (err) {
           return res.status(400).json({ message: "Invalid Token" });
@@ -167,6 +174,7 @@ const signup = async (req, res, next) => {
         next();
       });
     };
+    
   
   async function getUser(req, res, next) {
     const userId = req.id;
