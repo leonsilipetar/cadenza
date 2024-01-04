@@ -133,14 +133,14 @@ const signup = async (req, res, next) => {
         console.log("Generated token\n", token);
     
         // Clear the existing cookie (if any)
-        if (req.cookies[`${existingUser._id}`]) {
-          res.clearCookie(`${existingUser._id}`);
-        }
+        if(req.cookies[`${existingUser._id}`]) {
+          req.cookies[`${existingUser._id}`] = ""
+      }
     
         res.cookie(String(existingUser._id), token, {
           path: '/',
           expires: new Date(Date.now() + 1000 * 60 * 58),
-          httpsOnly: true,
+          httpOnly: true,
           sameSite: 'none', //on localhost is lax, on render is none
           secure: process.env.NODE_ENV === 'production',/* on localhost is false*/
         });
