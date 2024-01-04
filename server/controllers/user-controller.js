@@ -163,7 +163,6 @@ const signup = async (req, res, next) => {
         if (err) {
           return res.status(400).json({ message: "Invalid Token" });
         }
-        console.log(user.id);
         req.id = user.id;
         next();
       });
@@ -239,9 +238,11 @@ const logout = (req, res, next) => {
           return res.status(403).json({ message: "Authentication failed" });
       }
 
-      res.clearCookie(user.id);
+      console.log('Clearing cookie for user:', user.id);
+    res.clearCookie(`${user.id}`);
       return res.status(200).json({ message: "Successfully Logged Out" });
   });
+  clearCookie(user.id);
 };
 const getKorisnici = async (req, res, next) => {
   try {
