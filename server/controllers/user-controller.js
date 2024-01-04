@@ -139,9 +139,9 @@ const signup = async (req, res, next) => {
     
         res.cookie(String(existingUser._id), token, {
           path: '/',
-          expires: new Date(Date.now() + 1000 * 60 * 58),
+          expires: new Date(Date.now() + 1000 * 60 * 57),
           httpOnly: true,
-          sameSite: 'none', //on localhost is lax, on render is none
+          sameSite: 'lax', //on localhost is lax, on render is none
           secure: true,/* on localhost is false*/
         });
     
