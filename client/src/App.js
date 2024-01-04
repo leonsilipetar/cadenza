@@ -11,7 +11,6 @@ import Raspored from './scenes/Raspored.jsx';
 import Admin from './scenes/administracija/Admin.jsx';
 import Korisnici from './scenes/administracija/Korisnici.jsx';
 import RacuniAdmin from './scenes/administracija/RacuniAdmin.jsx';
-import KorisnikDetalji from './scenes/administracija/KorisnikDetalji.jsx';
 import Mentori from './scenes/administracija/Mentori.jsx';
 
 function App() {
