@@ -596,6 +596,52 @@ color: var(--isticanje);
 .zatvoriBtn:hover{
   text-decoration: underline;
 }
+.raspored{
+  display: grid;
+  grid-template-columns: 12rem 12rem 12rem 12rem 12rem 12rem;
+  background-color: var(--pozadina);
+  box-shadow: var(--boxShadow);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+.dan{
+  padding: 1rem;
+  border-right: 2px solid rgb(var(--isticanje));
+}
+.dan:last-child{
+  border: none;
+}
+.nazivDana{
+  background-color: rgba(var(--isticanje), 0.6);
+  padding: 0.3rem 0.7rem;
+  text-align: center;
+  border-radius: var(--radius);
+}
+.termin{
+  padding: 0.2rem;
+  margin-top: 0.4rem;
+  border-radius: var(--radius);
+  background-color: rgb(var(--isticanje));
+  display: grid;
+  grid-template-rows: 1fr 2fr 1fr;
+}
+.vrijeme{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+}
+.dvorana{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.rasporedMentor{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 0.7rem;
+}
   @media only screen and (max-width: 1080px) {
     .mobile-none{
       display: none;

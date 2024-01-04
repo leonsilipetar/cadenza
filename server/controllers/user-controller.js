@@ -141,7 +141,8 @@ const signup = async (req, res, next) => {
           path: '/',
           expires: new Date(Date.now() + 1000 * 60 * 58),
           httpOnly: true,
-          sameSite: 'lax',
+          sameSite: 'lax', //on localhost is lax, on render is none
+          secure: process.env.NODE_ENV === 'production',/* on localhost is false*/
         });
     
         return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });
