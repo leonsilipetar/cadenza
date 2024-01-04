@@ -140,9 +140,8 @@ const signup = async (req, res, next) => {
         res.cookie(String(existingUser._id), token, {
           path: '/',
           expires: new Date(Date.now() + 1000 * 60 * 58),
-          httpOnly: true,
-          sameSite: 'none', //on localhost is lax, on render is none
-          secure: process.env.NODE_ENV === 'production',/* on localhost is false*/
+          httpsOnly: true,
+          sameSite: 'none', //on localhost is lax, on render is none/* on localhost is false*/
         });
     
         return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });
@@ -154,24 +153,15 @@ const signup = async (req, res, next) => {
     
   
     const verifyToken = (req, res, next) => {
-      console.log('Headers:', req.headers);
       const cookies = req.headers.cookie;
-    
-      if (!cookies) {
-        return res.status(404).json({ message: "No cookies found" });
-      }
-    
-      const tokenString = cookies.split("=")[1];
-    
-      if (!tokenString) {
+      const token = cookies.split("=")[1];
+      if (!token) {
         return res.status(404).json({ message: "No token found" });
       }
-    
-      jwt.verify(tokenString, process.env.JWT_SECRET, (err, user) => {
+      jwt.verify(String(token), process.env.JWT_SECRET, (err, user) => {
         if (err) {
           return res.status(400).json({ message: "Invalid Token" });
         }
-    
         console.log(user.id);
         req.id = user.id;
         next();
