@@ -67,6 +67,7 @@ function Login() {
       <div className="header-forma-login-signup">
         <div className="welcome-poruka">
           <h1>Music Art Incubator</h1>
+          <h3>CADENZA</h3>
         </div>
       </div>
       <div className="main-login-signup">

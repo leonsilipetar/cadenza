@@ -6,6 +6,8 @@ axios.defaults.withCredentials = true;
 
 const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
   const [students, setStudents] = useState([]);
+  const [status, setStatus] = useState('');
+  const [isDodajMentoraDisabled, setIsDodajMentoraDisabled] = useState(false);
     const [odabranoDodajKorisnika, setOdabranoDodajKOrisnika] = useState(false);
     const [inputs, setInputs] = useState({
         korisnickoIme: '',
@@ -49,12 +51,19 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
     
       const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsDodajMentoraDisabled(true);
           const result = await dodajMentora();
     
           if (result) {
             console.log('User registered successfully:', result);
+            setStatus('Mentor je uspješno dodan!');
           } else {
             console.log('User registration failed.');
+            setStatus('Došlo je do greške prilikom dodavanja mentora!');
+            setTimeout(() => {
+              setIsDodajMentoraDisabled(false);
+              setStatus('Probajte ponovno!');
+            }, 3000); 
           }
       };
       useEffect(() => {
@@ -245,16 +254,21 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
     
         <div className='div-radio'>
         <button
-          className="gumb action-btn zatvoriBtn"
-          onClick={() => onCancel()}
-        >
-          Zatvori
-        </button>
-        <button className="gumb action-btn spremiBtn" type="submit" onClick={handleSubmit}>
-          Dodaj mentora
-  </button>
-        
+        className="gumb action-btn zatvoriBtn primary-btn" // Apply primary button styles
+        onClick={() => onCancel()}
+      >
+        Zatvori
+      </button>
+      <button
+        className={`gumb action-btn spremiBtn ${isDodajMentoraDisabled ? 'disabledSpremiBtn' : ''}`}
+        type="submit"
+        onClick={handleSubmit}
+        disabled={isDodajMentoraDisabled} // Disable the button based on state
+      >
+        {isDodajMentoraDisabled ? 'Spremanje' : 'Dodaj mentora'}
+      </button>
         </div>
+        <div className={`div`}><p>{status}</p></div>
       </form>
     </div>
     )

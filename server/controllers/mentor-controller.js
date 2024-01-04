@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
+const mongoose = require('mongoose');
 const Mentor = require('../model/Mentor'); // Make sure to import your Mentor model
 
 // Controller for mentor signup

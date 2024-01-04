@@ -466,7 +466,7 @@ color: var(--isticanje);
 }
 .tablica .tr{
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   gap: 1.5rem;
   border-bottom: 1px solid var(--iznad);
   padding: 0.5rem;
@@ -581,6 +581,9 @@ color: var(--isticanje);
   border-radius: 5rem;
   background-color: rgb(var(--isticanje));
 }
+.disabledSpremiBtn{
+  display: none;
+}
 .spremiBtn:hover{
   background-color: var(--pozadina-svijetlo);
   outline: 3px solid rgb(var(--isticanje));
@@ -594,6 +597,13 @@ color: var(--isticanje);
   text-decoration: underline;
 }
   @media only screen and (max-width: 1080px) {
+    .mobile-none{
+      display: none;
+    }
+    .tablica .tr{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+    }
     .icon{
       font-size: 2rem;
     }
