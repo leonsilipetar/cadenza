@@ -142,7 +142,7 @@ const signup = async (req, res, next) => {
           expires: new Date(Date.now() + 1000 * 60 * 58),
           httpOnly: true,
           sameSite: 'none', //on localhost is lax, on render is none
-          secure: process.env.NODE_ENV === 'production',/* on localhost is false*/
+          secure: true,/* on localhost is false*/
         });
     
         return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });
@@ -226,24 +226,30 @@ const refreshToken = (req, res, next) => {
 
 const logout = (req, res, next) => {
   const cookies = req.headers.cookie;
-  const prevToken = cookies.split("=")[1];
 
-  if (!prevToken) {
-      return res.status(400).json({ message: "Couldn't find token" });
+  if (!cookies) {
+    return res.status(400).json({ message: "No cookies found" });
   }
 
-  jwt.verify(String(prevToken), process.env.JWT_SECRET, (err, user) => {
-      if (err) {
-          console.log(err);
-          return res.status(403).json({ message: "Authentication failed" });
-      }
+  const token = cookies.split("=")[1];
 
-      console.log('Clearing cookie for user:', user.id);
-    res.clearCookie(`${user.id}`);
-      return res.status(200).json({ message: "Successfully Logged Out" });
+  if (!token) {
+    return res.status(400).json({ message: "Couldn't find token" });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      console.log(err);
+      return res.status(403).json({ message: "Authentication failed" });
+    }
+
+    console.log('Clearing cookie for user:', user.id);
+    res.clearCookie(String(user.id));
+
+    return res.status(200).json({ message: "Successfully Logged Out" });
   });
-  clearCookie(user.id);
 };
+
 const getKorisnici = async (req, res, next) => {
   try {
     // Select only specific fields (ime, prezime, program) from the database
