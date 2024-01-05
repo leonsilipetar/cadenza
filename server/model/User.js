@@ -37,7 +37,9 @@ const userSchema = new Schema({
     ime: String,
     prezime: String,
     brojMobitela: String,
-  }
+  },
+  rasporedId: String,
+  rasporedTeorijaId: String,
 },
 {timestamps: true }
 );

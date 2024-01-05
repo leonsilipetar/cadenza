@@ -398,6 +398,7 @@ color: var(--isticanje);
   width: 100%;
   background-color: rgb(0, 0, 0, 70%);
   padding: 1rem;
+  min-height: 100%;
 }
 .popup .div{
   width: 75%;
@@ -536,6 +537,7 @@ color: var(--isticanje);
   justify-content: center;
   align-items: center;
   flex-direction: row;
+  padding-bottom: 1rem;
 }
 .checkbox-group {
   display: flex;

@@ -3,45 +3,53 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const scheduleSchema = new Schema({
+  ucenikId: String,
+  mentorId: String,
     pon: {
       type: [{
+        dvorana: String,
         hour: Number,
-        task: String, // You can add more attributes as needed
+        mentor: String, 
       }],
       default: [],
     },
     uto: {
       type: [{
+        dvorana: String,
         hour: Number,
-        task: String,
+        mentor: String, 
       }],
       default: [],
     },
     sri: {
       type: [{
+        dvorana: String,
         hour: Number,
-        task: String,
+        mentor: String, 
       }],
       default: [],
     },
     cet: {
       type: [{
+        dvorana: String,
         hour: Number,
-        task: String,
+        mentor: String, 
       }],
       default: [],
     },
     pet: {
       type: [{
+        dvorana: String,
         hour: Number,
-        task: String,
+        mentor: String, 
       }],
       default: [],
     },
     sub: {
         type: [{
+          dvorana: String,
           hour: Number,
-          task: String,
+          mentor: String, 
         }],
         default: [],
       },
@@ -49,4 +57,4 @@ const scheduleSchema = new Schema({
   { timestamps: true }
   );
 
-module.exports = mongoose.model('Tjedan', scheduleSchema);
+module.exports = mongoose.model('Raspored', scheduleSchema);

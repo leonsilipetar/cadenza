@@ -4,12 +4,18 @@ import axios from "axios";
 import Navigacija from "./navigacija";
 import NavTop from './nav-top';
 import ApiConfig from '../components/apiConfig.js';
+import RasporedDan from './raspored/RasporedDan.jsx';
+import { Icon } from '@iconify/react';
+import DodajTermin from './raspored/DodajTermin.jsx';
 
 
 axios.defaults.withCredentials = true;
 const Raspored = () => {
 
   const [user, setUser] = useState();
+  const [teroija, setTeroija] = useState();
+  const [raspored, setRaspored] = useState();
+  const [dodajRasporedTeorija, setDodajRasporedTeorija] = useState(false)
   const otvoreno = "raspored";
 
   const sendRequest = async () => {
@@ -19,6 +25,13 @@ const Raspored = () => {
       const data = await res.data;
       return data;
   }
+  const sendRequestTeorija = async () => {
+    const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedTeorija`, {
+        withCredentials: true
+    }).catch((err) => console.log(err));
+    const data = await res.data;
+    return data;
+}
 
   const refreshToken = async () => {
       const res = await axios
@@ -36,9 +49,12 @@ const Raspored = () => {
 
     useEffect(() => {
 
-      
         sendRequest().then((data) => {
           setUser(data.user)
+        });
+
+        sendRequestTeorija().then((data) => {
+          setTeroija(data.teorija)
         });
 
     }, []);
@@ -47,57 +63,27 @@ const Raspored = () => {
       <>
       <Navigacija user={user} otvoreno={otvoreno}/>
       <NavTop user={user} naslov={"Raspored"}/>
+      {dodajRasporedTeorija && (
+        <DodajTermin
+        dodajRasporedTeorija={dodajRasporedTeorija}
+        onCancel={() => setDodajRasporedTeorija(false)} // Close the popup when onCancel is triggered
+      />
+      )}
       <div className="main">
 
+      {user && user.isAdmin && (
+        <div className="sbtwn">
+          <div
+              className="gumb action-btn abEdit "
+            onClick={() => setDodajRasporedTeorija(true)}
+            >
+              <Icon icon="solar:add-circle-broken" fontSize="large"/>Raspored Teorija 
+          </div>
+        </div>
+      )}
+
       <div className="raspored">
-        <div className='dan'>
-            <div className="nazivDana">Ponedjeljak</div>
-            <div className="termin">
-              <div className="dvorana">učionica 1</div>
-              <div className="vrijeme">08:00 - 09:00</div>
-              <div className="rasporedMentor">Ime prezime</div>
-            </div>
-        </div>
-        <div className='dan'>
-        <div className="nazivDana">Utorak</div>
-            <div className="termin">
-              <div className="dvorana">učionica 4</div>
-              <div className="vrijeme">08:00 - 09:00</div>
-              <div className="rasporedMentor">Ime prezime</div>
-            </div>
-        </div>
-        <div className='dan'>
-        <div className="nazivDana">Srijeda</div>
-            <div className="termin">
-              <div className="dvorana">učionica 3</div>
-              <div className="vrijeme">08:00 - 09:00</div>
-              <div className="rasporedMentor">Ime prezime</div>
-            </div>
-        </div>
-        <div className='dan'>
-        <div className="nazivDana">Četvrtak</div>
-            <div className="termin">
-              <div className="dvorana">učionica 4</div>
-              <div className="vrijeme">08:00 - 09:00</div>
-              <div className="rasporedMentor">Ime prezime</div>
-            </div>
-        </div>
-        <div className='dan'>
-        <div className="nazivDana">Petak</div>
-            <div className="termin">
-              <div className="dvorana">učionica 5</div>
-              <div className="vrijeme">08:00 - 09:00</div>
-              <div className="rasporedMentor">Ime prezime</div>
-            </div>
-        </div>
-        <div className='dan'>
-        <div className="nazivDana">Subota</div>
-            <div className="termin">
-              <div className="dvorana">učionica 5</div>
-              <div className="vrijeme">08:00 - 09:00</div>
-              <div className="rasporedMentor">Ime prezime</div>
-            </div>
-        </div>
+        {teroija ? <RasporedDan /> : <div><p>Nema dostupnog rasporeda</p></div>}
       </div>
 </div>
       </>
