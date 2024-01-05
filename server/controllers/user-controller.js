@@ -139,7 +139,6 @@ const signup = async (req, res, next) => {
     
         res.cookie(String(existingUser._id), token, {
           path: '/',
-          expires: new Date(Date.now() + 1000 * 60 * 58),
           httpOnly: true,
           sameSite: 'lax', //on localhost is lax, on render is none
           secure: process.env.NODE_ENV === 'production',/* on localhost is false*/
@@ -223,7 +222,6 @@ const refreshToken = (req, res, next) => {
         });
         res.cookie(String(user.id), token, {
             path: '/',
-            expires: new Date(Date.now() + 1000 * 60 * 57),
             httpOnly: true,
             sameSite: 'lax',
         });

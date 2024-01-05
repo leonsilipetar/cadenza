@@ -108,11 +108,13 @@ const Mentori = () => {
         />
       )}
       <div className="main">
+        <div className="sbtwn">
         <div
           className="gumb action-btn abEdit "
           onClick={() => setOdabranoDodajKOrisnika(true)}
         >
           <Icon icon="solar:user-plus-broken" fontSize="large" /> Dodaj mentora
+        </div>
         </div>
         <div className="tablica">
           <div className="tr naziv">

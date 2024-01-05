@@ -106,11 +106,13 @@ const Korisnici = () => {
         />
       )}
       <div className="main">
+        <div className="sbtwn">
         <div
-          className="gumb action-btn abEdit "
+          className="gumb action-btn abEdit sbtwn"
           onClick={() => setOdabranoDodajKOrisnika(true)}
         >
           <Icon icon="solar:user-plus-broken" fontSize="large" /> Dodaj učenika
+        </div>
         </div>
         <div className="tablica">
           <div className="tr naziv">

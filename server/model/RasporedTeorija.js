@@ -6,7 +6,7 @@ const scheduleSchema = new Schema({
     pon: {
       type: [{
         dvorana: String,
-        hour: Number,
+        vrijeme: String,
         mentor: String, 
       }],
       default: [],
@@ -14,7 +14,7 @@ const scheduleSchema = new Schema({
     uto: {
       type: [{
         dvorana: String,
-        hour: Number,
+        vrijeme: String,
         mentor: String, 
       }],
       default: [],
@@ -22,7 +22,7 @@ const scheduleSchema = new Schema({
     sri: {
       type: [{
         dvorana: String,
-        hour: Number,
+        vrijeme: String,
         mentor: String, 
       }],
       default: [],
@@ -30,7 +30,7 @@ const scheduleSchema = new Schema({
     cet: {
       type: [{
         dvorana: String,
-        hour: Number,
+        vrijeme: String,
         mentor: String, 
       }],
       default: [],
@@ -38,7 +38,7 @@ const scheduleSchema = new Schema({
     pet: {
       type: [{
         dvorana: String,
-        hour: Number,
+        vrijeme: String,
         mentor: String, 
       }],
       default: [],
@@ -46,7 +46,7 @@ const scheduleSchema = new Schema({
     sub: {
         type: [{
           dvorana: String,
-          hour: Number,
+          vrijeme: String,
           mentor: String, 
         }],
         default: [],

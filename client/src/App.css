@@ -225,6 +225,7 @@ header{
   }
   #tema{
     font-size: 1.4em;
+    color: var(--tekst);
   }
   .gumb:hover{
     cursor: pointer;
@@ -396,13 +397,13 @@ color: var(--isticanje);
   align-items: center;
   justify-content: center;
   width: 100%;
-  background-color: rgb(0, 0, 0, 70%);
+  background-color: rgba(0, 0, 0, 0.8);
   padding: 1rem;
   min-height: 100%;
 }
 .popup .div{
   width: 75%;
-  background-color: rgb(57, 57, 57);
+  background-color: var(--iznad);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -410,9 +411,11 @@ color: var(--isticanje);
   border-radius: var(--radius);
   margin: 1rem 0;
 }
+.div-clmn{
+  flex-direction: column;
+}
 .div-radio{
   width: 75%;
-  background-color: rgb(57, 57, 57);
   display: flex;
   justify-content: space-evenly;
   padding: 1rem;
@@ -546,12 +549,12 @@ color: var(--isticanje);
 }
 
 .checkbox-item {
-  border: 1px solid #ccc;
+  border: 2px solid #777777;
   padding: 1rem;
   margin: 1rem;
   cursor: pointer;
   border-radius: var(--radius);
-  background-color: rgba(var(--isticanje),0.2);
+  background-color: rgba(var(--isticanje),0.6);
 }
 
 .checkbox-item.checked {
@@ -563,20 +566,23 @@ color: var(--isticanje);
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
+  background-color: var(--iznad);
 }
 
 .radio-item {
-  border: 1px solid #ccc;
   padding: 1rem;
   margin: 1rem;
   cursor: pointer;
   border-radius: var(--radius);
-  background-color: rgba(var(--isticanje), 0.2);
+  background-color: rgba(var(--isticanje), 0.6);
 }
-
+.radio-item:hover{
+  transform: scale(110%);
+}
 .radio-item.checked {
   border: none;
   outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
+  transform: scale(115%);
 }
 .spremiBtn{
   padding: 0.8rem;
@@ -600,8 +606,8 @@ color: var(--isticanje);
 }
 .raspored{
   display: grid;
-  grid-template-columns: 12rem 12rem 12rem 12rem 12rem 12rem;
-  background-color: var(--pozadina);
+  grid-template-columns: repeat(6, 11rem);
+  background-color: var(--iznad);
   box-shadow: var(--boxShadow);
   border-radius: var(--radius);
   padding: 1rem;
@@ -643,6 +649,30 @@ color: var(--isticanje);
   justify-content: flex-end;
   align-items: center;
   font-size: 0.7rem;
+}
+.obrisiTermin {
+  position: absolute; /* Changed to relative to make :after positioned relative to this */
+}
+
+.obrisiTermin:after {
+  content: "obriši";
+  position: relative;
+  top: 0;
+  left: 0;
+  display: none; /* Initially hide the content */
+}
+
+.obrisiTermin:hover {
+  display: inline-block; /* Show the content when the parent is hovered */
+  padding: 0.3rem;
+  background-color: #f44336;
+  border-radius: var(--radius);
+  color: var(--tekst);
+}
+.obrisiTermin:hover:after {
+  display: inline-block; /* Show the content when the parent is hovered */
+  background-color: #f44336;
+  color: var(--tekst);
 }
   @media only screen and (max-width: 1080px) {
     .mobile-none{
@@ -723,6 +753,29 @@ input{
 }
 .checkbox-group{
   flex-direction: column;
+}
+.popup .div, .div-radio{
+  width: 95%;
+}
+.raspored{
+  display: grid;
+  width: 80%;
+  grid-template-columns: 1fr;
+  background-color: var(--iznad);
+  box-shadow: var(--boxShadow);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+.dan{
+  padding: 1rem;
+  border-right: none;
+  border-bottom: 2px solid rgb(var(--isticanje));
+}
+.dan:last-child{
+  border: none;
+}
+.rasporedMentor{
+  justify-content: center;
 }
   }
   .error{
