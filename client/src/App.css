@@ -118,7 +118,7 @@ select {
 @font-face {
   font-family: 'fNaslovi';
   src: url('fonts/HeptaSlab-VariableFont_wght.ttf') format('truetype');
-  font-weight: 600;
+  font-weight: 800;
   font-display: swap;
 }
 
@@ -188,7 +188,7 @@ header{
     width: 3.2rem;
     height: 3.2rem;
     border-radius: 1rem;
-    transition: all 0.1s ease;
+    transition: all 0.2s ease-in-out;
   }
   nav div p{
     font-size: 0.6rem;
@@ -201,6 +201,9 @@ header{
     margin-left: 1rem;
     background-color: rgb(var(--isticanje));
     outline: 8px solid var(--iznad);
+  }
+  nav div:active{
+    transform: scale(0.1);
   }
   nav div.otvoreno{
     margin-left: 2rem;
@@ -275,6 +278,7 @@ h1{
 .login-signup{
   width: 100vw;
   height: 100vh;
+  background-color: #eeeeee;
 }
 .header-forma-login-signup{
   width: 50%;
@@ -380,8 +384,9 @@ background-color: var(--pozadina-svijetlo);
 color: rgb(var(--isticanje));
 }
 a{
-color: rgb(var(--isticanje));
+color: var(--isticanje);
 }
+
 .p{
   padding: 0.3rem;
 }
@@ -606,7 +611,7 @@ color: rgb(var(--isticanje));
 }
 .raspored{
   display: grid;
-  grid-template-columns: repeat(6, 11rem);
+  grid-template-columns: repeat(6, 10rem);
   background-color: var(--iznad);
   box-shadow: var(--boxShadow);
   border-radius: var(--radius);
@@ -776,6 +781,9 @@ input{
 }
 .rasporedMentor{
   justify-content: center;
+}
+nav div:active{
+  transform: none;
 }
   }
   .error{
