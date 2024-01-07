@@ -118,7 +118,7 @@ select {
 @font-face {
   font-family: 'fNaslovi';
   src: url('fonts/HeptaSlab-VariableFont_wght.ttf') format('truetype');
-  font-weight: lighter;
+  font-weight: 600;
   font-display: swap;
 }
 
@@ -351,15 +351,15 @@ border-bottom: 4px solid rgb(var(--isticanje));
   width: 75%;
   margin-top: 5%;
   color: rgb(var(--pozadina-svijetlo));
-  background-color: var(--isticanje-svijetlo);
+  background-color: rgb(var(--isticanje));
   border-radius: var(--radius);
   border: none;
   outline: none;
   padding: var(--radius);
 }
 #gumb-login-signup:hover{
-outline: 2px solid var(--isticanje-svijetlo);
-background-color: var(--pozadina-svijetlo);
+outline: 2px solid rgb(var(--isticanje));
+background-color: rgb(var(--pozadina-svijetlo));
 color: rgb(var(--isticanje));
 }
 .gumb-login-signup{
@@ -380,7 +380,7 @@ background-color: var(--pozadina-svijetlo);
 color: rgb(var(--isticanje));
 }
 a{
-color: var(--isticanje);
+color: rgb(var(--isticanje));
 }
 .p{
   padding: 0.3rem;
@@ -577,12 +577,12 @@ color: var(--isticanje);
   background-color: rgba(var(--isticanje), 0.6);
 }
 .radio-item:hover{
-  transform: scale(110%);
+  transform: scale(1.1);
 }
 .radio-item.checked {
   border: none;
   outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
-  transform: scale(115%);
+  transform: scale(1.15);
 }
 .spremiBtn{
   padding: 0.8rem;
@@ -593,7 +593,7 @@ color: var(--isticanje);
   display: none;
 }
 .spremiBtn:hover{
-  background-color: var(--pozadina-svijetlo);
+  background-color: rgb(var(--pozadina-svijetlo));
   outline: 3px solid rgb(var(--isticanje));
   color: rgb(var(--isticanje));
 }
