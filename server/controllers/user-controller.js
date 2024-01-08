@@ -262,7 +262,7 @@ const logout = (req, res, next) => {
     console.log('Clearing cookie for user:', user.id);
     res.clearCookie(String(user.id), {
       path: '/',  // Specify the same path used when setting the cookie
-      domain: 'https://mai-cadenza.onrender.com' || 'localhost:3000'  // Specify the domain if applicable
+      domain: 'https://mai-cadenza.onrender.com', //,  // Specify the domain if applicable
       secure: process.env.NODE_ENV === 'production',  // Set to true if using HTTPS
     });
 
