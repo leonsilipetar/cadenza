@@ -232,6 +232,7 @@ const refreshToken = (req, res, next) => {
 
 const logout = (req, res, next) => {
   const cookies = req.headers.cookie;
+  
 
   if (!cookies) {
     return res.status(400).json({ message: "No cookies found" });
