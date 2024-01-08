@@ -28,19 +28,16 @@ const signup = async (req, res, next) => {
     roditelj2,
   } = req.body;
 
+  let existingUser = await User.findOne({ email: email });
+
+if (existingUser) {
+    return res.status(400).json({ message: 'Korisnik već postoji!!' });
+}
   // Generate a random password
   const randomPassword = crypto.randomBytes(8).toString('hex');
   console.log('password: ', randomPassword);
 
-  let existingUser;
-
   try {
-    existingUser = await User.findOne({ email: email });
-
-    if (existingUser) {
-      return res.status(400).json({ message: 'Korisnik već postoji!!' });
-    }
-
     const hashPassword = bcrypt.hashSync(randomPassword);
 
   const user = new User({
@@ -87,16 +84,16 @@ const signup = async (req, res, next) => {
       port: 465,
       secure: true,
       auth: {
-        user: '', // replace with your email
-        pass: '', // replace with your email password
+        user: 'neznam.dadane@gmail.com', // replace with your email
+        pass: 'silipetar', // replace with your email password
       },
     });
   
     const mailOptions = {
-        from: '',
+        from: 'neznam.dadane@gmail.com',
         to: email,
         subject: 'Vaša lozinka za MAI račun',
-        text: `Prijavljeni ste na našu platformu, a vaša lozinka je: ${password}`,
+        text: `Prijavljeni ste na našu platformu, adresa preko koje se prijavljujete: ${email}, te vaša lozinka: ${password}`,
       };
     
       try {
@@ -140,7 +137,7 @@ const signup = async (req, res, next) => {
         res.cookie(String(existingUser._id), token, {
           path: '/',
           httpOnly: true,
-          sameSite: 'none', //on localhost is lax, on render is none
+          sameSite: 'strict', //on localhost is lax, on render is none
           secure: process.env.NODE_ENV === 'production',/* on localhost is false*/
         });
     

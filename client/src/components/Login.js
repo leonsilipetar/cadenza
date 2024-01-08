@@ -86,6 +86,7 @@ function Login() {
               onFocus={() => setEmailFocused(true)}
               onBlur={() => setEmailFocused(false)}
               placeholder="e-mail adresa"
+              autoComplete='true'
             />
 
             <input
@@ -98,6 +99,7 @@ function Login() {
               onFocus={() => setPasswordFocused(true)}
               onBlur={() => setPasswordFocused(false)}
               placeholder="lozinka"
+              autoComplete='true'
             />
 
             {errorM && <section className="errorM">{errorM}</section>}

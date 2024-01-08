@@ -36,15 +36,15 @@ function App() {
     <Routes>
       {isLoggedIn && <Route path="/user/*" element={<Naslovna />} />}
       {isLoggedIn && <Route path="/profil/*" element={<Profil />} />}
-      {isLoggedIn && <Route path="/chat" element={<Chat />} />}
-      {isLoggedIn && <Route path="/racuni" element={<Racuni />} />}
-      {isLoggedIn && <Route path="/raspored" element={<Raspored />} />}
-      {isLoggedIn && <Route path="/admin" element={<Admin />} />}
-      {isLoggedIn && <Route path="/korisnici" element={<Korisnici />} />}
-      {isLoggedIn && <Route path="/mentori" element={<Mentori />} />}
-      {isLoggedIn && <Route path="/racuni-admin" element={<RacuniAdmin />} />}
-      <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Login />} />
+      {isLoggedIn && <Route path="/chat/*" element={<Chat />} />}
+      {isLoggedIn && <Route path="/racuni/*" element={<Racuni />} />}
+      {isLoggedIn && <Route path="/raspored/*" element={<Raspored />} />}
+      {isLoggedIn && <Route path="/admin/*" element={<Admin />} />}
+      {isLoggedIn && <Route path="/korisnici/*" element={<Korisnici />} />}
+      {isLoggedIn && <Route path="/mentori/*" element={<Mentori />} />}
+      {isLoggedIn && <Route path="/racuni-admin/*" element={<RacuniAdmin />} />}
+      <Route path="/login/*" element={<Login />} />
+      <Route path="/*" element={<Login />} />
     </Routes>
   );
 }

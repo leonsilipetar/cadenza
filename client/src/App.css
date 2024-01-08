@@ -76,8 +76,6 @@ select {
 :root{
   --isticanje: var(--narancasta);
   --isticanje-svijetlo: rgba(var(--isticanje), 0.425);
-
-  --pozadina: rgb(var(--pozadina-svijetlo));
   --pozadina-svijetlo: 255, 255, 255;
   --pozadina-tamno: 17, 17, 17;
 
@@ -87,7 +85,9 @@ select {
   --tekst: rgb(var(--svijetlo-tekst));
 
   --tamno-iznad: 66, 68, 66;
+  --tamno-iznad-nav: 76, 79, 76;
   --svijetlo-iznad: 255,255,255;
+  --svijetlo-iznad-nav: 255,255,255;
 
   --tamno-tekst: 218, 214, 214;
   --svijetlo-tekst: 15, 15, 15;
@@ -131,10 +131,11 @@ body.light {
   --iznad: rgb(var(--svijetlo-iznad));
   --boxShadow: var(--sjena-svijetlo);
   --tekst: rgb(var(--svijetlo-tekst));
+  --iznad-nav: rgb(var(--svijetlo-iznad-nav));
   --isticanje-svijetlo: rgb(var(--isticanje));
   --iznad-objava: rgb(var(--isticanje));
-  --pozadina: rgb(255, 255, 255);
-  background-color: #eeeeee;
+  --pozadina: 227, 227, 227;
+  background-color: rgb(227, 227, 227);
 }
 
 /* Dark Theme */
@@ -143,6 +144,7 @@ body.dark {
   color: #ffffff;
   --navtop: rgb(17, 17, 17);
   --iznad: rgb(var(--tamno-iznad));
+  --iznad-nav: rgb(var(--tamno-iznad-nav));
   --boxShadow: var(--sjena-tamno);
   --tekst: rgb(var(--tamno-tekst));
   --isticanje-svijetlo: rgba(var(--isticanje), 0.6);
@@ -167,7 +169,7 @@ header{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: var(--iznad);
+    background-color: var(--iznad-nav);
     box-shadow: var(--boxShadow);
   }
   nav{
@@ -188,7 +190,7 @@ header{
     width: 3.2rem;
     height: 3.2rem;
     border-radius: 1rem;
-    transition: all 0.2s ease-in-out;
+    transition: margin-left 0.2s ease-in-out;
   }
   nav div p{
     font-size: 0.6rem;
@@ -200,16 +202,16 @@ header{
     color: var(--pozadina);
     margin-left: 1rem;
     background-color: rgb(var(--isticanje));
-    outline: 8px solid var(--iznad);
+    outline: 8px solid var(--iznad-nav);
   }
   nav div:active{
-    transform: scale(0.1);
+    transform: scale(0.9);
   }
   nav div.otvoreno{
     margin-left: 2rem;
     width: 3.6rem;
     height: 3.6rem;
-    outline: 8px solid var(--iznad);
+    outline: 8px solid var(--iznad-nav);
     background-color: rgb(var(--isticanje));
   }
   .welcome-poruka{
@@ -278,7 +280,7 @@ h1{
 .login-signup{
   width: 100vw;
   height: 100vh;
-  background-color: #eeeeee;
+  background-color: rgb(var(--pozadina));
 }
 .header-forma-login-signup{
   width: 50%;
@@ -723,6 +725,7 @@ color: var(--isticanje);
       nav div:hover{
         margin-left: 0;
         margin-bottom: 1rem;
+        border-radius: 0.7rem;
       }
       nav div.otvoreno{
         margin-left: 0;
