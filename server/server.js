@@ -1,4 +1,3 @@
-// server.js or app.js
 const express = require('express');
 const mongoose = require('mongoose');
 const router = require('./routes/user-routes.js');
@@ -32,12 +31,6 @@ app.use(cookieParser());
 app.use(express.json());
 app.use('/api', router);
 
-app.get("/*", function (req, res) {
-  path.join(__dirname, "../client/build/index.html"),
-  function(err) {
-    res.status(500).send(err);
-  }
-});
 
 const PORT = process.env.PORT || 5000;
 
