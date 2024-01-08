@@ -15,7 +15,7 @@ const userSchema = new Schema({
   isAdmin: { type: Boolean, default: false },
   isMentor: { type: Boolean, default: false },
   isStudent: { type: Boolean, default: false },
-  oib: Number,
+  oib: { type: String, required: true, unique: true },
   program: String,
   brojMobitela: String,
   mentor: String,

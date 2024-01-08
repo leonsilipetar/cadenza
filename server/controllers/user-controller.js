@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const asyncWrapper = require("../middleware/asyncWrapper.js");
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-const signup = async (req, res, next) => {
+const signup = asyncWrapper(async (req, res, next) => {
   const {
     korisnickoIme,
     email,
@@ -28,7 +28,8 @@ const signup = async (req, res, next) => {
     roditelj2,
   } = req.body;
 
-  let existingUser = await User.findOne({ email: email });
+  const existingUser = await User.findOne({ email: email.trim().toLowerCase() });
+
 
 if (existingUser) {
     return res.status(400).json({ message: 'Korisnik već postoji!!' });
@@ -74,37 +75,38 @@ if (existingUser) {
     console.error('Error during signup:', err);
     return res.status(500).json({ message: 'Internal Server Error' });
   }
+});
+
+
+
+const sendPasswordEmail = async (email, password) => {
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    auth: {
+      user: 'leonosobni@gmail.com', // replace with your Gmail email
+      pass: 'ismi aoit weel coyz', // replace with your Gmail app password
+    },
+  });
+
+  const mailOptions = {
+    from: 'leonosobni@gmail.com', // replace with your Gmail email
+    to: email,
+    subject: 'Vaša lozinka za MAI račun',
+    text: `Prijavljeni ste na našu platformu, adresa preko koje se prijavljujete: ${email}, te vaša lozinka: ${password}`,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent:', info);
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
 };
-
-
-
-  const sendPasswordEmail = async (email, password) => {
-    const transporter = nodemailer.createTransport({
-      service: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: 'neznam.dadane@gmail.com', // replace with your email
-        pass: 'silipetar', // replace with your email password
-      },
-    });
-  
-    const mailOptions = {
-        from: 'neznam.dadane@gmail.com',
-        to: email,
-        subject: 'Vaša lozinka za MAI račun',
-        text: `Prijavljeni ste na našu platformu, adresa preko koje se prijavljujete: ${email}, te vaša lozinka: ${password}`,
-      };
-    
-      try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent:', info);
-      } catch (error) {
-        console.error('Error sending email:', error);
-      }
-    };
  
-    const login = async (req, res, next) => {
+    const login = asyncWrapper(async (req, res, next) => {
       const { email, password } = req.body;
     
       try {
@@ -137,7 +139,7 @@ if (existingUser) {
         res.cookie(String(existingUser._id), token, {
           path: '/',
           httpOnly: true,
-          sameSite: 'none', //on localhost is lax, on render is none
+          sameSite: 'lax', //on localhost is lax, on render is none
           secure: process.env.NODE_ENV === 'production',/* on localhost is false*/
         });
     
@@ -146,7 +148,7 @@ if (existingUser) {
         console.error(err);
         return res.status(500).json({ message: "Internal Server Error" });
       }
-    };
+    });
     
     
   

@@ -11,7 +11,7 @@ const mentorSchema = new mongoose.Schema({
   oib: { type: String, required: true, unique: true },
   ime: { type: String, required: true },
   prezime: { type: String, required: true },
-  brojMobitela: { type: String }, // Assuming mentor is another user, replace String with the actual type
+  brojMobitela: { type: String }, 
   datumRodjenja: { type: Date },
   adresa: {
     ulica: { type: String },
