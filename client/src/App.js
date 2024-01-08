@@ -43,8 +43,8 @@ function App() {
       {isLoggedIn && <Route path="/korisnici/*" element={<Korisnici />} />}
       {isLoggedIn && <Route path="/mentori/*" element={<Mentori />} />}
       {isLoggedIn && <Route path="/racuni-admin/*" element={<RacuniAdmin />} />}
-      <Route path="/login/*" element={<Login />} />
-      <Route path="/*" element={<Login />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
     </Routes>
   );
 }
