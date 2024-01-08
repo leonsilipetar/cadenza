@@ -94,8 +94,19 @@ const sendPasswordEmail = async (email, password) => {
   const mailOptions = {
     from: 'leonosobni@gmail.com', // replace with your Gmail email
     to: email,
-    subject: 'Vaša lozinka za MAI račun',
-    text: `Prijavljeni ste na našu platformu, adresa preko koje se prijavljujete: ${email}, te vaša lozinka: ${password}`,
+    
+    subject: 'Dobrodošli u MAI - Cadenza platformu - Detalji vašeg računa',
+    text: `Poštovani,
+
+    Radujemo se što vas možemo pozdraviti na Music Art Incubator (MAI) platformi. Vaš korisnički račun je uspješno stvoren, a ovdje su vaši podaci za prijavu:
+    
+    E-mail adresa: ${email}
+    Lozinka: ${password}
+    
+    Molimo vas da čuvate ove informacije sigurno i ne dijelite lozinku. Ako imate bilo kakvih pitanja ili nedoumica, slobodno se obratite našem "timu" za podršku na leonosobni@gmail.com.
+    
+    S poštovanjem,
+    MAI - Cadenza`,
   };
 
   try {
@@ -229,10 +240,8 @@ const refreshToken = (req, res, next) => {
         next();
     })
 };
-
 const logout = (req, res, next) => {
   const cookies = req.headers.cookie;
-  
 
   if (!cookies) {
     return res.status(400).json({ message: "No cookies found" });
@@ -251,7 +260,11 @@ const logout = (req, res, next) => {
     }
 
     console.log('Clearing cookie for user:', user.id);
-    res.clearCookie(String(user.id));
+    res.clearCookie(String(user.id), {
+      path: '/',  // Specify the same path used when setting the cookie
+      domain: 'https://mai-cadenza.onrender.com' || 'localhost:3000'  // Specify the domain if applicable
+      secure: process.env.NODE_ENV === 'production',  // Set to true if using HTTPS
+    });
 
     return res.status(200).json({ message: "Successfully Logged Out" });
   });
