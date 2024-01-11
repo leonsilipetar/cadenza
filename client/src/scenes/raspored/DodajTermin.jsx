@@ -97,7 +97,7 @@ const DodajTermin = ({ dodajRasporedTeorija, onCancel }) => {
         ))}
 
         <div className="div div-clmn">
-          <div className="div-radio">
+          <div className="div-radio raspored-divs">
             {['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
               <div
                 key={day}

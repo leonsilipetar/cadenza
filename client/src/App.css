@@ -765,6 +765,10 @@ input{
 .popup .div, .div-radio{
   width: 95%;
 }
+.raspored-divs{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
 .raspored{
   display: grid;
   width: 80%;
