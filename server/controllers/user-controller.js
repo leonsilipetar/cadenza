@@ -140,19 +140,19 @@ const sendPasswordEmail = async (email, password) => {
         if (!isPasswordCorrect) {
           return res.status(400).json({ message: "Invalid email/password!" });
         }
-    
-        Object.keys(req.cookies).forEach(cookieName => {
-          res.clearCookie(cookieName);
-        });
       
         const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
       
         console.log("Generated token\n", token);
+        if(req.cookies[`${existingUser._id}`]) {
+          req.cookies[`${existingUser._id}`] = ""
+      }
       
         res.cookie(String(existingUser._id), token, {
           path: '/',
+          expires: new Date(Date.now() + 1000 * 60 * 58),
           httpOnly: true,
-          sameSite: 'lax',
+          sameSite: 'none',
           secure: process.env.NODE_ENV === 'production',
         });
     
@@ -265,7 +265,7 @@ const logout = (req, res, next) => {
     res.clearCookie(String(user.id), {
       path: '/',  // Specify the same path used when setting the cookie
       domain: "mai-cadenza.onrender.com",
-      sameSite: "lax",
+      sameSite: "none",
       secure: process.env.NODE_ENV === 'production',  // Set to true if using HTTPS
     });
 
