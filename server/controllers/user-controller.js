@@ -90,7 +90,7 @@ const sendPasswordEmail = async (email, password) => {
     requireTLS: true,
     auth: {
       user: 'leonosobni@gmail.com', // replace with your Gmail email
-      pass: 'ismi aoit weel coyz', // replace with your Gmail app password
+      pass: 'vrsj acql nqyh lnvr', // replace with your Gmail app password
     },
   });
 
