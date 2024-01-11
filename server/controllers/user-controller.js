@@ -152,7 +152,7 @@ const sendPasswordEmail = async (email, password) => {
         res.cookie(String(existingUser._id), token, {
           path: '/',
           httpOnly: true,
-          sameSite: 'none',
+          sameSite: 'lax',
           secure: process.env.NODE_ENV === 'production',
         });
     
@@ -265,6 +265,7 @@ const logout = (req, res, next) => {
     res.clearCookie(String(user.id), {
       path: '/',  // Specify the same path used when setting the cookie
       domain: "mai-cadenza.onrender.com",
+      sameSite: "lax",
       secure: process.env.NODE_ENV === 'production',  // Set to true if using HTTPS
     });
 

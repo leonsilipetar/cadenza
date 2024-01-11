@@ -150,7 +150,7 @@ body.dark {
   --isticanje-svijetlo: rgba(var(--isticanje), 0.6);
   --iznad-objava: rgb(var(--isticanje));
 }
-.accentColor > *{
+.acc{
   color: rgb(var(--isticanje));
 }
 .admin-gumb{
