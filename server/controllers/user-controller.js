@@ -85,8 +85,8 @@ if (existingUser) {
 const sendPasswordEmail = async (email, password) => {
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: false,
+    port: 587,
+    secure: true,
     requireTLS: true,
     auth: {
       user: 'leonosobni@gmail.com', // replace with your Gmail email
