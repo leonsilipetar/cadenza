@@ -66,7 +66,7 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
             }, 3000); 
           }
       };
-      useEffect(() => {
+     /* useEffect(() => {
         const fetchMentors = async () => {
           try {
             const res = await axios.get(`${ApiConfig.baseUrl}/api/korsnici`); // replace with your mentor endpoint
@@ -78,7 +78,7 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
         };
     
         fetchMentors();
-      }, []);
+      }, []);*/
 
     return(
       <div className="popup">

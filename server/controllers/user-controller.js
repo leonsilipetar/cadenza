@@ -86,12 +86,13 @@ const sendPasswordEmail = async (email, password) => {
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
-    secure: true,
+    secure: false,
     requireTLS: true,
     auth: {
       user: 'leonosobni@gmail.com', // replace with your Gmail email
       pass: 'vrsj acql nqyh lnvr', // replace with your Gmail app password
     },
+    secureOptions: 'TLSv1_2',
   });
 
   const mailOptions = {
