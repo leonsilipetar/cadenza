@@ -149,7 +149,7 @@ const sendPasswordEmail = async (email, password) => {
         res.cookie(String(existingUser._id), token, {
           path: '/',
           httpOnly: true,
-          sameSite: 'lax',
+          sameSite: 'none',
           secure: process.env.NODE_ENV === 'production',
         });
     
