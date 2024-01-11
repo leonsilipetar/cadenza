@@ -141,20 +141,19 @@ const sendPasswordEmail = async (email, password) => {
           return res.status(400).json({ message: "Invalid email/password!" });
         }
     
-        // Clear all existing cookies
         Object.keys(req.cookies).forEach(cookieName => {
           res.clearCookie(cookieName);
         });
-    
+      
         const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    
+      
         console.log("Generated token\n", token);
-    
+      
         res.cookie(String(existingUser._id), token, {
           path: '/',
           httpOnly: true,
-          sameSite: 'none', //on localhost is lax, on render is none
-          secure: process.env.NODE_ENV === 'production',/* on localhost is false*/
+          sameSite: 'none',
+          secure: process.env.NODE_ENV === 'production',
         });
     
         return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });
