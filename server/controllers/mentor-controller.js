@@ -76,30 +76,43 @@ const signupMentor = async (req, res, next) => {
 
 
 const sendPasswordEmail = async (email, password) => {
-    const transporter = nodemailer.createTransport({
-      service: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: '', // replace with your email
-        pass: '', // replace with your email password
-      },
-    });
-  
-    const mailOptions = {
-        from: '',
-        to: email,
-        subject: 'Vaša lozinka za MAI račun',
-        text: `Prijavljeni ste na našu platformu, a vaša lozinka je: ${password}`,
-      };
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    auth: {
+      user: 'leonosobni@gmail.com', // replace with your Gmail email
+      pass: 'vrsj acql nqyh lnvr', // replace with your Gmail app password
+    },
+    secureOptions: 'TLSv1_2',
+  });
+
+  const mailOptions = {
+    from: 'leonosobni@gmail.com', // replace with your Gmail email
+    to: email,
     
-      try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent:', info);
-      } catch (error) {
-        console.error('Error sending email:', error);
-      }
-    };
+    subject: 'Dobrodošli u MAI - Cadenza platformu - Detalji vašeg računa',
+    text: `Poštovani,
+
+    Radujemo se što vas možemo pozdraviti na Music Art Incubator (MAI) platformi. Vaš korisnički račun je uspješno stvoren, a ovdje su vaši podaci za prijavu:
+    
+    E-mail adresa: ${email}
+    Lozinka: ${password}
+    
+    Molimo vas da čuvate ove informacije sigurno i ne dijelite lozinku. Ako imate bilo kakvih pitanja ili nedoumica, slobodno se obratite našem "timu" za podršku na leonosobni@gmail.com.
+    
+    S poštovanjem,
+    MAI - Cadenza`,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent:', info);
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
+};
 
     const getMentori = async (req, res, next) => {
       try {
