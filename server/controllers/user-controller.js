@@ -153,7 +153,7 @@ const sendPasswordEmail = async (email, password) => {
         res.cookie(String(existingUser._id), token, {
           path: '/',
           httpOnly: true,
-          sameSite: 'strict', //on localhost is lax, on render is none
+          sameSite: 'none', //on localhost is lax, on render is none
           secure: process.env.NODE_ENV === 'production',/* on localhost is false*/
         });
     
@@ -265,7 +265,7 @@ const logout = (req, res, next) => {
     console.log('Clearing cookie for user:', user.id);
     res.clearCookie(String(user.id), {
       path: '/',  // Specify the same path used when setting the cookie
-      secure: process.env.NODE_ENV === 'true',  // Set to true if using HTTPS
+      secure: process.env.NODE_ENV === 'production',  // Set to true if using HTTPS
     });
 
     return res.status(200).json({ message: "Successfully Logged Out" });
