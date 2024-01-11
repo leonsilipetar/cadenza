@@ -116,6 +116,7 @@ const Mentori = () => {
           <Icon icon="solar:user-plus-broken" fontSize="large" /> Dodaj mentora
         </div>
         </div>
+        <div className="p">Dodavanjem krosinika se na njihovu e-mail adresu (pohranjenu u polje za e-mail) šalju njihovi podaci za prijavu: email i lozinka.</div>
         <div className="tablica">
           <div className="tr naziv">
             <div className="th">Korisničko ime</div>

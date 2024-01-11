@@ -114,6 +114,9 @@ const Korisnici = () => {
           <Icon icon="solar:user-plus-broken" fontSize="large" /> Dodaj učenika
         </div>
         </div>
+        <div className="sbtwn">
+          <div className="p">Dodavanjem krosinika se na njihovu e-mail adresu (pohranjenu u polje za e-mail) šalju njihovi podaci za prijavu: email i lozinka.</div>
+        </div>
         <div className="tablica">
           <div className="tr naziv">
             <div className="th">Korisničko ime</div>
