@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.9c284206.css",
+    "main.js": "/static/js/main.5466246e.js",
+    "static/media/HeptaSlab-VariableFont_wght.ttf": "/static/media/HeptaSlab-VariableFont_wght.a8818d6dc4092d240fcd.ttf",
+    "static/media/HedvigLettersSans-Regular.ttf": "/static/media/HedvigLettersSans-Regular.e058369d4d8ac5f8e1d8.ttf",
+    "static/media/Logo12.png": "/static/media/Logo12.9df6cccabe2f64b7a8b6.png",
+    "index.html": "/index.html",
+    "main.9c284206.css.map": "/static/css/main.9c284206.css.map",
+    "main.5466246e.js.map": "/static/js/main.5466246e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9c284206.css",
+    "static/js/main.5466246e.js"
+  ]
+}
