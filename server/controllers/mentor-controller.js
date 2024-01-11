@@ -22,10 +22,12 @@ const signupMentor = async (req, res, next) => {
     napomene,
   } = req.body;
 
-  // Generate a random password
-  const randomPassword = crypto.randomBytes(8).toString('hex');
-  console.log('password: ', randomPassword);
+  // Generate a random password with only letters (lowercase and uppercase) and numbers
+  const passwordLength = 8; // You can change this to 6 if you prefer
+  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const randomPassword = Array.from({ length: passwordLength }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
 
+  console.log('password: ', randomPassword);
   let existingUser;
 
   try {
