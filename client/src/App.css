@@ -97,7 +97,7 @@ select {
   --boxShadow: var(--sjena-svijetlo);
   --sjena-tamno-navtop: 0px 0px 40px 1px rgba(0, 0, 0, 0.6);
   --sjena-tamno: none;
-  --sjena-svijetlo: 0px 0px 10px 2px rgba(63, 63, 63, 0.219);
+  --sjena-svijetlo: 0px 0px 20px 1px rgba(63, 63, 63, 0.13);
   /* boje isticanja:*/
   --ljubicasta: 150, 103, 224;
   --crvena: 255, 104, 107;
@@ -124,6 +124,7 @@ select {
 
 body {
   font-family: 'fOstalo', sans-serif;
+  background-color: rgb(237, 237, 241);
 }
 body.light {
   color: #000000;
@@ -135,7 +136,7 @@ body.light {
   --isticanje-svijetlo: rgb(var(--isticanje));
   --iznad-objava: rgb(var(--isticanje));
   --pozadina: 227, 227, 227;
-  background-color: rgb(227, 227, 227);
+  background-color: rgb(237, 237, 241);
 }
 
 /* Dark Theme */
@@ -280,7 +281,6 @@ h1{
 .login-signup{
   width: 100vw;
   height: 100vh;
-  background-color: rgb(var(--pozadina));
 }
 .header-forma-login-signup{
   width: 50%;
@@ -342,16 +342,17 @@ form{
   margin: 2%;
   border-radius: var(--radius);
   padding: var(--radius);
-  box-shadow: 1px 1px 15px rgba(63, 63, 63, 0.315);
+  box-shadow: var(--boxShadow);
   color: rgb(var(--svijetlo-tekst));
   outline: none;
-  border: none;
-  transition: border-bottom 0.1s ease-in-out;
+  border: 1px solid rgb(208, 208, 208);
+  transition: border 0.1s ease-in-out;
 }
 .input-login-signup:focus{
-border-bottom: 4px solid rgb(var(--isticanje));
+  border: 1px solid rgb(var(--isticanje));
+  border-bottom: 4px solid rgb(var(--isticanje));
 }
-#gumb-login-signup{
+.gumb-login-signup{
   font-weight: bold;
   text-decoration: none;
   width: 75%;
@@ -361,27 +362,10 @@ border-bottom: 4px solid rgb(var(--isticanje));
   border-radius: var(--radius);
   border: none;
   outline: none;
-  padding: var(--radius);
-}
-#gumb-login-signup:hover{
-outline: 2px solid rgb(var(--isticanje));
-background-color: rgb(var(--pozadina-svijetlo));
-color: rgb(var(--isticanje));
-}
-.gumb-login-signup{
-  font-weight: bold;
-  text-decoration: none;
-  width: 100%;
-  margin-top: 5%;
-  color: rgb(var(--pozadina-svijetlo));
-  background-color: var(--isticanje-svijetlo);
-  border-radius: var(--radius);
-  border: none;
-  outline: none;
-  padding: 1rem 2rem;
+  padding: 0.8rem 2rem;
 }
 .gumb-login-signup:hover{
-outline: 2px solid var(--isticanje-svijetlo);
+outline: 2px solid rgb(var(--isticanje));
 background-color: var(--pozadina-svijetlo);
 color: rgb(var(--isticanje));
 }
@@ -391,10 +375,6 @@ color: var(--isticanje);
 
 .p{
   padding: 0.3rem;
-}
-.link-signup-login{
-  text-decoration: underline;
-  color: rgb(var(--isticanje));
 }
 .popup{
   z-index: 5;
@@ -681,7 +661,25 @@ color: var(--isticanje);
   background-color: #f44336;
   color: var(--tekst);
 }
+.show-password-toggle {
+  position: absolute;
+  right: 15%;
+  top: 45%; /* Adjust as needed */
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333; /* Adjust color as needed */
+  font-size: 1.5rem;
+}
+.linkMAI{
+  padding:1rem;
+}
   @media only screen and (max-width: 1080px) {
+    .show-password-toggle {
+      right: 8%;
+      top: 44%;
+    }
     .mobile-none{
       display: none;
     }
@@ -745,6 +743,7 @@ color: var(--isticanje);
   h1{
     font-size: 2rem;
   }
+  .input-login-signup{width: 90%;}
   .main-login-signup{
       width: 100%;
       display: flex;

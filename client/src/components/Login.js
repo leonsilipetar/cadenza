@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
+import { Icon } from '@iconify/react';
 import { authActions } from '../store';
 import '../App.css';
 import ApiConfig from '../components/apiConfig.js';
@@ -10,6 +11,7 @@ function Login() {
   const dispatch = useDispatch();
   const history = useNavigate();
   const [errorM, seterrorM] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   function handleErrorM() {
     seterrorM('Netočni podaci!');
@@ -61,6 +63,9 @@ function Login() {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   return (
     <div className="login-signup">
@@ -74,7 +79,54 @@ function Login() {
         <div className="pokazatelj">
           <p className="p">Prijava</p>
         </div>
-        <div className="glavna-forma">
+        {errorM ? (
+          <div className="glavna-forma">
+          <form onSubmit={handleSubmit}>
+            <input
+              className={`input-login-signup errorM ${emailFocused ? 'focused' : ''}`}
+              value={inputs.email}
+              onChange={handleChange}
+              type="email"
+              name="email"
+              id="kor-email"
+              onFocus={() => setEmailFocused(true)}
+              onBlur={() => setEmailFocused(false)}
+              placeholder="e-mail adresa"
+              autoComplete='email'
+            />
+
+            <input
+              className={`input-login-signup errorM ${passwordFocused ? 'focused' : ''}`}
+              value={inputs.password}
+              onChange={handleChange}
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              id="kor-lozinka"
+              onFocus={() => setPasswordFocused(true)}
+              onBlur={() => setPasswordFocused(false)}
+              placeholder="lozinka"
+              autoComplete='current-password'
+            />
+
+            <button
+              className="show-password-toggle"
+              onClick={togglePasswordVisibility}
+              type="button"
+            >
+              {showPassword ? (<Icon icon="solar:eye-broken" className='acc' />) : (<Icon icon="solar:eye-closed-broken" />)}
+            </button>
+
+
+            <button className="gumb gumb-login-signup" type="submit">
+              Prijavi se
+            </button>
+          </form>
+          <div className='div linkMAI'>
+          <a className='acc' href="https://www.musicartincubator.com" target="_blank" rel="noopener noreferrer">Music Art Incubator</a>
+          </div>
+        </div>
+        ) : (
+          <div className="glavna-forma">
           <form onSubmit={handleSubmit}>
             <input
               className={`input-login-signup ${emailFocused ? 'focused' : ''}`}
@@ -93,7 +145,7 @@ function Login() {
               className={`input-login-signup ${passwordFocused ? 'focused' : ''}`}
               value={inputs.password}
               onChange={handleChange}
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="password"
               id="kor-lozinka"
               onFocus={() => setPasswordFocused(true)}
@@ -102,13 +154,24 @@ function Login() {
               autoComplete='current-password'
             />
 
-            {errorM && <section className="errorM">{errorM}</section>}
+            <button
+              className="show-password-toggle"
+              onClick={togglePasswordVisibility}
+              type="button"
+            >
+              {showPassword ? (<Icon icon="solar:eye-broken" className='acc' />) : (<Icon icon="solar:eye-closed-broken" />)}
+            </button>
 
-            <button id="gumb-login-signup" className="gumb" type="submit">
+
+            <button className="gumb gumb-login-signup" type="submit">
               Prijavi se
             </button>
           </form>
+          <div className='div linkMAI'>
+          <a className='acc' href="https://www.musicartincubator.com" target="_blank" rel="noopener noreferrer">Music Art Incubator</a>
+          </div>
         </div>
+        )}
       </div>
     </div>
   );
