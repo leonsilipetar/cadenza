@@ -220,6 +220,38 @@ header{
     flex-direction: column;
     align-items: center;
   }
+  .raspored-lista{
+    z-index:1;
+    position: fixed;
+  left: 3.5rem;
+  top: 3.5rem;
+  height: 100%;
+  width: 20rem; /* Set the width as needed */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: var(--iznad-nav);
+  box-shadow: var(--boxShadow);
+    }
+    .rl-items{
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+      padding: 4rem 0 1rem 0;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .rl-gumb{
+      z-index: 3;
+      position: fixed;
+      top: 80%;
+      left: 5rem;
+      background-color: rgb(var(--isticanje));
+      padding: 0.5rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
   .errorM{
     color: red;
     background-color: rgba(255, 0, 0, 0.185);
@@ -409,9 +441,11 @@ color: var(--isticanje);
   border-radius: var(--radius);
   margin: 1rem 0;
 }
+
 .main{
   position: relative;
-  width: 93vw;
+  width: 100%;
+  padding-bottom: 10%;
   float: right;
   display: flex;
   top: 4.5rem;
@@ -662,20 +696,38 @@ color: var(--isticanje);
   color: var(--tekst);
 }
 .show-password-toggle {
-  position: absolute;
-  right: 15%;
-  top: 45%; /* Adjust as needed */
-  transform: translateY(-50%);
   background: none;
-  border: none;
+  border: 1px solid rgb(var(--isticanje));
   cursor: pointer;
   color: #333; /* Adjust color as needed */
-  font-size: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: var(--radius);
 }
 .linkMAI{
   padding:1rem;
 }
   @media only screen and (max-width: 1080px) {
+    .raspored-lista{
+    left: 0;
+    height: 100%;
+    width: 100%; /* Set the width as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: var(--iznad-nav);
+    box-shadow: var(--boxShadow);
+      }
+      .rl-gumb{
+        z-index: 3;
+        position: fixed;
+        background-color: rgb(var(--isticanje));
+        padding: 0.5rem;
+        border-radius: var(--radius);
+        cursor: pointer;
+      }
     .show-password-toggle {
       right: 8%;
       top: 44%;

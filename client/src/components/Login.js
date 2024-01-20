@@ -94,7 +94,6 @@ function Login() {
               placeholder="e-mail adresa"
               autoComplete='email'
             />
-
             <input
               className={`input-login-signup errorM ${passwordFocused ? 'focused' : ''}`}
               value={inputs.password}
@@ -113,10 +112,8 @@ function Login() {
               onClick={togglePasswordVisibility}
               type="button"
             >
-              {showPassword ? (<Icon icon="solar:eye-broken" className='acc' />) : (<Icon icon="solar:eye-closed-broken" />)}
+              {showPassword ? (<Icon icon="solar:eye-broken" className='acc'/>) : (<Icon icon="solar:eye-closed-broken" />)}
             </button>
-
-
             <button className="gumb gumb-login-signup" type="submit">
               Prijavi se
             </button>
@@ -140,7 +137,6 @@ function Login() {
               placeholder="e-mail adresa"
               autoComplete='email'
             />
-
             <input
               className={`input-login-signup ${passwordFocused ? 'focused' : ''}`}
               value={inputs.password}
@@ -159,9 +155,8 @@ function Login() {
               onClick={togglePasswordVisibility}
               type="button"
             >
-              {showPassword ? (<Icon icon="solar:eye-broken" className='acc' />) : (<Icon icon="solar:eye-closed-broken" />)}
+              {showPassword ? ' Sakrij' : ' Prikaži'} lozinku
             </button>
-
 
             <button className="gumb gumb-login-signup" type="submit">
               Prijavi se

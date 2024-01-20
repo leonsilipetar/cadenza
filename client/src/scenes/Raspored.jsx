@@ -6,6 +6,7 @@ import ApiConfig from '../components/apiConfig.js';
 import RasporedDan from './raspored/RasporedDan.jsx';
 import DodajTermin from './raspored/DodajTermin.jsx';
 import { Icon } from '@iconify/react';
+import NavSideRaspored from './mentori/NavSideRaspored.jsx';
 
 axios.defaults.withCredentials = true;
 
@@ -14,6 +15,7 @@ const Raspored = () => {
   const [teorija, setTeorija] = useState();
   const [dodajRasporedTeorija, setDodajRasporedTeorija] = useState(false);
   const otvoreno = 'raspored';
+  const [rasporedGumb, setRasporedGumb] = useState(false);
 
   const sendRequest = async () => {
     const res = await axios.get(`${ApiConfig.baseUrl}/api/user`, {
@@ -42,6 +44,9 @@ const Raspored = () => {
     const data = await res.data;
     return data;
   };
+  const handleItemClickRasporedGumb = () => {
+    setRasporedGumb((prevValue) => !prevValue);
+  };
 
   useEffect(() => {
     sendRequest().then((data) => {
@@ -63,7 +68,12 @@ const Raspored = () => {
           onCancel={() => setDodajRasporedTeorija(false)}
         />
       )}
-      <div className="main">
+      <div className="main mrl">
+      <div className="rl-gumb" onClick={handleItemClickRasporedGumb} >
+            {rasporedGumb ? (<Icon className="icon" icon="solar:list-up-minimalistic-broken" />) : 
+            (<Icon className="icon" icon="solar:list-down-minimalistic-broken" />)}
+      </div>
+        {rasporedGumb && <NavSideRaspored />}
         {user && user.isAdmin && (
           <div className="sbtwn">
             <div

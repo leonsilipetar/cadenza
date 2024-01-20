@@ -12,6 +12,7 @@ axios.defaults.withCredentials = true;
 
 const Navigacija = ({ user, otvoreno}) => {
   const [activeItem, setActiveItem] = useState(otvoreno);
+  
 
   const handleItemClick = (item) => {
     // If the clicked item is the same as the active item, return early
@@ -21,6 +22,7 @@ const Navigacija = ({ user, otvoreno}) => {
 
     setActiveItem(item);
   };
+  
     return (
         <>
         <header>
@@ -51,6 +53,7 @@ const Navigacija = ({ user, otvoreno}) => {
           </Link>
         </div>
       </nav>
+      
     </header>
     <Routes>
         <Route path="/user" element={<Naslovna />} />
