@@ -86,7 +86,7 @@ const Profil = () => {
       <NavTop user={user} naslov={'Profil'} />
       <div className="main">
         <div className="karticaZadatka sbtwn">
-          <div className={`action-btn btn ${isHovered ? 'hovered' : ''}`}>
+          <div className={` btn ${isHovered ? 'hovered' : ''}`}>
             <button className="gumb-novo gumb-nav" onClick={toggleTheme}>
               <i id='tema' className="uil uil-swatchbook">
                 {theme === 'dark' ? 'Svijetla tema' : 'Tamna tema'}

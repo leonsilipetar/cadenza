@@ -68,7 +68,7 @@ const Raspored = () => {
           onCancel={() => setDodajRasporedTeorija(false)}
         />
       )}
-      <div className="main mrl">
+      <div className="main">
       <div className="rl-gumb" onClick={handleItemClickRasporedGumb} >
             {rasporedGumb ? (<Icon className="icon" icon="solar:list-up-minimalistic-broken" />) : 
             (<Icon className="icon" icon="solar:list-down-minimalistic-broken" />)}

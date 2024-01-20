@@ -75,6 +75,7 @@ select {
 
 :root{
   --isticanje: var(--narancasta);
+  --isticanje2: 204, 204, 204;
   --isticanje-svijetlo: rgba(var(--isticanje), 0.425);
   --pozadina-svijetlo: 255, 255, 255;
   --pozadina-tamno: 17, 17, 17;
@@ -103,7 +104,7 @@ select {
   --crvena: 255, 104, 107;
   --zuta: 254, 219, 114;
   --siva: 97, 102, 107;
-  --plava: 35, 166, 213;
+  
   --narancasta: 252, 163, 17;
   --zelena: 132, 169, 140;
   --radius: 0.5rem;
@@ -224,7 +225,8 @@ header{
     z-index:1;
     position: fixed;
   left: 3.5rem;
-  top: 3.5rem;
+  padding-top: 1rem;
+  top: 0;
   height: 100%;
   width: 20rem; /* Set the width as needed */
   display: flex;
@@ -238,7 +240,7 @@ header{
       display: flex;
       flex-direction: column;
       gap: 1em;
-      padding: 4rem 0 1rem 0;
+      padding: 2rem 0 1rem 0;
       align-items: center;
       justify-content: space-between;
     }
@@ -247,8 +249,8 @@ header{
       position: fixed;
       top: 80%;
       left: 5rem;
-      background-color: rgb(var(--isticanje));
-      padding: 0.5rem;
+      background-color: rgb(var(--isticanje2));
+      padding: 0.2rem;
       border-radius: var(--radius);
       cursor: pointer;
     }
@@ -512,7 +514,9 @@ color: var(--isticanje);
   display: inline-flex; /* Use inline-flex to ensure they stay in a row */
   align-items: center;
   padding: 0.5rem;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  border: 2px solid rgb(var(--isticanje2));
+  border-radius: var(--radius);
 }
 
 .abEdit:hover,
@@ -529,7 +533,7 @@ color: var(--isticanje);
 }
 
 .abDelete:hover {
-  background-color: #f44336;
+  background-color: #f15145;
 }
 
 .abEdit:hover::after,
@@ -558,7 +562,7 @@ color: var(--isticanje);
 }
 .sbtwn{
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   flex-direction: row;
   padding-bottom: 1rem;
@@ -721,12 +725,9 @@ color: var(--isticanje);
     box-shadow: var(--boxShadow);
       }
       .rl-gumb{
-        z-index: 3;
         position: fixed;
-        background-color: rgb(var(--isticanje));
-        padding: 0.5rem;
-        border-radius: var(--radius);
-        cursor: pointer;
+        padding: 0.6rem;
+        left: 1rem;
       }
     .show-password-toggle {
       right: 8%;
