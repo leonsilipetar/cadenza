@@ -128,27 +128,69 @@ const sendPasswordEmail = async (email, password) => {
     };
 
     const updateDetaljiMentora = async (req, res, next) => {
-      try {
-        const mentorId = req.params.mentorId; // Assuming the mentor ID is sent as a parameter
-        const updateData = req.body;
+  try {
+    const mentorId = req.params.mentorId;
+    const updateData = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(mentorId)) {
+      return res.status(400).json({ message: 'Invalid mentor ID' });
+    }
+
+    const detaljiMentora = await Mentor.findById(mentorId);
+
+    if (!detaljiMentora) {
+      return res.status(404).json({ message: 'Mentor not found' });
+    }
+
+    // If students field is not null or undefined and is an array
+    if (updateData.students && Array.isArray(updateData.students)) {
+      // Use $each and $elemMatch to add new students to the mentor's students array
+      await Mentor.updateOne(
+        { _id: mentorId, students: { $not: { $elemMatch: { $in: updateData.students } } } },
+        { $addToSet: { students: { $each: updateData.students } } }
+      );
+
+      // Remove the students field from updateData to prevent overwriting the students array
+      delete updateData.students;
+    }
+
+    // Update other mentor fields with the values from the request body
+    Object.assign(detaljiMentora, updateData);
+
+    // Save the updated mentor
+    await detaljiMentora.save();
+
+    res.json({ message: 'Mentor updated successfully', mentor: detaljiMentora });
+  } catch (err) {
+    next(err);
+  }
+};
+
     
+    
+    
+    
+    const getMentorStudents = async (req, res, next) => {
+      const mentorId = req.params.id;
+
+      try {
+        // Validate the mentor ID
         if (!mongoose.Types.ObjectId.isValid(mentorId)) {
           return res.status(400).json({ message: 'Invalid mentor ID' });
         }
     
-        const detaljiMentora = await Mentor.findById(mentorId);
+        // Find the mentor by ID
+        const mentor = await Mentor.findById(mentorId);
     
-        if (!detaljiMentora) {
+        // Check if the mentor exists
+        if (!mentor) {
           return res.status(404).json({ message: 'Mentor not found' });
         }
     
-        // Update mentor fields with the values from the request body
-        Object.assign(detaljiMentora, updateData);
+        // Retrieve the students associated with the mentor
+        const mentorStudents = mentor.students || [];
     
-        // Save the updated mentor
-        await detaljiMentora.save();
-    
-        res.json({ message: 'Mentor updated successfully', mentor: detaljiMentora });
+        res.json({ students: mentorStudents });
       } catch (err) {
         next(err);
       }
@@ -156,5 +198,5 @@ const sendPasswordEmail = async (email, password) => {
     
 // Export the controller
 module.exports = {
-  signupMentor, getMentori, updateDetaljiMentora
+  signupMentor, getMentori, updateDetaljiMentora, getMentorStudents
 };

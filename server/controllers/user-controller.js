@@ -149,7 +149,7 @@ const sendPasswordEmail = async (email, password) => {
         res.cookie(String(existingUser._id), token, {
           path: '/',
           httpOnly: true,
-          sameSite: 'lax', //localhost -- lax
+          sameSite: 'none', //localhost -- lax
           secure: process.env.NODE_ENV === 'production',
         });
     
@@ -206,7 +206,16 @@ const sendPasswordEmail = async (email, password) => {
     }
 
     return res.status(200).json({ user });
-}
+};
+const getAllStudents = async (req, res, next) => {
+  try {
+    const students = await User.find({}, 'ime prezime'); // Adjust the fields as needed
+    res.json({ students });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
 
 
  
@@ -342,3 +351,4 @@ exports.logout = logout;
 exports.getKorisnici = getKorisnici;
 exports.getDetaljiKorisnika = getDetaljiKorisnika;
 exports.updateDetaljiKorisnika = updateDetaljiKorisnika;
+exports.getAllStudents = getAllStudents;

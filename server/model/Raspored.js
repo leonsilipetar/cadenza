@@ -3,8 +3,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const scheduleSchema = new Schema({
-  ucenikId: String,
-  mentorId: String,
+  ucenikId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  mentorId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Mentor',
+  },
     pon: {
       type: [{
         dvorana: String,

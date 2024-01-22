@@ -33,17 +33,6 @@ const Raspored = () => {
     console.log('Teorija Data:', data);
     return data;
   }
-
-  const refreshToken = async () => {
-    const res = await axios
-      .get(`${ApiConfig.baseUrl}/api/refresh`, {
-        withCredentials: true,
-      })
-      .catch((err) => console.log(err));
-
-    const data = await res.data;
-    return data;
-  };
   const handleItemClickRasporedGumb = () => {
     setRasporedGumb((prevValue) => !prevValue);
   };
@@ -69,11 +58,14 @@ const Raspored = () => {
         />
       )}
       <div className="main">
-      <div className="rl-gumb" onClick={handleItemClickRasporedGumb} >
-            {rasporedGumb ? (<Icon className="icon" icon="solar:list-up-minimalistic-broken" />) : 
-            (<Icon className="icon" icon="solar:list-down-minimalistic-broken" />)}
-      </div>
-        {rasporedGumb && <NavSideRaspored />}
+        {user && user.isMentor && (
+          <div className="rl-gumb" onClick={handleItemClickRasporedGumb} >
+          { rasporedGumb ? (<Icon className="icon" icon="solar:list-up-minimalistic-broken" />) : 
+          (<Icon className="icon" icon="solar:list-down-minimalistic-broken" />)}
+    </div>
+        )}
+      
+        {user && user.isMentor && rasporedGumb && <NavSideRaspored id={user._id} students={user.students}/>}
         {user && user.isAdmin && (
           <div className="sbtwn">
             <div

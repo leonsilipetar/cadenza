@@ -5,8 +5,33 @@ import ApiConfig  from '../../components/apiConfig.js';
 axios.defaults.withCredentials = true;
 
 const MentorDetalji = ({ korisnikId, onCancel }) => {
+  const [inputs, setInputs] = useState({
+    korisnickoIme: '',
+    email: '',
+    ime: '',
+    prezime: '',
+    isAdmin: false,
+    isMentor: false,
+    isStudent: true,
+    oib: '',
+    program: '',
+    brojMobitela: '',
+    datumRodjenja: '',
+    adresa: {
+      ulica: '',
+      kucniBroj: '',
+      mjesto: '',
+    },
+    napomene: '',
+    students: [],
+  });
 
   const [isSaving, setIsSaving] = useState(false);
+  const [studentInput, setStudentInput] = useState('');
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [allStudents, setAllStudents] = useState([]);
+  const [studentsToRemove, setStudentsToRemove] = useState([]);
     const getDetaljiKorisnika = async (korisnikId) => {
         try {
           // Assuming userId is the ID of the selected user
@@ -21,25 +46,7 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
           throw err; // Propagate the error to the caller
         }
       };
-      const [inputs, setInputs] = useState({
-        korisnickoIme: '',
-        email: '',
-        ime: '',
-        prezime: '',
-        isAdmin: false,
-        isMentor: false,
-        isStudent: true,
-        oib: '',
-        program: '',
-        brojMobitela: '',
-        datumRodjenja: '',
-        adresa: {
-          ulica: '',
-          kucniBroj: '',
-          mjesto: '',
-        },
-        napomene: '',
-      });
+      
       
       
     
@@ -50,9 +57,9 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
         }));
       };
     
-      const urediKorisnika = async () => {
+      const urediKorisnika = async (updatedData) => {
         try {
-          const res = await axios.put(`${ApiConfig.baseUrl}/api/update-mentor/${korisnikId}`, inputs);
+          const res = await axios.put(`${ApiConfig.baseUrl}/api/update-mentor/${korisnikId}`, updatedData);
           const data = res.data;
           return data;
         } catch (err) {
@@ -61,24 +68,109 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
         }
       };
       
+      
+
+      const fetchAllStudents = async () => {
+        try {
+          const res = await axios.get(`${ApiConfig.baseUrl}/api/all-students`, {
+            withCredentials: true,
+          });
+      
+          const students = res.data.students; // Assuming the response has a 'students' property
+          setAllStudents(students);
+        } catch (error) {
+          console.error('Error fetching students:', error);
+        }
+      };
+      
+      const handleStudentInputChange = (e) => {
+        setStudentInput(e.target.value);
+      
+        const filteredStudents = allStudents.filter(
+          (student) =>
+            student.ime.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            student.prezime.toLowerCase().includes(e.target.value.toLowerCase())
+        );
+      
+        // Check if the filtered students are not already in mentor's students list
+        const nonExistingStudents = filteredStudents.filter(
+          (student) => !inputs.students || !inputs.students.some((s) => s.ucenikId === student._id)
+        );
+      
+        setFilteredStudents(nonExistingStudents);
+      };
+      
+      const addSelectedStudent = (student) => {
+        setSelectedStudents((prevSelectedStudents) => {
+          // Check if the student already exists in the selected students
+          if (!prevSelectedStudents.some((s) => s.ucenikId === student._id)) {
+            return [...prevSelectedStudents, student];
+          } else {
+            // If the student already exists, return the previous state
+            return prevSelectedStudents;
+          }
+        });
+      
+        setInputs((prevInputs) => {
+          const updatedStudents = prevInputs.students || [];
+          // Check if the student already exists in the students array
+          if (!updatedStudents.some((s) => s.ucenikId === student._id)) {
+            return {
+              ...prevInputs,
+              students: [...updatedStudents, { ucenikId: student._id, ime: student.ime, prezime: student.prezime }],
+            };
+          } else {
+            // If the student already exists, return the previous state
+            return prevInputs;
+          }
+        });
+      
+        setStudentInput('');
+        setFilteredStudents([]);
+      };
+  
+  
+  
+  
+      const removeSelectedStudent = (studentId) => {
+        const updatedSelectedStudents = selectedStudents.filter((student) => student._id !== studentId);
+        setSelectedStudents(updatedSelectedStudents);
+      
+        setStudentsToRemove((prevStudentsToRemove) => [...prevStudentsToRemove, { ucenikId: studentId }]);
+      
+        setInputs((prevInputs) => {
+          const nonNullStudents = prevInputs.students.filter((student) => student !== null);
+          const updatedStudents = nonNullStudents.filter((student) => student.ucenikId !== studentId);
+          return {
+            ...prevInputs,
+            students: updatedStudents,
+          };
+        });
+      };
+      
+      
+      
     
       const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSaving(true);
-    
-        const result = await urediKorisnika();
-    
+      
+        const result = await urediKorisnika({ ...inputs, studentsToRemove });
+      
         if (result) {
           console.log('User updated successfully:', result);
         } else {
           console.log('User update failed.');
         }
-    
-        // Simulate a delay (you can replace this with your actual save logic)
+      
+        // Reset the studentsToRemove state
+        setStudentsToRemove([]);
+      
         setTimeout(() => {
           setIsSaving(false);
-        }, 1000); // Adjust the delay as needed
+        }, 1000);
       };
+      
 
       useEffect(() => {
         getDetaljiKorisnika(korisnikId).then((data) => {
@@ -101,8 +193,10 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
               mjesto: data.adresa?.mjesto || '',
             },
             napomene: data.napomene,
+            students: data.students,
           });
         });
+        fetchAllStudents();
       }, [korisnikId]);
     return(
         <div className="popup">
@@ -198,15 +292,55 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
             id="kor-program"
             placeholder="program"
           />
-  <label htmlFor="kor-mentor">Učenici:</label>
+          </div>
+          <div className="div div-clmn">
+          <label htmlFor="kor-mentor">Učenici:</label>
           <input
             className="input-login-signup"
             type="text"
             name="ucenici"
             id="kor-mrntor"
-            placeholder="učenici"
+            placeholder="Dodaj učenike"
+            onChange={handleStudentInputChange}
+            value={studentInput}
           />
+          <div className="autocomplete-suggestions">
+            {filteredStudents.map((student) => (
+              <>
+              <div
+                key={student.id}
+                className="gumb btn action-btn spremtBtn"
+                onClick={() => addSelectedStudent(student)}
+              >
+                {student.ime} {student.prezime}
+              </div>
+              </>
+            ))}
+          </div>
+          <div className="selected-students ">
+            {selectedStudents.map((student) => (
+              <>
+              <div key={student._id} className="div-radio selected-student action-btn">
+                {student.ime} {student.prezime}
+                <button className='gumb action-btn btn abDelete' onClick={() => removeSelectedStudent(student._id)}>Poništi odabir</button>
+              </div>
+              </>
+            ))}
+          </div>
+          <div className='div div-clmn'>
+  Dodani učenici:
+  {inputs.students?.map((student) => (
+    student ? (
+      <div key={student.ucenikId} className="selected-student action-btn">
+        {student.ime} {student.prezime}
+      </div>
+    ) : null
+  ))}
 </div>
+
+
+
+        </div>
           
           
           <div className='div'>

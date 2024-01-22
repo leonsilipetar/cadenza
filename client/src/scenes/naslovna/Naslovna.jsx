@@ -36,8 +36,6 @@ const Naslovna = () => {
 
 
     useEffect(() => {
-
-      
         sendRequest().then((data) => {
           setUser(data.user)
         });

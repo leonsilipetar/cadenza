@@ -18,7 +18,6 @@ const userSchema = new Schema({
   oib: { type: String, required: true, unique: true },
   program: String,
   brojMobitela: String,
-  mentor: String,
   datumRodjenja: Date,
   adresa: {
     ulica: String,
@@ -38,8 +37,20 @@ const userSchema = new Schema({
     prezime: String,
     brojMobitela: String,
   },
-  rasporedId: String,
-  rasporedTeorijaId: String,
+  mentor: {
+    type: Schema.Types.ObjectId,
+    ref: 'Mentor',
+  },
+
+  rasporedId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Raspored',
+  },
+  
+  rasporedTeorijaId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Raspored',
+  },
 },
 {timestamps: true }
 );

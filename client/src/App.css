@@ -254,6 +254,12 @@ header{
       border-radius: var(--radius);
       cursor: pointer;
     }
+    .rl{
+      width: 90%;
+      text-align: center;
+      padding: 1rem 0;
+      border-bottom: 2px solid rgb(var(--isticanje2));
+    }
   .errorM{
     color: red;
     background-color: rgba(255, 0, 0, 0.185);
@@ -447,7 +453,6 @@ color: var(--isticanje);
 .main{
   position: relative;
   width: 100%;
-  padding-bottom: 10%;
   float: right;
   display: flex;
   top: 4.5rem;
@@ -515,7 +520,7 @@ color: var(--isticanje);
   align-items: center;
   padding: 0.5rem;
   transition: all 0.1s ease-in-out;
-  border: 2px solid rgb(var(--isticanje2));
+  outline: 2px solid rgb(var(--isticanje2));
   border-radius: var(--radius);
 }
 
@@ -523,6 +528,7 @@ color: var(--isticanje);
 .abDelete:hover,
 .abExpand:hover {
   border-radius: 10rem;
+  outline: none;
 }
 
 .abEdit:hover {

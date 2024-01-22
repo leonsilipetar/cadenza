@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 // Define the Mentor schema
-const mentorSchema = new mongoose.Schema({
+const mentorSchema = new Schema({
   korisnickoIme: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   program: String,
@@ -23,6 +24,13 @@ const mentorSchema = new mongoose.Schema({
     default: [],    // Provide a default empty array if needed
   },
   password: String,
+  students: [
+    {
+      ucenikId: { type: Schema.Types.ObjectId, ref: 'User' },
+      ime: String,
+      prezime: String,
+    }
+  ],
 });
 
 // Create the Mentor model

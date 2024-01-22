@@ -90,11 +90,13 @@ const DodajTermin = ({ dodajRasporedTeorija, onCancel }) => {
   return (
     <div className="popup">
       <form onSubmit={handleSubmit}>
+        <div className="div div-clmn">Dodani termini:
         {terms.map((term, index) => (
-          <div key={index} className="div div-clmn">
+          <div key={index} className="div-clmn">
             <p>{`${term.day}: ${term.dvorana}, ${term.vrijeme}, Mentor: ${term.mentor}`}</p>
           </div>
         ))}
+        </div>
 
         <div className="div div-clmn">
           <div className="div-radio raspored-divs">
