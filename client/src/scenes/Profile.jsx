@@ -48,12 +48,6 @@ const Profil = () => {
   const handleLogout = async () => {
     try {
       await sendLogoutRequest();
-      // Clear all cookies
-      document.cookie.split(";").forEach((c) => {
-        document.cookie = c
-          .replace(/^ +/, "")
-          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-      });
   
       dispatch(authActions.logout());
       // Clear other user-related data or perform additional logout tasks

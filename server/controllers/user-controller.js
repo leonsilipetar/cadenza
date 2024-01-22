@@ -143,8 +143,9 @@ const sendPasswordEmail = async (email, password) => {
         }
       
         const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-      
-        console.log("Generated token\n", token);
+        Object.keys(req.cookies).forEach((cookieName) => {
+          res.clearCookie(cookieName);
+        });
       
         res.cookie(String(existingUser._id), token, {
           path: '/',
