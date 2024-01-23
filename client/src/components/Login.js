@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { Icon } from '@iconify/react';
 import { authActions } from '../store';
 import '../App.css';
 import ApiConfig from '../components/apiConfig.js';
@@ -112,7 +111,7 @@ function Login() {
               onClick={togglePasswordVisibility}
               type="button"
             >
-              {showPassword ? (<Icon icon="solar:eye-broken" className='acc'/>) : (<Icon icon="solar:eye-closed-broken" />)}
+              {showPassword ? ' Sakrij' : ' Prikaži'} lozinku
             </button>
             <button className="gumb gumb-login-signup" type="submit">
               Prijavi se
