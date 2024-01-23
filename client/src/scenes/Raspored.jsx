@@ -45,7 +45,7 @@ const Raspored = () => {
     sendRequestTeorija().then((data) => {
       setTeorija(data.teorija);
     });
-  }, []);
+  }, [dodajRasporedTeorija]);
 
   return (
     <>

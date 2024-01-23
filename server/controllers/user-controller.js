@@ -149,9 +149,7 @@ const sendPasswordEmail = async (email, password) => {
       
         res.cookie(String(existingUser._id), token, {
           path: '/',
-          httpOnly: true,
-          sameSite: 'none', //localhost -- lax
-          secure: process.env.NODE_ENV === 'production',
+          secure: true,
         });
     
         return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });

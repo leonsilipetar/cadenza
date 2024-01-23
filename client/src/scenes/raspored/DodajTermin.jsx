@@ -4,7 +4,7 @@ import ApiConfig from '../../components/apiConfig';
 
 axios.defaults.withCredentials = true;
 
-const DodajTermin = ({ dodajRasporedTeorija, onCancel }) => {
+const DodajTermin = ({ onCancel }) => {
   const [status, setStatus] = useState('');
   const [isDodajMentoraDisabled, setIsDodajMentoraDisabled] = useState(false);
   const [terms, setTerms] = useState([]); // Change to array to store multiple terms
@@ -90,6 +90,7 @@ const DodajTermin = ({ dodajRasporedTeorija, onCancel }) => {
   return (
     <div className="popup">
       <form onSubmit={handleSubmit}>
+        {terms?.length > 0  && (
         <div className="div div-clmn">Dodani termini:
         {terms.map((term, index) => (
           <div key={index} className="div-clmn">
@@ -97,6 +98,7 @@ const DodajTermin = ({ dodajRasporedTeorija, onCancel }) => {
           </div>
         ))}
         </div>
+        )}
 
         <div className="div div-clmn">
           <div className="div-radio raspored-divs">

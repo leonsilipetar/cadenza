@@ -97,7 +97,7 @@ select {
 
   --boxShadow: var(--sjena-svijetlo);
   --sjena-tamno-navtop: 0px 0px 40px 1px rgba(0, 0, 0, 0.6);
-  --sjena-tamno: none;
+  --sjena-tamno: 0px 0px 10px 1px rgba(0, 0, 0, 0.13);
   --sjena-svijetlo: 0px 0px 20px 1px rgba(63, 63, 63, 0.13);
   /* boje isticanja:*/
   --ljubicasta: 150, 103, 224;
@@ -150,6 +150,7 @@ body.dark {
   --boxShadow: var(--sjena-tamno);
   --tekst: rgb(var(--tamno-tekst));
   --isticanje-svijetlo: rgba(var(--isticanje), 0.6);
+  --isticanje2: 108, 108, 108;
   --iznad-objava: rgb(var(--isticanje));
 }
 .acc{
