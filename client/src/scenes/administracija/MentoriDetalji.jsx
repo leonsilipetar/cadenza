@@ -155,7 +155,12 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
         e.preventDefault();
         setIsSaving(true);
       
-        const result = await urediKorisnika({ ...inputs, studentsToRemove });
+        // Include the logic to send the data to the backend
+        const result = await urediKorisnika({
+          ...inputs,
+          studentsToRemove,
+          students: selectedStudents, // Include the selectedStudents array in the data
+        });
       
         if (result) {
           console.log('User updated successfully:', result);
@@ -170,6 +175,8 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
           setIsSaving(false);
         }, 1000);
       };
+      
+      
       
 
       useEffect(() => {

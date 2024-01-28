@@ -195,8 +195,41 @@ const sendPasswordEmail = async (email, password) => {
         next(err);
       }
     };
+    getStudentsRaspored = async (req, res, next) => {
+      const mentorId = req.params.id;
+    
+      try {
+        // Validate the mentor ID
+        if (!mongoose.Types.ObjectId.isValid(mentorId)) {
+          return res.status(400).json({ message: 'Invalid mentor ID' });
+        }
+    
+        // Find the mentor by ID
+        const mentor = await Mentor.findById(mentorId);
+    
+        // Check if the mentor exists
+        if (!mentor) {
+          return res.status(404).json({ message: 'Mentor not found' });
+        }
+    
+        // Retrieve the students associated with the mentor
+        const mentorStudents = mentor.students || [];
+    
+        // Fetch the schedules for each student
+        const schedules = await Promise.all(
+          mentorStudents.map(studentId =>
+            Raspored.find({ ucenikId: studentId })
+          )
+        );
+    
+        res.json({ students: mentorStudents, schedules });
+      } catch (err) {
+        next(err);
+      }
+    };
+    
     
 // Export the controller
 module.exports = {
-  signupMentor, getMentori, updateDetaljiMentora, getMentorStudents
+  signupMentor, getMentori, updateDetaljiMentora, getMentorStudents, getStudentsRaspored,
 };

@@ -12,6 +12,7 @@ axios.defaults.withCredentials = true;
 
 const Raspored = () => {
   const [user, setUser] = useState();
+  const [studentsRaspored, setStudentsRaspored] = useState([]);
   const [teorija, setTeorija] = useState();
   const [dodajRasporedTeorija, setDodajRasporedTeorija] = useState(false);
   const otvoreno = 'raspored';
@@ -33,6 +34,17 @@ const Raspored = () => {
     console.log('Teorija Data:', data);
     return data;
   }
+  
+  const sendRequestStudentsRaspored = async () => {
+    const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenici/${user._id}`, {
+      withCredentials: true
+    }).catch((err) => console.log(err));
+    const data = await res.data;
+    console.log('Raspored ucenici:', data);
+    return data;
+  }
+
+
   const handleItemClickRasporedGumb = () => {
     setRasporedGumb((prevValue) => !prevValue);
   };
@@ -41,7 +53,11 @@ const Raspored = () => {
     sendRequest().then((data) => {
       setUser(data.user);
     });
-
+    if (user && user.isMentor) {
+      sendRequestStudentsRaspored().then((data) => {
+        setUser(data.schedules);
+      });
+    }
     sendRequestTeorija().then((data) => {
       setTeorija(data.teorija);
     });

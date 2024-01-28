@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ApiConfig from '../../components/apiConfig';
+import Notification from '../../components/Notifikacija';
 
 axios.defaults.withCredentials = true;
 
 const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
   const [mentors, setMentors] = useState([]);
     const [odabranoDodajKorisnika, setOdabranoDodajKOrisnika] = useState(false);
+    const [notification, setNotification] = useState(null);
     const [inputs, setInputs] = useState({
         korisnickoIme: '',
         email: '',
@@ -46,14 +48,6 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
           [e.target.name]: e.target.value,
         }));
       };
-      const formatDateString = (isoDateString) => {
-        const date = new Date(isoDateString);
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-        const year = date.getFullYear();
-      
-        return `${day}/${month}/${year}`;
-      };
     
       const dodajKorisnika = async () => {
         try {
@@ -72,9 +66,15 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
           const result = await dodajKorisnika();
     
           if (result) {
-            console.log('User registered successfully:', result);
+            setNotification({
+              type: 'success',
+              message: 'Učenik uspješno dodan!',
+            });
           } else {
-            console.log('User registration failed.');
+            setNotification({
+              type: 'error',
+              message: 'Došlo je do greške! Pokušajte ponovno.',
+            });
           }
       };
       useEffect(() => {
@@ -276,6 +276,12 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
   </button>
         
         </div>
+        {notification && (
+        <Notification
+          type={notification.type}
+          message={notification.message}
+        />
+      )}
       </form>
     </div>
     )

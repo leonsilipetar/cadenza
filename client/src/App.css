@@ -153,6 +153,18 @@ body.dark {
   --isticanje2: 108, 108, 108;
   --iznad-objava: rgb(var(--isticanje));
 }
+.notification {
+  position: fixed;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  color: var(--tekst);
+  background-color: var(--iznad-nav);
+  box-shadow: var(--boxShadow);
+  max-width: 50%;
+}
+.hidden{
+  display: none;
+}
 .acc{
   color: rgb(var(--isticanje));
 }
@@ -407,11 +419,11 @@ form{
 }
 .gumb-login-signup:hover{
 outline: 2px solid rgb(var(--isticanje));
-background-color: var(--pozadina-svijetlo);
+background-color: rgb(var(--pozadina-svijetlo));
 color: rgb(var(--isticanje));
 }
 a{
-color: var(--isticanje);
+color: rgb(var(--tekst));
 }
 
 .p{
@@ -630,7 +642,7 @@ color: var(--isticanje);
   color: rgb(var(--isticanje));
 }
 .zatvoriBtn{
-  background-color: var(--pozadina-svijetlo);
+  background-color: rgb(var(--pozadina-svijetlo));
   color: rgb(var(--isticanje));
 }
 .zatvoriBtn:hover{
@@ -850,6 +862,9 @@ input{
 }
 nav div:active{
   transform: none;
+}
+.notification{
+  max-width: 95%;
 }
   }
   .error{

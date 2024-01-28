@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from "react-redux";
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
-import Login from "./components/Login";
-import Naslovna from "./scenes/naslovna/Naslovna";
-import { authActions } from "./store/index.js";
+import { useSelector, useDispatch } from 'react-redux';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import Login from './components/Login';
+import Naslovna from './scenes/naslovna/Naslovna';
+import { authActions } from './store/index.js';
 import Profil from './scenes/Profile.jsx';
 import Chat from './scenes/Chat.jsx';
 import Racuni from './scenes/Racuni.jsx';
@@ -20,14 +20,17 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-    if (storedIsLoggedIn) {
+    // Check if the cookie exists
+    const cookieExists = document.cookie.includes('yourCookieNameHere');
+
+    if (cookieExists) {
+      // Log the user in
       dispatch(authActions.login());
     }
   }, [dispatch]);
 
   useEffect(() => {
-    if (!isLoggedIn && location.pathname !== "/login" && location.pathname !== "/signup") {
+    if (!isLoggedIn && location.pathname !== '/login' && location.pathname !== '/signup') {
       navigate('/login');
     }
   }, [isLoggedIn, location, navigate]);
