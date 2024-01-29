@@ -121,7 +121,7 @@ const Mentori = () => {
           <div className="tr naziv">
             <div className="th">Korisničko ime</div>
             <div className="th">email</div>
-            <div className="th mobile-none">program</div>
+            <div className="th mobile-none">Administrator</div>
             <div className="th mobile-none">oib</div>
             <div></div>
           </div>
@@ -135,7 +135,7 @@ const Mentori = () => {
               >
                 <div className="th">{korisnik.korisnickoIme}</div>
                 <div className="th">{korisnik.email}</div>
-                <div className="th mobile-none">{korisnik.program}</div>
+                <div className="th mobile-none">{korisnik.isAdmin ? "Da" : "Ne"}</div>
                 <div className="th mobile-none">{korisnik.oib}</div>
                 <div className="th">
                   <div

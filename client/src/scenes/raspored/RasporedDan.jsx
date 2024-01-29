@@ -3,9 +3,8 @@ import React from 'react';
 import axios from 'axios';
 import ApiConfig from '../../components/apiConfig';
 
-const RasporedDan = ({ teorija, teorijaID, day, user, setTeorija }) => {
+const RasporedDan = ({ teorija, teorijaID, day, user, setTeorija, setNotification }) => {
   const obrisiTermin = async (id, day) => {
-    console.log('Deleting term with id:', id, ' on day:', day, ' teorijaID:', teorijaID);
     try {
       // Send a DELETE request to delete the term with the specified id
       // Include the day and teorijaID parameters in the URL
@@ -13,7 +12,7 @@ const RasporedDan = ({ teorija, teorijaID, day, user, setTeorija }) => {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
-        },
+        }
       });
   
       setTeorija((prevTeorija) => {
@@ -24,10 +23,26 @@ const RasporedDan = ({ teorija, teorijaID, day, user, setTeorija }) => {
         });
         return updatedTeorija;
       });
+  
+      // Update the notification state here
+      if (setNotification) {
+        setNotification({
+          type: 'success',
+          message: 'Termin obrisan!',
+        });
+      }
     } catch (error) {
       console.error('Error deleting term:', error);
+      // Handle error and update notification state accordingly
+      if (setNotification) {
+        setNotification({
+          type: 'error',
+          message: 'Došlo je do greške prilikom brisanja termina.',
+        });
+      }
     }
   };
+  
 
   return (
     <div className='dan'>

@@ -17,6 +17,7 @@ const {
   updateDetaljiMentora, 
   getMentorStudents,
   getStudentsRaspored,
+  getStudentRaspored,
 }= require('../controllers/mentor-controller.js');
 
 const { updateTeorija, getTeorija, deleteTermin} = require('../controllers/teorija-controller');
@@ -43,6 +44,7 @@ router.put("/update-mentor/:mentorId", verifyToken, updateDetaljiMentora);
 router.post("/uredi/teorija", verifyToken, updateTeorija);
 router.get("/rasporedTeorija", verifyToken, getTeorija);
 router.get("/rasporedUcenici/:id", verifyToken, getStudentsRaspored);
+router.get("/rasporedUcenik/:id", verifyToken, getStudentRaspored);
 router.get('/students/:id', verifyToken, getMentorStudents);
 router.delete("/deleteTermin/:id", verifyToken, deleteTermin);
 

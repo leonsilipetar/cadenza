@@ -2,7 +2,9 @@ const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const mongoose = require('mongoose');
-const Mentor = require('../model/Mentor'); // Make sure to import your Mentor model
+const Mentor = require('../model/Mentor');
+const User = require('../model/User');
+const Raspored = require('../model/Raspored'); // Make sure to import your Mentor model
 
 // Controller for mentor signup
 const signupMentor = async (req, res, next) => {
@@ -195,7 +197,7 @@ const sendPasswordEmail = async (email, password) => {
         next(err);
       }
     };
-    getStudentsRaspored = async (req, res, next) => {
+    const getStudentsRaspored = async (req, res, next) => {
       const mentorId = req.params.id;
     
       try {
@@ -217,9 +219,12 @@ const sendPasswordEmail = async (email, password) => {
     
         // Fetch the schedules for each student
         const schedules = await Promise.all(
-          mentorStudents.map(studentId =>
-            Raspored.find({ ucenikId: studentId })
-          )
+          mentorStudents.map(async (studentId) => {
+            const studentSchedule = await Raspored.findOne({ ucenikId: studentId });
+    
+            // Return the schedule if it exists, otherwise return an empty object
+            return studentSchedule ? studentSchedule : { ucenikId: studentId };
+          })
         );
     
         res.json({ students: mentorStudents, schedules });
@@ -228,8 +233,45 @@ const sendPasswordEmail = async (email, password) => {
       }
     };
     
+    const getStudentRaspored = async (req, res, next) => {
+      const studentId = req.params.id;
+    
+      try {
+        // Validate the student ID
+        if (!mongoose.Types.ObjectId.isValid(studentId)) {
+          return res.status(400).json({ message: 'Invalid student ID' });
+        }
+    
+        // Find the student by ID
+        const student = await User.findById(studentId);
+    
+        // Check if the student exists
+        if (!student) {
+          return res.status(404).json({ message: 'Student not found' });
+        }
+    
+        // Retrieve the schedule for the student
+        let studentSchedule = await Raspored.findOne({ ucenikId: studentId });
+    
+        // If the schedule does not exist, create a new one
+        if (!studentSchedule) {
+          studentSchedule = new Raspored({ ucenikId: studentId });
+          await studentSchedule.save();
+    
+          // Update the user record with the new schedule ID
+          student.rasporedId = studentSchedule._id;
+          await student.save();
+        }
+    
+        res.json({ student, schedule: studentSchedule });
+      } catch (err) {
+        next(err);
+      }
+    };
+    
+    
     
 // Export the controller
 module.exports = {
-  signupMentor, getMentori, updateDetaljiMentora, getMentorStudents, getStudentsRaspored,
+  signupMentor, getMentori, updateDetaljiMentora, getMentorStudents, getStudentsRaspored, getStudentRaspored
 };

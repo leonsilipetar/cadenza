@@ -7,6 +7,7 @@ import RasporedDan from './raspored/RasporedDan.jsx';
 import DodajTermin from './raspored/DodajTermin.jsx';
 import { Icon } from '@iconify/react';
 import NavSideRaspored from './mentori/NavSideRaspored.jsx';
+import Notification from '../components/Notifikacija.jsx';
 
 axios.defaults.withCredentials = true;
 
@@ -15,8 +16,23 @@ const Raspored = () => {
   const [studentsRaspored, setStudentsRaspored] = useState([]);
   const [teorija, setTeorija] = useState();
   const [dodajRasporedTeorija, setDodajRasporedTeorija] = useState(false);
-  const otvoreno = 'raspored';
   const [rasporedGumb, setRasporedGumb] = useState(false);
+  const [notification, setNotification] = useState(null);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+
+  const sendRequestStudentRaspored = async (studentId) => {
+    const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenik/${studentId}`, {
+      withCredentials: true,
+    }).catch((err) => console.log(err));
+    const data = await res.data;
+    console.log('Raspored studenta:', data);
+    setStudentsRaspored(data.schedules);
+  };
+
+  const handleStudentClick = (studentId) => {
+    setSelectedStudentId(studentId);
+    sendRequestStudentRaspored(studentId);
+  };
 
   const sendRequest = async () => {
     const res = await axios.get(`${ApiConfig.baseUrl}/api/user`, {
@@ -33,8 +49,8 @@ const Raspored = () => {
     const data = await res.data;
     console.log('Teorija Data:', data);
     return data;
-  }
-  
+  };
+
   const sendRequestStudentsRaspored = async () => {
     const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenici/${user._id}`, {
       withCredentials: true
@@ -42,8 +58,7 @@ const Raspored = () => {
     const data = await res.data;
     console.log('Raspored ucenici:', data);
     return data;
-  }
-
+  };
 
   const handleItemClickRasporedGumb = () => {
     setRasporedGumb((prevValue) => !prevValue);
@@ -65,7 +80,7 @@ const Raspored = () => {
 
   return (
     <>
-      <Navigacija user={user} otvoreno={otvoreno} />
+      <Navigacija user={user} otvoreno={'raspored'} />
       <NavTop user={user} naslov={'Raspored'} />
       {dodajRasporedTeorija && (
         <DodajTermin
@@ -76,12 +91,20 @@ const Raspored = () => {
       <div className="main">
         {user && user.isMentor && (
           <div className="rl-gumb" onClick={handleItemClickRasporedGumb} >
-          { rasporedGumb ? (<Icon className="icon" icon="solar:list-up-minimalistic-broken" />) : 
-          (<Icon className="icon" icon="solar:list-down-minimalistic-broken" />)}
-    </div>
+            {rasporedGumb ? (
+              <Icon className="icon" icon="solar:list-up-minimalistic-broken" />
+            ) : (
+              <Icon className="icon" icon="solar:list-down-minimalistic-broken" />
+            )}
+          </div>
         )}
-      
-        {user && user.isMentor && rasporedGumb && <NavSideRaspored id={user._id} students={user.students}/>}
+        {user && user.isMentor && rasporedGumb && (
+          <NavSideRaspored
+            id={user._id}
+            students={user.students}
+            onStudentClick={handleStudentClick}
+          />
+        )}
         {user && user.isAdmin && (
           <div className="sbtwn">
             <div
@@ -92,23 +115,61 @@ const Raspored = () => {
             </div>
           </div>
         )}
-
-<div className="raspored">
-  {teorija ? (
-    ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
-      <RasporedDan key={day} teorija={teorija[0]?.[day]} teorijaID={teorija[0]?._id} day={day} user={user} setTeorija={setTeorija} />
-
-    ))
-  ) : (
-    <div>
-      <p>Nema dostupnog rasporeda</p>
+        <div className='sbtwn'><p>Teorija</p></div>
+        <div className="raspored">
+          {teorija ? (
+            ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
+              <RasporedDan
+                key={day}
+                teorija={teorija[0]?.[day]}
+                teorijaID={teorija[0]?._id}
+                day={day}
+                user={user}
+                setTeorija={setTeorija}
+                setNotification={setNotification}
+              />
+            ))
+          ) : (
+            <div>
+              <p>Nema dostupnog rasporeda</p>
+            </div>
+          )}
+        </div>
+        {user && user.isMentor && selectedStudentId && (
+  <>
+    <div className='sbtwn'><p>Raspored učenika</p></div>
+    <div className="raspored">
+      {studentsRaspored && studentsRaspored.length > 0 ? (
+        studentsRaspored.map((studentSchedule) => (
+          <RasporedDan
+            key={studentSchedule.day}
+            teorija={studentSchedule.teorija}
+            teorijaID={studentSchedule.teorijaID}
+            day={studentSchedule.day}
+            user={user}
+            setTeorija={setTeorija}
+            setNotification={setNotification}
+          />
+        ))
+      ) : (
+        <div>
+          <p>Nema dostupnog rasporeda</p>
+        </div>
+      )}
     </div>
-  )}
-</div>
+  </>
+)}
+
+        
+        {notification && (
+          <Notification
+            type={notification.type}
+            message={notification.message}
+          />
+        )}
       </div>
     </>
   );
 };
 
 export default Raspored;
-

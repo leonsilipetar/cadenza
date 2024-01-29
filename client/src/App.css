@@ -655,6 +655,7 @@ color: rgb(var(--tekst));
   box-shadow: var(--boxShadow);
   border-radius: var(--radius);
   padding: 1rem;
+  margin-bottom: 2rem;
 }
 .dan{
   padding: 1rem;
@@ -847,7 +848,7 @@ input{
   background-color: var(--iznad);
   box-shadow: var(--boxShadow);
   border-radius: var(--radius);
-  padding: 1rem;
+  padding: 1rem; 
 }
 .dan{
   padding: 1rem;

@@ -1,18 +1,22 @@
-import '../../App.css';
+// NavSideRaspored.jsx
+import React from 'react';
 
-const NavSideRaspored = ({students}) => {
+const NavSideRaspored = ({ students, onStudentClick }) => {
   return (
     <>
       <div className="raspored-lista">
-        {/*POPIS rasporeda učenika */}
         {students.length === 0 ? (
-            <div className="rl-items">
-          <div className="rl">Nema dodanih učenika</div>
+          <div className="rl-items">
+            <div className="rl">Nema dodanih učenika</div>
           </div>
         ) : (
           <div className="rl-items">
             {students.map((student) => (
-              <div className="rl" key={student._id}>
+              <div
+                className="rl"
+                key={student._id}
+                onClick={() => onStudentClick(student._id)}
+              >
                 {student.ime} {student.prezime}
               </div>
             ))}
@@ -21,6 +25,6 @@ const NavSideRaspored = ({students}) => {
       </div>
     </>
   );
-}
+};
 
 export default NavSideRaspored;
