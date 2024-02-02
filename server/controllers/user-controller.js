@@ -121,67 +121,98 @@ const sendPasswordEmail = async (email, password) => {
   }
 };
  
-    const login = asyncWrapper(async (req, res, next) => {
-      const { email, password } = req.body;
-    
-      try {
-        // Try to find the user in the User collection
-        let existingUser = await User.findOne({ email });
-    
-        // If not found in the User collection, try to find in Mentor collection
-        if (!existingUser) {
-          existingUser = await Mentor.findOne({ email });
-        }
-    
-        if (!existingUser) {
-          return res.status(400).json({ message: "User not found. Sign up!" });
-        }
-    
-        const isPasswordCorrect = bcrypt.compareSync(password, existingUser.password);
-        if (!isPasswordCorrect) {
-          return res.status(400).json({ message: "Invalid email/password!" });
-        }
-      
-        const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-        Object.keys(req.cookies).forEach((cookieName) => {
-          res.clearCookie(cookieName);
-        });
-      
-        res.cookie(String(existingUser._id), token, {
-          path: '/',
-          secure: true,
-        });
-    
-        return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });
-      } catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: "Internal Server Error" });
-      }
+const login = asyncWrapper(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    let existingUser = await User.findOne({ email });
+
+    if (!existingUser) {
+      existingUser = await Mentor.findOne({ email });
+    }
+
+    if (!existingUser) {
+      return res.status(400).json({ message: "User not found. Sign up!" });
+    }
+
+    const isPasswordCorrect = bcrypt.compareSync(password, existingUser.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Invalid email/password!" });
+    }
+
+    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    Object.keys(req.cookies).forEach((cookieName) => {
+      res.clearCookie(cookieName);
     });
-    
-    
-  
-    const verifyToken = (req, res, next) => {
-      const cookies = req.headers.cookie;
-    
-      if (!cookies) {
-        return res.status(404).json({ message: "No cookies found" });
-      }
-    
-      const token = cookies.split("=")[1];
-    
-      if (!token) {
-        return res.status(404).json({ message: "No token found" });
-      }
-    
-      jwt.verify(String(token), process.env.JWT_SECRET, (err, user) => {
-        if (err) {
-          return res.status(400).json({ message: "Invalid Token" });
-        }
-        req.id = user.id;
-        next();
-      });
-    };
+
+    res.cookie(String(existingUser._id), token, {
+      path: '/',
+      httpOnly: true, // Prevents client-side JS from reading the cookie
+      secure: process.env.NODE_ENV !== 'development', // Ensures the cookie is sent over HTTPS
+      sameSite: 'strict', // Prevents the browser from sending this cookie along with cross-site requests
+      maxAge: 3600000 // Sets the cookie expiration time
+    });
+
+    return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+const verifyToken = (req, res, next) => {
+  const cookies = req.headers.cookie;
+
+  if (!cookies) {
+    return res.status(404).json({ message: "No cookies found" });
+  }
+
+  const token = cookies.split("=")[1];
+
+  if (!token) {
+    return res.status(404).json({ message: "No token found" });
+  }
+
+  jwt.verify(String(token), process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(400).json({ message: "Invalid Token" });
+    }
+    req.id = user.id;
+    next();
+  });
+};
+
+const logout = (req, res, next) => {
+  const cookies = req.headers.cookie;
+
+  if (!cookies) {
+    return res.status(400).json({ message: "No cookies found" });
+  }
+
+  const token = cookies.split("=")[1];
+
+  if (!token) {
+    return res.status(400).json({ message: "Couldn't find token" });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      console.log(err);
+      return res.status(403).json({ message: "Authentication failed" });
+    }
+
+    console.log('Clearing cookie for user:', user.id);
+    res.clearCookie(String(user.id), {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: 'strict'
+    });
+
+    return res.status(200).json({ message: "Successfully Logged Out" });
+  });
+};
+
     
   
   async function getUser(req, res, next) {
@@ -247,31 +278,7 @@ const refreshToken = (req, res, next) => {
         next();
     })
 };
-const logout = (req, res, next) => {
-  const cookies = req.headers.cookie;
 
-  if (!cookies) {
-    return res.status(400).json({ message: "No cookies found" });
-  }
-
-  const token = cookies.split("=")[1];
-
-  if (!token) {
-    return res.status(400).json({ message: "Couldn't find token" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      console.log(err);
-      return res.status(403).json({ message: "Authentication failed" });
-    }
-
-    console.log('Clearing cookie for user:', user.id);
-    res.clearCookie(String(user.id));
-
-    return res.status(200).json({ message: "Successfully Logged Out" });
-  });
-};
 
 const getKorisnici = async (req, res, next) => {
   try {

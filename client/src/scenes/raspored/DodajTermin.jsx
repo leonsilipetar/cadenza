@@ -141,7 +141,7 @@ const DodajTermin = ({ onCancel }) => {
               id="vrijeme"
               placeholder="npr. 12:00"
             />
-            <label htmlFor="mentor">Mentor:</label>
+            <label htmlFor="mentor">Tekst:</label>
             <input
               className="input-login-signup"
               value={inputs.mentor}
@@ -149,7 +149,7 @@ const DodajTermin = ({ onCancel }) => {
               type="text"
               name="mentor"
               id="mentor"
-              placeholder="mentor"
+              placeholder="mentor/predmet"
             />
           </div>
           <button

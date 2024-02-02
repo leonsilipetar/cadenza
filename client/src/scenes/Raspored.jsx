@@ -13,6 +13,7 @@ axios.defaults.withCredentials = true;
 
 const Raspored = () => {
   const [user, setUser] = useState();
+  const [selectedStudent, setSelectedStudent] = useState();
   const [studentsRaspored, setStudentsRaspored] = useState([]);
   const [teorija, setTeorija] = useState();
   const [dodajRasporedTeorija, setDodajRasporedTeorija] = useState(false);
@@ -27,6 +28,7 @@ const Raspored = () => {
     const data = await res.data;
     console.log('Raspored studenta:', data);
     setStudentsRaspored(data.schedules);
+    setSelectedStudent(data.student);
   };
 
   const handleStudentClick = (studentId) => {
@@ -137,7 +139,7 @@ const Raspored = () => {
         </div>
         {user && user.isMentor && selectedStudentId && (
   <>
-    <div className='sbtwn'><p>Raspored učenika</p></div>
+    <div className='sbtwn'><p>Raspored učenika: {selectedStudent && selectedStudent.ime} {selectedStudent && selectedStudent.prezime}</p></div>
     <div className="raspored">
       {studentsRaspored && studentsRaspored.length > 0 ? (
         studentsRaspored.map((studentSchedule) => (
