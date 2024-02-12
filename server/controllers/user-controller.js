@@ -247,6 +247,62 @@ const getAllStudents = async (req, res, next) => {
   }
 };
 
+// Assuming you have your User and Mentor models properly defined and imported
+
+const searchUsersAndMentors = async (req, res) => {
+  try {
+    const { query } = req.body;
+
+    // Search users by name, surname, or username
+    const users = await User.find({
+      $or: [
+        { ime: { $regex: query, $options: 'i' } },
+        { prezime: { $regex: query, $options: 'i' } },
+        { korisnickoIme: { $regex: query, $options: 'i' } },
+      ],
+    }).select('ime prezime isMentor isStudent isAdmin');
+
+    // Search mentors by name, surname, or username
+    const mentors = await Mentor.find({
+      $or: [
+        { ime: { $regex: query, $options: 'i' } },
+        { prezime: { $regex: query, $options: 'i' } },
+        { korisnickoIme: { $regex: query, $options: 'i' } },
+      ],
+    }).select('ime prezime isMentor isStudent isAdmin');
+
+    // Process users to include roles
+    const processedUsers = users.map(user => {
+      let role = '';
+      if (user.isAdmin) role = 'administrator';
+      else if (user.isMentor) role = 'mentor';
+      else if (user.isStudent) role = 'učenik';
+
+      return { ...user.toObject(), uloga: role };
+    });
+
+    // Process mentors to include roles
+    const processedMentors = mentors.map(mentor => {
+      let role = '';
+      if (mentor.isAdmin) role = 'administrator';
+      else if (mentor.isMentor) role = 'mentor';
+      else if (mentor.isStudent) role = 'učenik';
+
+      return { ...mentor.toObject(), uloga: role };
+    });
+
+    // Combine processed users and mentors
+    const combinedResults = [...processedUsers, ...processedMentors];
+
+    res.json({ results: combinedResults });
+  } catch (error) {
+    console.error('Error searching users and mentors:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
+
 
  
 const refreshToken = (req, res, next) => {
@@ -358,3 +414,4 @@ exports.getKorisnici = getKorisnici;
 exports.getDetaljiKorisnika = getDetaljiKorisnika;
 exports.updateDetaljiKorisnika = updateDetaljiKorisnika;
 exports.getAllStudents = getAllStudents;
+exports.searchUsersAndMentors = searchUsersAndMentors;

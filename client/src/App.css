@@ -76,6 +76,7 @@ select {
 :root{
   --isticanje: var(--narancasta);
   --isticanje2: 204, 204, 204;
+  --isticanje3: 48, 57, 131;
   --isticanje-svijetlo: rgba(var(--isticanje), 0.425);
   --pozadina-svijetlo: 255, 255, 255;
   --pozadina-tamno: 17, 17, 17;
@@ -612,6 +613,22 @@ color: rgb(var(--tekst));
   justify-content: space-evenly;
   background-color: var(--iznad);
 }
+.bc-none{
+  background-color: transparent;
+}
+.search-result-item{
+  width: 100%;
+border-bottom: solid 1px rgb(var(--isticanje2));
+padding: 1.2rem 0.5rem;
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+}
+.txt-min{
+  color: rgb(var(--isticanje));
+  font-size: 0.8rem;
+}
 
 .radio-item {
   padding: 1rem;
@@ -677,6 +694,9 @@ color: rgb(var(--tekst));
   background-color: rgb(var(--isticanje));
   display: grid;
   grid-template-rows: 1fr 2fr 1fr;
+}
+.boja-teorija{
+  background-color: rgb(var(--isticanje3), 0.85);
 }
 .vrijeme{
   display: flex;

@@ -4,10 +4,10 @@ import ApiConfig from '../../components/apiConfig';
 
 axios.defaults.withCredentials = true;
 
-const DodajTermin = ({ onCancel }) => {
+const DodajTermin = ({ onCancel, studentID }) => {
   const [status, setStatus] = useState('');
   const [isDodajMentoraDisabled, setIsDodajMentoraDisabled] = useState(false);
-  const [terms, setTerms] = useState([]); // Change to array to store multiple terms
+  const [terms, setTerms] = useState([]);
   const [inputs, setInputs] = useState({
     dvorana: '',
     vrijeme: '',
@@ -27,9 +27,7 @@ const DodajTermin = ({ onCancel }) => {
   };
 
   const handleAddTerm = () => {
-  
     if (selectedDay) {
-  
       setTerms((prevTerms) => [
         ...prevTerms,
         {
@@ -39,7 +37,7 @@ const DodajTermin = ({ onCancel }) => {
           mentor: inputs.mentor,
         },
       ]);
-  
+
       setInputs({
         dvorana: '',
         vrijeme: '',
@@ -47,16 +45,21 @@ const DodajTermin = ({ onCancel }) => {
       });
     }
   };
-  
 
-  
-
-  const dodajTeorija = async () => {
+  const saveTerms = async (terms) => {
     try {
-      console.log('Sending to server:', terms);
-      const res = await axios.post(`${ApiConfig.baseUrl}/api/uredi/teorija`, {
-        raspored: terms,
-      });
+      let res;
+      if (studentID) {
+        // If student is provided, save terms to student's schedule
+        res = await axios.post(`${ApiConfig.baseUrl}/api/uredi/ucenik-raspored/${studentID}`, {
+          schedules: terms,
+        });
+      } else {
+        // Otherwise, save terms as general teorija
+        res = await axios.post(`${ApiConfig.baseUrl}/api/uredi/teorija`, {
+          raspored: terms,
+        });
+      }
       const data = res.data;
       console.log('Server Response:', data);
       return data;
@@ -65,18 +68,17 @@ const DodajTermin = ({ onCancel }) => {
       return null;
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsDodajMentoraDisabled(true);
 
-    const result = await dodajTeorija();
+    const result = await saveTerms(terms);
 
     if (result) {
       console.log('Raspored je uspjesno dodan:', result);
       setStatus('Raspored je uspješno dodan!');
-      setTerms([]); // Clear terms after successful submission
+      setTerms([]);
     } else {
       console.log('Doslo je do pogreske tijekom dodavanja rasporeda.');
       setStatus('Došlo je do greške prilikom dodavanja rasporeda!');

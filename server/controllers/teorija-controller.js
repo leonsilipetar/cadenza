@@ -3,7 +3,6 @@ const RasporedTeorija = require('../model/RasporedTeorija');
 const updateTeorija = async (req, res) => {
     try {
         const { raspored } = req.body;
-        console.log({raspored}, raspored.vrijeme)
 
         // Assuming you have a logged-in user and their ID is stored in req.userId
         const userId = req.userId;

@@ -10,6 +10,7 @@ const {
   getDetaljiKorisnika,
   updateDetaljiKorisnika,
   getAllStudents,
+  searchUsersAndMentors,
 } = require('../controllers/user-controller.js');
 const {
   signupMentor,
@@ -18,6 +19,7 @@ const {
   getMentorStudents,
   getStudentsRaspored,
   getStudentRaspored,
+  addScheduleToStudent,
 }= require('../controllers/mentor-controller.js');
 
 const { updateTeorija, getTeorija, deleteTermin} = require('../controllers/teorija-controller');
@@ -34,6 +36,7 @@ router.get("/profil", verifyToken, getUser);
 router.get("/korisnik/:userId", verifyToken, getDetaljiKorisnika);
 // Fetch all students
 router.get('/all-students', getAllStudents);
+router.post('/users', searchUsersAndMentors);
 // router.get("/refresh", refreshToken, verifyToken, getUser);
 router.post("/logout", verifyToken, logout);
 
@@ -46,6 +49,7 @@ router.get("/rasporedTeorija", verifyToken, getTeorija);
 router.get("/rasporedUcenici/:id", verifyToken, getStudentsRaspored);
 router.get("/rasporedUcenik/:id", verifyToken, getStudentRaspored);
 router.get('/students/:id', verifyToken, getMentorStudents);
+router.post('/uredi/ucenik-raspored/:id', verifyToken, addScheduleToStudent);
 router.delete("/deleteTermin/:id", verifyToken, deleteTermin);
 
 module.exports = router;

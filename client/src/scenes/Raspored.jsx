@@ -15,20 +15,34 @@ const Raspored = () => {
   const [user, setUser] = useState();
   const [selectedStudent, setSelectedStudent] = useState();
   const [studentsRaspored, setStudentsRaspored] = useState([]);
-  const [teorija, setTeorija] = useState();
+  const [teorija, setTeorija] = useState([]);
   const [dodajRasporedTeorija, setDodajRasporedTeorija] = useState(false);
+  const [dodajRasporedStudent, setDodajRasporedStudent] = useState(false);
   const [rasporedGumb, setRasporedGumb] = useState(false);
   const [notification, setNotification] = useState(null);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
+  console.log("StudentsRaspored:", studentsRaspored)
 
   const sendRequestStudentRaspored = async (studentId) => {
-    const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenik/${studentId}`, {
-      withCredentials: true,
-    }).catch((err) => console.log(err));
-    const data = await res.data;
-    console.log('Raspored studenta:', data);
-    setStudentsRaspored(data.schedules);
-    setSelectedStudent(data.student);
+    try {
+      if(user && user.isMentor){
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenik/${studentId}`, {
+        withCredentials: true,
+      });
+      const data = res.data;
+      setStudentsRaspored(data.schedule);
+      setSelectedStudent(data.student);
+    }
+    if(user && user.isStudent){
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenik/${user._id}`, {
+        withCredentials: true,
+      });
+      const data = res.data;
+      setStudentsRaspored(data);
+    }
+    } catch (err) {
+      console.error('Error fetching student raspored:', err);
+    }
   };
 
   const handleStudentClick = (studentId) => {
@@ -37,29 +51,41 @@ const Raspored = () => {
   };
 
   const sendRequest = async () => {
-    const res = await axios.get(`${ApiConfig.baseUrl}/api/user`, {
-      withCredentials: true,
-    }).catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/user`, {
+        withCredentials: true,
+      });
+      const data = res.data;
+      return data;
+    } catch (err) {
+      console.error('Error fetching user data:', err);
+    }
   };
 
   const sendRequestTeorija = async () => {
-    const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedTeorija`, {
-      withCredentials: true
-    }).catch((err) => console.log(err));
-    const data = await res.data;
-    console.log('Teorija Data:', data);
-    return data;
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedTeorija`, {
+        withCredentials: true
+      });
+      const data = res.data;
+      console.log('Teorija Data:', data);
+      return data;
+    } catch (err) {
+      console.error('Error fetching teorija data:', err);
+    }
   };
 
   const sendRequestStudentsRaspored = async () => {
-    const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenici/${user._id}`, {
-      withCredentials: true
-    }).catch((err) => console.log(err));
-    const data = await res.data;
-    console.log('Raspored ucenici:', data);
-    return data;
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenici/${user._id}`, {
+        withCredentials: true
+      });
+      const data = res.data;
+      console.log('Raspored ucenici:', data);
+      return data;
+    } catch (err) {
+      console.error('Error fetching students raspored:', err);
+    }
   };
 
   const handleItemClickRasporedGumb = () => {
@@ -72,7 +98,7 @@ const Raspored = () => {
     });
     if (user && user.isMentor) {
       sendRequestStudentsRaspored().then((data) => {
-        setUser(data.schedules);
+        setStudentsRaspored(data.schedule);
       });
     }
     sendRequestTeorija().then((data) => {
@@ -88,6 +114,13 @@ const Raspored = () => {
         <DodajTermin
           dodajRasporedTeorija={dodajRasporedTeorija}
           onCancel={() => setDodajRasporedTeorija(false)}
+        />
+      )}
+       {dodajRasporedStudent && (
+        <DodajTermin
+          dodajRasporedTeorija={dodajRasporedStudent}
+          onCancel={() => setDodajRasporedStudent(false)}
+          studentID={selectedStudent._id}
         />
       )}
       <div className="main">
@@ -129,6 +162,7 @@ const Raspored = () => {
                 user={user}
                 setTeorija={setTeorija}
                 setNotification={setNotification}
+                isTeorija={true}
               />
             ))
           ) : (
@@ -139,18 +173,30 @@ const Raspored = () => {
         </div>
         {user && user.isMentor && selectedStudentId && (
   <>
-    <div className='sbtwn'><p>Raspored učenika: {selectedStudent && selectedStudent.ime} {selectedStudent && selectedStudent.prezime}</p></div>
+    <div className=' div-radio bc-none'>
+      <div>
+        <p>Raspored učenika: {selectedStudent && selectedStudent.ime} {selectedStudent && selectedStudent.prezime}</p>
+      </div>
+      {user && user.isMentor && (
+        <div
+          className="gumb action-btn abEdit "
+          onClick={() => setDodajRasporedStudent(true)}
+        >
+          <Icon icon="solar:add-circle-broken" fontSize="large" />Uredi raspored
+        </div>
+      )}
+    </div>
     <div className="raspored">
-      {studentsRaspored && studentsRaspored.length > 0 ? (
-        studentsRaspored.map((studentSchedule) => (
+      {studentsRaspored ? (
+        ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
           <RasporedDan
-            key={studentSchedule.day}
-            teorija={studentSchedule.teorija}
-            teorijaID={studentSchedule.teorijaID}
-            day={studentSchedule.day}
+            key={day} // Use day as key
             user={user}
-            setTeorija={setTeorija}
+            day={day}
+            teorija={studentsRaspored[day]} // Pass the schedule for the current day
+            setTeorija={setStudentsRaspored}
             setNotification={setNotification}
+            isTeorija={false}
           />
         ))
       ) : (
@@ -162,7 +208,6 @@ const Raspored = () => {
   </>
 )}
 
-        
         {notification && (
           <Notification
             type={notification.type}

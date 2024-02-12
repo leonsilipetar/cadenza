@@ -268,10 +268,71 @@ const sendPasswordEmail = async (email, password) => {
         next(err);
       }
     };
+    const addScheduleToStudent = async (req, res, next) => {
+      const userId = req.params.id; // Assuming the user ID is passed in the request parameters
+      const { schedules } = req.body; // Assuming the schedules are passed in the request body
+      console.log("raspored:", schedules)
+      
+      try {
+        // Check if the provided user ID is valid
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+          return res.status(400).json({ message: 'Invalid user ID' });
+        }
+      
+        // Find the user by ID
+        const user = await User.findById(userId);
+      
+        // Check if the user exists
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+      
+        // If user already has a schedule (rasporedId is defined), update the existing schedule
+        if (user.rasporedId) {
+          const existingSchedule = await Raspored.findById(user.rasporedId);
+          if (!existingSchedule) {
+            return res.status(404).json({ message: 'Existing schedule not found' });
+          }
+          // Update the existing schedule with the provided data
+          for (const { day, dvorana, vrijeme, mentor } of schedules) {
+            existingSchedule[day].push({ dvorana, vrijeme: vrijeme, mentor });
+          }
+          await existingSchedule.save();
+          return res.status(200).json({ message: 'Schedule updated successfully', schedule: existingSchedule });
+        }
+      
+        // If user doesn't have a schedule, create a new one
+        const newSchedule = new Raspored({
+          ucenikId: userId,
+        });
+      
+        // Fill in the new schedule with the provided data
+        for (const { day, dvorana, vrijeme, mentor } of schedules) {
+          newSchedule[day].push({ dvorana, vrijeme: vrijeme, mentor });
+        }
+      
+        // Save the new schedule
+        await newSchedule.save();
+      
+        // Update the user's rasporedId field with the ID of the newly created schedule
+        user.rasporedId = newSchedule._id;
+      
+        // Save the updated user
+        await user.save();
+      
+        // Return a success response
+        res.status(201).json({ message: 'Schedule added to user successfully', schedule: newSchedule });
+      } catch (err) {
+        // Handle errors
+        next(err);
+      }
+    };
+    
+    
     
     
     
 // Export the controller
 module.exports = {
-  signupMentor, getMentori, updateDetaljiMentora, getMentorStudents, getStudentsRaspored, getStudentRaspored
+  signupMentor, getMentori, updateDetaljiMentora, getMentorStudents, getStudentsRaspored, getStudentRaspored, addScheduleToStudent,
 };

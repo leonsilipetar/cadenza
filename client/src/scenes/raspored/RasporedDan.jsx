@@ -3,7 +3,7 @@ import React from 'react';
 import axios from 'axios';
 import ApiConfig from '../../components/apiConfig';
 
-const RasporedDan = ({ teorija, teorijaID, day, user, setTeorija, setNotification }) => {
+const RasporedDan = ({ teorija, teorijaID, day, user, setTeorija, setNotification, isTeorija}) => {
   const obrisiTermin = async (id, day) => {
     try {
       // Send a DELETE request to delete the term with the specified id
@@ -49,7 +49,7 @@ const RasporedDan = ({ teorija, teorijaID, day, user, setTeorija, setNotificatio
       <div className="nazivDana">{day}</div>
       {Array.isArray(teorija) && teorija.length > 0 && (
         teorija.map((term, index) => (
-          <div key={index} className="termin">
+          <div key={index} className={`termin ${isTeorija ? 'boja-teorija' : ''}`}>
             {user && user.isAdmin && (
               <div
                 className='obrisiTermin'
