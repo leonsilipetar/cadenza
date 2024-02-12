@@ -149,8 +149,8 @@ const login = asyncWrapper(async (req, res, next) => {
       path: '/',
       httpOnly: true, // Prevents client-side JS from reading the cookie
       secure: process.env.NODE_ENV !== 'development', // Ensures the cookie is sent over HTTPS
-      sameSite: 'strict', // Prevents the browser from sending this cookie along with cross-site requests
-      maxAge: 3600000 // Sets the cookie expiration time
+      sameSite: 'none', // Prevents the browser from sending this cookie along with cross-site requests
+
     });
 
     return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });
