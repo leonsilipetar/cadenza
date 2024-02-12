@@ -295,7 +295,7 @@ const sendPasswordEmail = async (email, password) => {
           }
           // Update the existing schedule with the provided data
           for (const { day, dvorana, vrijeme, mentor } of schedules) {
-            existingSchedule[day].push({ dvorana, vrijeme: vrijeme, mentor });
+            existingSchedule[day].push({ dvorana, vrijeme, mentor });
           }
           await existingSchedule.save();
           return res.status(200).json({ message: 'Schedule updated successfully', schedule: existingSchedule });
@@ -308,7 +308,7 @@ const sendPasswordEmail = async (email, password) => {
       
         // Fill in the new schedule with the provided data
         for (const { day, dvorana, vrijeme, mentor } of schedules) {
-          newSchedule[day].push({ dvorana, vrijeme: vrijeme, mentor });
+          newSchedule[day].push({ dvorana, vrijeme, mentor });
         }
       
         // Save the new schedule
