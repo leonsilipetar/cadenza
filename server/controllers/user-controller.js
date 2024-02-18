@@ -259,8 +259,9 @@ const searchUsersAndMentors = async (req, res) => {
         { ime: { $regex: query, $options: 'i' } },
         { prezime: { $regex: query, $options: 'i' } },
         { korisnickoIme: { $regex: query, $options: 'i' } },
+        { email: { $regex: query, $options: 'i' } },
       ],
-    }).select('ime prezime isMentor isStudent isAdmin');
+    }).select('ime prezime isMentor email isStudent isAdmin');
 
     // Search mentors by name, surname, or username
     const mentors = await Mentor.find({
@@ -268,8 +269,9 @@ const searchUsersAndMentors = async (req, res) => {
         { ime: { $regex: query, $options: 'i' } },
         { prezime: { $regex: query, $options: 'i' } },
         { korisnickoIme: { $regex: query, $options: 'i' } },
+        { email: { $regex: query, $options: 'i' } },
       ],
-    }).select('ime prezime isMentor isStudent isAdmin');
+    }).select('ime prezime email isMentor isStudent isAdmin');
 
     // Process users to include roles
     const processedUsers = users.map(user => {

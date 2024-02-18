@@ -625,8 +625,12 @@ flex-direction: row;
 justify-content: space-between;
 align-items: center;
 }
-.txt-min{
+.txt-min2{
   color: rgb(var(--isticanje));
+  font-size: 0.8rem;
+}
+.txt-min{
+  color: rgb(var(--isticanje2));
   font-size: 0.8rem;
 }
 

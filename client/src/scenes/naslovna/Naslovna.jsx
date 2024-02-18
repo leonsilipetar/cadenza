@@ -67,7 +67,7 @@ const Naslovna = () => {
             searchResults.map((result) => (
               <div key={result._id} className="search-result-item">
                 <div>
-                <p>{result.ime} {result.prezime}</p>
+                  <div><p>{result.ime} {result.prezime}</p> <p className='txt-min2'>{result.email}</p></div>
                 <p className='txt-min'>{result.uloga}</p>
                 </div>
                 <div>
