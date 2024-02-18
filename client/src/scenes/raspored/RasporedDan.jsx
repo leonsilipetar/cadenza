@@ -1,30 +1,30 @@
-import { Icon } from '@iconify/react';
 import React from 'react';
+import { Icon } from '@iconify/react';
 import axios from 'axios';
 import ApiConfig from '../../components/apiConfig';
 
-const RasporedDan = ({ teorija, teorijaID, day, user, setTeorija, setNotification, isTeorija}) => {
-  const obrisiTermin = async (id, day) => {
+const RasporedDan = ({ teorija, student, teorijaID, day, user, setSchedule, setNotification, isTeorija }) => {
+  const obrisiTermin = async (id) => {
     try {
-      // Send a DELETE request to delete the term with the specified id
-      // Include the day and teorijaID parameters in the URL
-      await axios.delete(`${ApiConfig.baseUrl}/api/deleteTermin/${id}?day=${day}&teorijaID=${teorijaID}`, {
+      const deleteUrl = isTeorija ? `${ApiConfig.baseUrl}/api/deleteTermin/${id}?day=${day}&teorijaID=${teorijaID}` : `${ApiConfig.baseUrl}/api/deleteUcenikTermin/${student._id}`;
+      await axios.delete(deleteUrl, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
         }
       });
-  
-      setTeorija((prevTeorija) => {
-        const updatedTeorija = prevTeorija.map((dayData) => {
-          const updatedDayData = { ...dayData };
-          updatedDayData[day] = updatedDayData[day].filter((term) => term._id !== id);
-          return updatedDayData;
-        });
-        return updatedTeorija;
+
+      setSchedule(prevSchedule => {
+        if (Array.isArray(prevSchedule)) {
+          // Ažuriranje za teoriju
+          return prevSchedule.map(term => term._id !== id ? term : null).filter(term => term !== null);
+        } else {
+          // Ažuriranje za studentski raspored
+          const updatedDay = prevSchedule[day].filter(term => term._id !== id);
+          return { ...prevSchedule, [day]: updatedDay };
+        }
       });
-  
-      // Update the notification state here
+
       if (setNotification) {
         setNotification({
           type: 'success',
@@ -33,7 +33,6 @@ const RasporedDan = ({ teorija, teorijaID, day, user, setTeorija, setNotificatio
       }
     } catch (error) {
       console.error('Error deleting term:', error);
-      // Handle error and update notification state accordingly
       if (setNotification) {
         setNotification({
           type: 'error',
@@ -42,28 +41,22 @@ const RasporedDan = ({ teorija, teorijaID, day, user, setTeorija, setNotificatio
       }
     }
   };
-  
 
   return (
     <div className='dan'>
       <div className="nazivDana">{day}</div>
-      {Array.isArray(teorija) && teorija.length > 0 && (
-        teorija.map((term, index) => (
-          <div key={index} className={`termin ${isTeorija ? 'boja-teorija' : ''}`}>
-            {user && user.isAdmin && (
-              <div
-                className='obrisiTermin'
-                onClick={() => obrisiTermin(term._id, day)} // Pass the term id to the function
-              >
-                <Icon icon="solar:minus-circle-broken" />
-              </div>
-            )}
-            <div className="dvorana">{term.dvorana}</div>
-            <div className="vrijeme">{term.vrijeme}</div>
-            <div className="rasporedMentor">{term.mentor}</div>
-          </div>
-        ))
-      )}
+      {teorija && teorija.length > 0 && teorija.map((term, index) => (
+        <div key={index} className={`termin ${isTeorija ? 'boja-teorija' : ''}`}>
+          {user && user.isAdmin && (
+            <div className='obrisiTermin' onClick={() => obrisiTermin(term._id)}>
+              <Icon icon="solar:minus-circle-broken" />
+            </div>
+          )}
+          <div className="dvorana">{term.dvorana}</div>
+          <div className="vrijeme">{term.vrijeme}</div>
+          <div className="rasporedMentor">{term.mentor}</div>
+        </div>
+      ))}
     </div>
   );
 };

@@ -21,7 +21,6 @@ const Raspored = () => {
   const [rasporedGumb, setRasporedGumb] = useState(false);
   const [notification, setNotification] = useState(null);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
-  console.log("StudentsRaspored:", studentsRaspored)
 
   const sendRequestStudentRaspored = async (studentId) => {
     try {
@@ -160,7 +159,7 @@ const Raspored = () => {
                 teorijaID={teorija[0]?._id}
                 day={day}
                 user={user}
-                setTeorija={setTeorija}
+                setSchedule={setTeorija}
                 setNotification={setNotification}
                 isTeorija={true}
               />
@@ -190,14 +189,14 @@ const Raspored = () => {
       {studentsRaspored ? (
         ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
           <RasporedDan
-            key={day} // Use day as key
-            user={user}
-            day={day}
-            teorija={studentsRaspored[day]} // Pass the schedule for the current day
-            setTeorija={setStudentsRaspored}
-            setNotification={setNotification}
-            isTeorija={false}
-          />
+              key={day}
+              day={day}
+              teorija={studentsRaspored[day]}
+              user={user}
+              setSchedule={setStudentsRaspored}
+              setNotification={setNotification}
+              isTeorija={false}
+            />
         ))
       ) : (
         <div>

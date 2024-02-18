@@ -328,11 +328,48 @@ const sendPasswordEmail = async (email, password) => {
       }
     };
     
+    const deleteRaspored = async (req, res) => {
+      try {
+          const { userId } = req.params; // ID korisnika čiji raspored treba obrisati
+          console.log("UserID:", userId)
+  
+          // Provjerite je li ID korisnika valjan
+          if (!mongoose.Types.ObjectId.isValid(userId)) {
+              return res.status(400).json({ message: 'Invalid user ID' });
+          }
+  
+          // Pronađite korisnika po ID-u
+          const user = await User.findById(userId);
+  
+          // Provjerite postoji li korisnik
+          if (!user) {
+              return res.status(404).json({ message: 'User not found' });
+          }
+  
+          // Provjerite ima li korisnik raspored koji treba obrisati
+          if (!user.rasporedId) {
+              return res.status(404).json({ message: 'No schedule found for this user' });
+          }
+  
+          // Obrisati raspored korisnika
+          await Raspored.findByIdAndRemove(user.rasporedId);
+  
+          // Postavite rasporedId korisnika na null jer raspored više ne postoji
+          user.rasporedId = null;
+          await user.save();
+  
+          res.status(200).json({ message: 'Schedule deleted successfully' });
+      } catch (error) {
+          console.error('Error deleting schedule:', error);
+          res.status(500).json({ message: 'Internal server error', error: error.message });
+      }
+  };
+  
     
     
     
     
 // Export the controller
 module.exports = {
-  signupMentor, getMentori, updateDetaljiMentora, getMentorStudents, getStudentsRaspored, getStudentRaspored, addScheduleToStudent,
+  signupMentor, getMentori, updateDetaljiMentora, getMentorStudents, getStudentsRaspored, getStudentRaspored, addScheduleToStudent,deleteRaspored, 
 };
