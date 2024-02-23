@@ -6,7 +6,7 @@ import ApiConfig from '../../components/apiConfig';
 const RasporedDan = ({ teorija, student, teorijaID, day, user, setSchedule, setNotification, isTeorija }) => {
   const obrisiTermin = async (id) => {
     try {
-      const deleteUrl = isTeorija ? `${ApiConfig.baseUrl}/api/deleteTermin/${id}?day=${day}&teorijaID=${teorijaID}` : `${ApiConfig.baseUrl}/api/deleteUcenikTermin/${student._id}`;
+      const deleteUrl = isTeorija ? `${ApiConfig.baseUrl}/api/deleteTermin/${id}?day=${day}&teorijaID=${teorijaID}` : `${ApiConfig.baseUrl}/api/deleteUcenikTermin/${student}`;
       await axios.delete(deleteUrl, {
         withCredentials: true,
         headers: {

@@ -67,7 +67,6 @@ const Raspored = () => {
         withCredentials: true
       });
       const data = res.data;
-      console.log('Teorija Data:', data);
       return data;
     } catch (err) {
       console.error('Error fetching teorija data:', err);
@@ -80,7 +79,6 @@ const Raspored = () => {
         withCredentials: true
       });
       const data = res.data;
-      console.log('Raspored ucenici:', data);
       return data;
     } catch (err) {
       console.error('Error fetching students raspored:', err);
@@ -139,37 +137,7 @@ const Raspored = () => {
             onStudentClick={handleStudentClick}
           />
         )}
-        {user && user.isAdmin && (
-          <div className="sbtwn">
-            <div
-              className="gumb action-btn abEdit "
-              onClick={() => setDodajRasporedTeorija(true)}
-            >
-              <Icon icon="solar:add-circle-broken" fontSize="large" />Raspored Teorija
-            </div>
-          </div>
-        )}
-        <div className='sbtwn'><p>Teorija</p></div>
-        <div className="raspored">
-          {teorija ? (
-            ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
-              <RasporedDan
-                key={day}
-                teorija={teorija[0]?.[day]}
-                teorijaID={teorija[0]?._id}
-                day={day}
-                user={user}
-                setSchedule={setTeorija}
-                setNotification={setNotification}
-                isTeorija={true}
-              />
-            ))
-          ) : (
-            <div>
-              <p>Nema dostupnog rasporeda</p>
-            </div>
-          )}
-        </div>
+        
         {user && user.isMentor && selectedStudentId && (
   <>
     <div className=' div-radio bc-none'>
@@ -193,6 +161,7 @@ const Raspored = () => {
               day={day}
               teorija={studentsRaspored[day]}
               user={user}
+              student={selectedStudent._id}
               setSchedule={setStudentsRaspored}
               setNotification={setNotification}
               isTeorija={false}
@@ -206,7 +175,39 @@ const Raspored = () => {
     </div>
   </>
 )}
-
+{user && user.isAdmin && (
+          <div className="div-radio bc-none">
+            <div>
+        <p>Teorija</p>
+      </div>
+            <div
+              className="gumb action-btn abEdit "
+              onClick={() => setDodajRasporedTeorija(true)}
+            >
+              <Icon icon="solar:add-circle-broken" fontSize="large" />Raspored Teorija
+            </div>
+          </div>
+        )}
+        <div className="raspored">
+          {teorija ? (
+            ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
+              <RasporedDan
+                key={day}
+                teorija={teorija[0]?.[day]}
+                teorijaID={teorija[0]?._id}
+                day={day}
+                user={user}
+                setSchedule={setTeorija}
+                setNotification={setNotification}
+                isTeorija={true}
+              />
+            ))
+          ) : (
+            <div>
+              <p>Nema dostupnog rasporeda</p>
+            </div>
+          )}
+        </div>
         {notification && (
           <Notification
             type={notification.type}
