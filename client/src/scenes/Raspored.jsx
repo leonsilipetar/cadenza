@@ -13,7 +13,7 @@ axios.defaults.withCredentials = true;
 
 const Raspored = () => {
   const [user, setUser] = useState();
-  const [selectedStudent, setSelectedStudent] = useState();
+  const [selectedStudent, setSelectedStudent] = useState({});
   const [studentsRaspored, setStudentsRaspored] = useState([]);
   const [teorija, setTeorija] = useState([]);
   const [dodajRasporedTeorija, setDodajRasporedTeorija] = useState(false);

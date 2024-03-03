@@ -330,43 +330,59 @@ const sendPasswordEmail = async (email, password) => {
     
     const deleteRaspored = async (req, res) => {
       try {
-          const { userId } = req.params; // ID korisnika čiji raspored treba obrisati
-          console.log("UserID:", userId)
-  
-          // Provjerite je li ID korisnika valjan
-          if (!mongoose.Types.ObjectId.isValid(userId)) {
-              return res.status(400).json({ message: 'Invalid user ID' });
+          const { id } = req.params; // ID učenika čiji termin treba obrisati
+          const { day, terminId } = req.query; // Dan i ID termina koji treba obrisati
+    
+          console.log("StudentID:", id);
+          console.log("Day:", day);
+          console.log("TerminID:", terminId);
+    
+          // Provjerite je li ID učenika valjan
+          if (!mongoose.Types.ObjectId.isValid(id)) {
+              return res.status(400).json({ message: 'Invalid student ID' });
           }
-  
+    
           // Pronađite korisnika po ID-u
-          const user = await User.findById(userId);
-  
+          const user = await User.findById(id);
+    
           // Provjerite postoji li korisnik
           if (!user) {
               return res.status(404).json({ message: 'User not found' });
           }
-  
-          // Provjerite ima li korisnik raspored koji treba obrisati
-          if (!user.rasporedId) {
-              return res.status(404).json({ message: 'No schedule found for this user' });
+    
+          // Fetch the schedule using rasporedId from the user object
+          const schedule = await Raspored.findById(user.rasporedId);
+    
+          // Provjerite postoji li raspored
+          if (!schedule) {
+              return res.status(404).json({ message: 'Schedule not found' });
           }
-  
-          // Obrisati raspored korisnika
-          await Raspored.findByIdAndRemove(user.rasporedId);
-  
-          // Postavite rasporedId korisnika na null jer raspored više ne postoji
-          user.rasporedId = null;
-          await user.save();
-  
-          res.status(200).json({ message: 'Schedule deleted successfully' });
+    
+          // Provjerite ima li korisnik raspored za taj dan
+          if (!schedule[day]) {
+              return res.status(404).json({ message: 'No schedule found for this user on the specified day' });
+          }
+    
+          // Pronađite indeks termina koji treba obrisati
+          const terminIndex = schedule[day].findIndex(termin => termin._id.toString() === terminId);
+    
+          if (terminIndex === -1) {
+              return res.status(404).json({ message: 'Termin not found in user\'s schedule' });
+          }
+    
+          // Uklonite termin iz rasporeda
+          schedule[day].splice(terminIndex, 1);
+    
+          // Spremite ažurirani raspored
+          await schedule.save();
+    
+          res.status(200).json({ message: 'Termin deleted successfully' });
       } catch (error) {
-          console.error('Error deleting schedule:', error);
+          console.error('Error deleting term:', error);
           res.status(500).json({ message: 'Internal server error', error: error.message });
       }
-  };
-  
-    
-    
+    };
+      
     
     
 // Export the controller

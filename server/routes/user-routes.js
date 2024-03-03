@@ -52,5 +52,5 @@ router.get("/rasporedUcenik/:id", verifyToken, getStudentRaspored);
 router.get('/students/:id', verifyToken, getMentorStudents);
 router.post('/uredi/ucenik-raspored/:id', verifyToken, addScheduleToStudent);
 router.delete("/deleteTermin/:id", verifyToken, deleteTermin);
-router.delete("/deleteUcenikTermin/:userId", verifyToken, deleteRaspored);
+router.delete("/deleteUcenikTermin/:id", verifyToken, deleteRaspored);
 module.exports = router;
