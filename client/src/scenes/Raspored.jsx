@@ -161,7 +161,7 @@ const Raspored = () => {
               day={day}
               teorija={studentsRaspored[day]}
               user={user}
-              student={selectedStudent._id}
+              student={selectedStudent}
               setSchedule={setStudentsRaspored}
               setNotification={setNotification}
               isTeorija={false}

@@ -130,6 +130,7 @@ body {
 }
 body.light {
   color: #000000;
+  --color: #151515;
   --navtop: rgb(255, 255, 255);
   --iznad: rgb(var(--svijetlo-iznad));
   --boxShadow: var(--sjena-svijetlo);
@@ -139,12 +140,15 @@ body.light {
   --iznad-objava: rgb(var(--isticanje));
   --pozadina: 227, 227, 227;
   background-color: rgb(237, 237, 241);
+  color-scheme: light;
 }
 
 /* Dark Theme */
 body.dark {
+  color-scheme: dark;
   background-color: rgb(14, 14, 15);
   color: #ffffff;
+  --color:rgb(162, 162, 162)f;
   --navtop: rgb(17, 17, 17);
   --iznad: rgb(var(--tamno-iznad));
   --iznad-nav: rgb(var(--tamno-iznad-nav));
@@ -174,8 +178,8 @@ body.dark {
   padding: 10px;
   border-radius: 1.2rem;
 }
-input[type="text"]{
-  color: black;
+input[type="text"], input[type="email"], input[type="date"], textarea{
+  color: var(--color);
 }
 header{
   z-index: 2;
@@ -534,7 +538,6 @@ color: rgb(var(--tekst));
   align-items: center;
   padding: 0.5rem;
   transition: all 0.1s ease-in-out;
-  outline: 2px solid rgb(var(--isticanje2));
   border-radius: var(--radius);
 }
 
@@ -658,12 +661,11 @@ align-items: center;
   display: none;
 }
 .spremiBtn:hover{
-  background-color: rgb(var(--pozadina-svijetlo));
+  background-color: rgb(var(--pozadina));
   outline: 3px solid rgb(var(--isticanje));
   color: rgb(var(--isticanje));
 }
 .zatvoriBtn{
-  background-color: rgb(var(--pozadina-svijetlo));
   color: rgb(var(--isticanje));
 }
 .zatvoriBtn:hover{
