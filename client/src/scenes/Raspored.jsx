@@ -24,21 +24,12 @@ const Raspored = () => {
 
   const sendRequestStudentRaspored = async (studentId) => {
     try {
-      if(user && user.isMentor){
       const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenik/${studentId}`, {
         withCredentials: true,
       });
       const data = res.data;
       setStudentsRaspored(data.schedule);
       setSelectedStudent(data.student);
-    }
-    if(user && user.isStudent){
-      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenik/${user._id}`, {
-        withCredentials: true,
-      });
-      const data = res.data;
-      setStudentsRaspored(data);
-    }
     } catch (err) {
       console.error('Error fetching student raspored:', err);
     }
@@ -92,16 +83,29 @@ const Raspored = () => {
   useEffect(() => {
     sendRequest().then((data) => {
       setUser(data.user);
+      if (data.user.isStudent) {
+        sendRequestStudentRaspored(data.user._id);
+      }
     });
-    if (user && user.isMentor) {
-      sendRequestStudentsRaspored().then((data) => {
-        setStudentsRaspored(data.schedule);
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      if (user.isMentor) {
+        sendRequestStudentsRaspored().then((data) => {
+          setStudentsRaspored(data.schedule);
+        });
+      }
+      sendRequestTeorija().then((data) => {
+        setTeorija(data.teorija);
       });
     }
-    sendRequestTeorija().then((data) => {
-      setTeorija(data.teorija);
-    });
-  }, [dodajRasporedTeorija]);
+  }, [user]);
+
+  useEffect(() => {
+    console.log('User:', user);
+    console.log('Students Raspored:', studentsRaspored);
+  }, [user, studentsRaspored]);
 
   return (
     <>
@@ -113,7 +117,7 @@ const Raspored = () => {
           onCancel={() => setDodajRasporedTeorija(false)}
         />
       )}
-       {dodajRasporedStudent && (
+      {dodajRasporedStudent && (
         <DodajTermin
           dodajRasporedTeorija={dodajRasporedStudent}
           onCancel={() => setDodajRasporedStudent(false)}
@@ -122,7 +126,7 @@ const Raspored = () => {
       )}
       <div className="main">
         {user && user.isMentor && (
-          <div className="rl-gumb" onClick={handleItemClickRasporedGumb} >
+          <div className="rl-gumb" onClick={handleItemClickRasporedGumb}>
             {rasporedGumb ? (
               <Icon className="icon" icon="solar:list-up-minimalistic-broken" />
             ) : (
@@ -137,49 +141,78 @@ const Raspored = () => {
             onStudentClick={handleStudentClick}
           />
         )}
-        
+
         {user && user.isMentor && selectedStudentId && (
-  <>
-    <div className=' div-radio bc-none'>
-      <div>
-        <p>Raspored učenika: {selectedStudent && selectedStudent.ime} {selectedStudent && selectedStudent.prezime}</p>
-      </div>
-      {user && user.isMentor && (
-        <div
-          className="gumb action-btn abEdit "
-          onClick={() => setDodajRasporedStudent(true)}
-        >
-          <Icon icon="solar:add-circle-broken" fontSize="large" />Uredi raspored
-        </div>
-      )}
-    </div>
-    <div className="raspored">
-      {studentsRaspored ? (
-        ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
-          <RasporedDan
-              key={day}
-              day={day}
-              teorija={studentsRaspored[day]}
-              user={user}
-              student={selectedStudent}
-              setSchedule={setStudentsRaspored}
-              setNotification={setNotification}
-              isTeorija={false}
-            />
-        ))
-      ) : (
-        <div>
-          <p>Nema dostupnog rasporeda</p>
-        </div>
-      )}
-    </div>
-  </>
-)}
-{user && user.isAdmin && (
+          <>
+            <div className=' div-radio bc-none'>
+              <div>
+                <p>Raspored učenika: {selectedStudent && selectedStudent.ime} {selectedStudent && selectedStudent.prezime}</p>
+              </div>
+              {user && user.isMentor && (
+                <div
+                  className="gumb action-btn abEdit "
+                  onClick={() => setDodajRasporedStudent(true)}
+                >
+                  <Icon icon="solar:add-circle-broken" fontSize="large" />Uredi raspored
+                </div>
+              )}
+            </div>
+            <div className="raspored">
+              {studentsRaspored ? (
+                ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
+                  <RasporedDan
+                    key={day}
+                    day={day}
+                    teorija={studentsRaspored[day]}
+                    user={user}
+                    student={selectedStudent}
+                    setSchedule={setStudentsRaspored}
+                    setNotification={setNotification}
+                    isTeorija={false}
+                  />
+                ))
+              ) : (
+                <div>
+                  <p>Nema dostupnog rasporeda</p>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+        {user && user.isStudent && (
+          <>
+            <div className=' div-radio bc-none'>
+              <div>
+                <p>Raspored učenika</p>
+              </div>
+            </div>
+            <div className="raspored">
+              {studentsRaspored ? (
+                ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
+                  <RasporedDan
+                    key={day}
+                    day={day}
+                    teorija={studentsRaspored[day]}
+                    user={user}
+                    student={user}
+                    setSchedule={setStudentsRaspored}
+                    setNotification={setNotification}
+                    isTeorija={false}
+                  />
+                ))
+              ) : (
+                <div>
+                  <p>Nema dostupnog rasporeda</p>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+        {user && user.isAdmin && (
           <div className="div-radio bc-none">
             <div>
-        <p>Teorija</p>
-      </div>
+              <p>Teorija</p>
+            </div>
             <div
               className="gumb action-btn abEdit "
               onClick={() => setDodajRasporedTeorija(true)}
