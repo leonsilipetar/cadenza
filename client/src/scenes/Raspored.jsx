@@ -240,6 +240,35 @@ const Raspored = () => {
             )}
           </>
         )}
+         {user && user.isStudent && (
+          <>
+            <div className=' div-radio bc-none'>
+              <div>
+                <p>Raspored učenika</p>
+              </div>
+            </div>
+            <div className="raspored">
+              {studentsRaspored ? (
+                ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
+                  <RasporedDan
+                    key={day}
+                    day={day}
+                    teorija={studentsRaspored[day]}
+                    user={user}
+                    student={user}
+                    setSchedule={setStudentsRaspored}
+                    setNotification={setNotification}
+                    isTeorija={false}
+                  />
+                ))
+              ) : (
+                <div>
+                  <p>Nema dostupnog rasporeda</p>
+                </div>
+              )}
+            </div>
+          </>
+        )}
         {user && user.isAdmin && (
           <>
             <div className='div-radio bc-none'>
