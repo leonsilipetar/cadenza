@@ -759,6 +759,10 @@ align-items: center;
 .linkMAI{
   padding:1rem;
 }
+.moj-raspored{
+  background-color: rgb(var(--isticanje));
+  border-radius: var(--radius);
+}
   @media only screen and (max-width: 1080px) {
     .raspored-lista{
     left: 0;

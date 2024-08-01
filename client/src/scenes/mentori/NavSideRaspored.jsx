@@ -1,7 +1,6 @@
-// NavSideRaspored.jsx
 import React from 'react';
 
-const NavSideRaspored = ({ students, onStudentClick }) => {
+const NavSideRaspored = ({ students, onStudentClick, onCombinedScheduleClick }) => {
   return (
     <>
       <div className="raspored-lista">
@@ -11,6 +10,9 @@ const NavSideRaspored = ({ students, onStudentClick }) => {
           </div>
         ) : (
           <div className="rl-items">
+            <div className="rl moj-raspored" onClick={onCombinedScheduleClick}>
+              Moj raspored
+            </div>
             {students.map((student) => (
               <div
                 className="rl"

@@ -3,13 +3,22 @@ import { Icon } from '@iconify/react';
 import axios from 'axios';
 import ApiConfig from '../../components/apiConfig';
 
-const RasporedDan = ({ teorija, student, teorijaID, day, user, setSchedule, setNotification, isTeorija }) => {
-  console.log("student: ", student)
+const RasporedDan = ({
+  teorija,
+  student,
+  teorijaID,
+  day,
+  user,
+  setSchedule,
+  setNotification,
+  isTeorija,
+  getColorByStudentId
+}) => {
   const obrisiTermin = async (id) => {
     try {
-      const deleteUrl = isTeorija 
-    ? `${ApiConfig.baseUrl}/api/deleteTermin/${id}?day=${day}&teorijaID=${teorijaID}` 
-    : `${ApiConfig.baseUrl}/api/deleteUcenikTermin/${student._id}?day=${day}&terminId=${id}`;
+      const deleteUrl = isTeorija
+        ? `${ApiConfig.baseUrl}/api/deleteTermin/${id}?day=${day}&teorijaID=${teorijaID}`
+        : `${ApiConfig.baseUrl}/api/deleteUcenikTermin/${student._id}?day=${day}&terminId=${id}`;
       await axios.delete(deleteUrl, {
         withCredentials: true,
         headers: {
@@ -19,10 +28,10 @@ const RasporedDan = ({ teorija, student, teorijaID, day, user, setSchedule, setN
 
       setSchedule(prevSchedule => {
         if (Array.isArray(prevSchedule)) {
-          // Ažuriranje za teoriju
-          return prevSchedule.map(term => term._id !== id ? term : null).filter(term => term !== null);
+          // Update for theory
+          return prevSchedule.filter(term => term._id !== id);
         } else {
-          // Ažuriranje za studentski raspored
+          // Update for student schedule
           const updatedDay = prevSchedule[day].filter(term => term._id !== id);
           return { ...prevSchedule, [day]: updatedDay };
         }
@@ -48,18 +57,24 @@ const RasporedDan = ({ teorija, student, teorijaID, day, user, setSchedule, setN
   return (
     <div className='dan'>
       <div className="nazivDana">{day}</div>
-      {teorija && teorija.length > 0 && teorija.map((term, index) => (
-        <div key={index} className={`termin ${isTeorija ? 'boja-teorija' : ''}`}>
-          {user && user.isAdmin && (
-            <div className='obrisiTermin' onClick={() => obrisiTermin(term._id)}>
-              <Icon icon="solar:minus-circle-broken" />
-            </div>
-          )}
-          <div className="dvorana">{term.dvorana}</div>
-          <div className="vrijeme">{term.vrijeme}</div>
-          <div className="rasporedMentor">{term.mentor}</div>
-        </div>
-      ))}
+      {teorija && teorija.length > 0 && teorija.map((term, index) => {
+
+        return (
+          <div
+            key={index}
+            className={`termin ${isTeorija ? 'boja-teorija' : ''}`}
+          >
+            {user && user.isAdmin && (
+              <div className='obrisiTermin' onClick={() => obrisiTermin(term._id)}>
+                <Icon icon="solar:minus-circle-broken" />
+              </div>
+            )}
+            <div className="dvorana">{term.dvorana}</div>
+            <div className="vrijeme">{term.vrijeme}</div>
+            <div className="rasporedMentor">{term.mentor}</div>
+          </div>
+        );
+      })}
     </div>
   );
 };
