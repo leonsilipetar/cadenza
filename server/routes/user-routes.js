@@ -1,12 +1,12 @@
 const express = require('express');
-const { 
-  signup, 
-  login, 
-  verifyToken, 
-  getUser, 
-  // refreshToken, 
+const {
+  signup,
+  login,
+  verifyToken,
+  getUser,
+  // refreshToken,
   logout,
-  getKorisnici, 
+  getKorisnici,
   getDetaljiKorisnika,
   updateDetaljiKorisnika,
   getAllStudents,
@@ -15,15 +15,16 @@ const {
 const {
   signupMentor,
   getMentori,
-  updateDetaljiMentora, 
+  updateDetaljiMentora,
   getMentorStudents,
   getStudentsRaspored,
   getStudentRaspored,
   addScheduleToStudent,
   deleteRaspored,
-}= require('../controllers/mentor-controller.js');
+} = require('../controllers/mentor-controller.js');
 
-const { updateTeorija, getTeorija, deleteTermin} = require('../controllers/teorija-controller');
+const { updateTeorija, getTeorija, deleteTermin } = require('../controllers/teorija-controller');
+const { getSchools } = require('../controllers/school-controller'); // Import the new controller
 
 const router = express.Router();
 
@@ -53,4 +54,8 @@ router.get('/students/:id', verifyToken, getMentorStudents);
 router.post('/uredi/ucenik-raspored/:id', verifyToken, addScheduleToStudent);
 router.delete("/deleteTermin/:id", verifyToken, deleteTermin);
 router.delete("/deleteUcenikTermin/:id", verifyToken, deleteRaspored);
+
+// New route for fetching schools
+router.get('/schools', verifyToken, getSchools);
+
 module.exports = router;

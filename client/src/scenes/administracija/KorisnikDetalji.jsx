@@ -5,136 +5,158 @@ import ApiConfig from '../../components/apiConfig';
 axios.defaults.withCredentials = true;
 
 const KorisnikDetalji = ({ korisnikId, onCancel }) => {
-
   const [isSaving, setIsSaving] = useState(false);
-    const getDetaljiKorisnika = async (korisnikId) => {
-        try {
-          // Assuming userId is the ID of the selected user
-          const res = await axios.get(`${ApiConfig.baseUrl}/api/korisnik/${korisnikId}`, {
-            withCredentials: true,
-          });
-      
-          const detaljiKorisnika = res.data;
-          return detaljiKorisnika;
-        } catch (err) {
-          console.error(err);
-          throw err; // Propagate the error to the caller
-        }
-      };
-      const [inputs, setInputs] = useState({
-        korisnickoIme: '',
-        email: '',
-        ime: '',
-        prezime: '',
-        isAdmin: false,
-        isMentor: false,
-        isStudent: true,
-        oib: '',
-        program: '',
-        brojMobitela: '',
-        mentor: '',
-        datumRodjenja: '',
+  const [mentors, setMentors] = useState([]);
+  const [schools, setSchools] = useState([]);
+  const [inputs, setInputs] = useState({
+    korisnickoIme: '',
+    email: '',
+    ime: '',
+    prezime: '',
+    isAdmin: false,
+    isMentor: false,
+    isStudent: true,
+    oib: '',
+    program: '',
+    brojMobitela: '',
+    mentor: '',  // Initial value for mentor
+    school: '',  // Initial value for school
+    datumRodjenja: '',
+    adresa: {
+      ulica: '',
+      kucniBroj: '',
+      mjesto: '',
+    },
+    pohadjaTeoriju: false,
+    napomene: '',
+    maloljetniClan: false,
+    roditelj1: {
+      ime: '',
+      prezime: '',
+      brojMobitela: '',
+    },
+    roditelj2: {
+      ime: '',
+      prezime: '',
+      brojMobitela: '',
+    },
+  });
+
+  const fetchMentors = async () => {
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/mentori`);
+      setMentors(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchSchools = async () => {
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/schools`);
+      setSchools(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getDetaljiKorisnika = async (korisnikId) => {
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/korisnik/${korisnikId}`, {
+        withCredentials: true,
+      });
+      const detaljiKorisnika = res.data;
+      return detaljiKorisnika;
+    } catch (err) {
+      console.error(err);
+      throw err; // Propagate the error to the caller
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name in inputs.adresa) {
+      setInputs((prev) => ({
+        ...prev,
+        adresa: { ...prev.adresa, [name]: value },
+      }));
+    } else {
+      setInputs((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  const urediKorisnika = async () => {
+    try {
+      const res = await axios.put(`${ApiConfig.baseUrl}/api/update-korisnik/${korisnikId}`, inputs);
+      return res.data;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSaving(true);
+    const result = await urediKorisnika();
+    if (result) {
+      console.log('User updated successfully:', result);
+    } else {
+      console.log('User update failed.');
+    }
+    setIsSaving(false);
+  };
+
+  useEffect(() => {
+    getDetaljiKorisnika(korisnikId).then((data) => {
+      const formattedDate = data.datumRodjenja ? new Date(data.datumRodjenja).toISOString().split('T')[0] : '';
+      setInputs({
+        korisnickoIme: data.korisnickoIme,
+        email: data.email,
+        ime: data.ime,
+        prezime: data.prezime,
+        isAdmin: data.isAdmin,
+        isMentor: data.isMentor,
+        isStudent: data.isStudent,
+        oib: data.oib,
+        program: data.program,
+        brojMobitela: data.brojMobitela,
+        mentor: data.mentors || '',  // Ensure default value is set
+        school: data.school || '',  // Ensure default value is set
+        datumRodjenja: formattedDate,
         adresa: {
-          ulica: '',
-          kucniBroj: '',
-          mjesto: '',
+          ulica: data.adresa?.ulica || '',
+          kucniBroj: data.adresa?.kucniBroj || '',
+          mjesto: data.adresa?.mjesto || '',
         },
-        pohadjaTeoriju: false,
-        napomene: '',
-        maloljetniClan: false,
+        pohadjaTeoriju: data.pohadjaTeoriju,
+        napomene: data.napomene,
+        maloljetniClan: data.maloljetniClan,
         roditelj1: {
-          ime: '',
-          prezime: '',
-          brojMobitela: '',
+          ime: data.roditelj1?.ime || '',
+          prezime: data.roditelj1?.prezime || '',
+          brojMobitela: data.roditelj1?.brojMobitela || '',
         },
         roditelj2: {
-          ime: '',
-          prezime: '',
-          brojMobitela: '',
+          ime: data.roditelj2?.ime || '',
+          prezime: data.roditelj2?.prezime || '',
+          brojMobitela: data.roditelj2?.brojMobitela || '',
         },
       });
-      
-      
-    
-      const handleChange = (e) => {
-        setInputs((prev) => ({
-          ...prev,
-          [e.target.name]: e.target.value,
-        }));
-      };
-    
-      const urediKorisnika = async () => {
-        try {
-          const res = await axios.put(`${ApiConfig.baseUrl}/api/update-korisnik/${korisnikId}`, inputs);
-          const data = res.data;
-          return data;
-        } catch (err) {
-          console.error(err);
-          return null;
-        }
-      };
-      
-    
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsSaving(true);
-    
-        const result = await urediKorisnika();
-    
-        if (result) {
-          console.log('User updated successfully:', result);
-        } else {
-          console.log('User update failed.');
-        }
-    
-        // Simulate a delay (you can replace this with your actual save logic)
-        setTimeout(() => {
-          setIsSaving(false);
-        }, 1000); // Adjust the delay as needed
-      };
+    });
 
-      useEffect(() => {
-        getDetaljiKorisnika(korisnikId).then((data) => {
-          const formattedDate = data.datumRodjenja ? new Date(data.datumRodjenja).toISOString().split('T')[0] : '';
-          setInputs({
-            korisnickoIme: data.korisnickoIme,
-            email: data.email,
-            ime: data.ime,
-            prezime: data.prezime,
-            isAdmin: data.isAdmin,
-            isMentor: data.isMentor,
-            isStudent: data.isStudent,
-            oib: data.oib,
-            program: data.program,
-            brojMobitela: data.brojMobitela,
-            mentor: data.mentor,
-            datumRodjenja: formattedDate,
-            adresa: {
-              ulica: data.adresa?.ulica || '',
-              kucniBroj: data.adresa?.kucniBroj || '',
-              mjesto: data.adresa?.mjesto || '',
-            },
-            pohadjaTeoriju: data.pohadjaTeoriju,
-            napomene: data.napomene,
-            maloljetniClan: data.maloljetniClan,
-            roditelj1: {
-              ime: data.roditelj1?.ime || '',
-              prezime: data.roditelj1?.prezime || '',
-              brojMobitela: data.roditelj1?.brojMobitela || '',
-            },
-            roditelj2: {
-              ime: data.roditelj2?.ime || '',
-              prezime: data.roditelj2?.prezime || '',
-              brojMobitela: data.roditelj2?.brojMobitela || '',
-            },
-          });
-        });
-      }, [korisnikId]);
-    return(
-        <div className="popup">
-        <form onSubmit={handleSubmit}>
-          <div className="div">
-            <label htmlFor="kor-Korime">Korisničko ime:</label>
+    fetchMentors();
+    fetchSchools();
+  }, [korisnikId]);
+
+  return (
+    <div className="popup">
+      <form onSubmit={handleSubmit}>
+        <div className="div">
+          <label htmlFor="kor-Korime">Korisničko ime:</label>
           <input
             className="input-login-signup"
             value={inputs.korisnickoIme}
@@ -156,22 +178,21 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           />
           <label htmlFor="kor-oib">OIB:</label>
           <input
-          className="input-login-signup"
-          value={inputs.oib}
-          onChange={(e) => setInputs({ ...inputs, oib: e.target.value })}
-          type="text"
-          name="oib"
-          id="kor-oib"
-          placeholder="OIB"
-          maxLength={11}
-          pattern="\d{11}"
-          required
+            className="input-login-signup"
+            value={inputs.oib}
+            onChange={handleChange}
+            type="text"
+            name="oib"
+            id="kor-oib"
+            placeholder="OIB"
+            maxLength={11}
+            pattern="\d{11}"
+            required
           />
-          </div>
+        </div>
 
-
-          <div className="div">
-                <label htmlFor="kor-ime">Ime:</label>
+        <div className="div">
+          <label htmlFor="kor-ime">Ime:</label>
           <input
             className="input-login-signup"
             value={inputs.ime}
@@ -181,7 +202,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
             id="kor-ime"
             placeholder="ime"
           />
-      <label htmlFor="kor-prezime">Prezime:</label>
+          <label htmlFor="kor-prezime">Prezime:</label>
           <input
             className="input-login-signup"
             value={inputs.prezime}
@@ -192,16 +213,16 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
             placeholder="prezime"
           />
           <label htmlFor="kor-datum-rodjenja">Datum rođenja:</label>
-            <input
-              className="input-login-signup"
-              value={inputs.datumRodjenja}
-              onChange={(e) => setInputs({ ...inputs, datumRodjenja: e.target.value })}
-              type="date"
-              name="datumRodjenja"
-              id="kor-datum-rodjenja"
-              placeholder="datum rođenja"
-            />
-<label htmlFor="kor-brojMobitela">Broj mobitela:</label>
+          <input
+            className="input-login-signup"
+            value={inputs.datumRodjenja}
+            onChange={handleChange}
+            type="date"
+            name="datumRodjenja"
+            id="kor-datum-rodjenja"
+            placeholder="datum rođenja"
+          />
+          <label htmlFor="kor-brojMobitela">Broj mobitela:</label>
           <input
             className="input-login-signup"
             value={inputs.brojMobitela}
@@ -211,10 +232,10 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
             id="kor-brojMobitela"
             placeholder="broj mobitela"
           />
-      </div>
+        </div>
 
-<div className="div">
-<label htmlFor="kor-program">Program:</label>
+        <div className="div">
+          <label htmlFor="kor-program">Program:</label>
           <input
             className="input-login-signup"
             value={inputs.program}
@@ -224,99 +245,116 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
             id="kor-program"
             placeholder="program"
           />
-  <label htmlFor="kor-mentor">Mentor:</label>
-          <input
+          <label htmlFor="kor-mentor">Mentor:</label>
+          <select
             className="input-login-signup"
             value={inputs.mentor}
             onChange={handleChange}
-            type="text"
             name="mentor"
-            id="kor-mrntor"
-            placeholder="mentor"
-          />
-</div>
-          
-          
-          <div className='div'>
+            id="kor-mentor"
+          >
+            <option value="">Odaberi mentora</option>
+            {mentors.map((mentor) => (
+              <option key={mentor._id} value={mentor._id}>
+                {mentor.korisnickoIme}
+              </option>
+            ))}
+          </select>
+          <label htmlFor="kor-skola">Škola:</label>
+          <select
+            className="input-login-signup"
+            value={inputs.school}
+            onChange={handleChange}
+            name="school"
+            id="kor-skola"
+          >
+            <option value="">Odaberi školu</option>
+            {schools.map((school) => (
+              <option key={school._id} value={school._id}>
+                {school.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="div">
           <label htmlFor="kor-ulica">Ulica:</label>
           <input
             className="input-login-signup"
-            onChange={(e) => setInputs({ ...inputs, adresa: { ...inputs.adresa, ulica: e.target.value } })}
+            onChange={handleChange}
             type="text"
             name="ulica"
             id="kor-ulica"
             placeholder="ulica"
             value={inputs.adresa.ulica}
           />
-      <label htmlFor="kor-kucni-broj">Kućni broj:</label>
+          <label htmlFor="kor-kucni-broj">Kućni broj:</label>
           <input
             className="input-login-signup"
-            onChange={(e) => setInputs({ ...inputs, adresa: { ...inputs.adresa, kucniBroj: e.target.value } })}
+            onChange={handleChange}
             type="text"
             name="kucniBroj"
             id="kor-kucni-broj"
             placeholder="kućni broj"
             value={inputs.adresa.kucniBroj}
           />
-      <label htmlFor="kor-mjesto">Mjesto:</label>
+          <label htmlFor="kor-mjesto">Mjesto:</label>
           <input
             className="input-login-signup"
-            onChange={(e) => setInputs({ ...inputs, adresa: { ...inputs.adresa, mjesto: e.target.value } })}
+            onChange={handleChange}
             type="text"
             name="mjesto"
             id="kor-mjesto"
             placeholder="mjesto"
             value={inputs.adresa.mjesto}
           />
-          </div>
+        </div>
 
-
-          <div className="div-radio">
-            
-<div className="checkbox-group">
-<div className={`checkbox-item ${inputs.pohadjaTeoriju ? 'checked' : ''}`} onClick={() => setInputs({ ...inputs, pohadjaTeoriju: !inputs.pohadjaTeoriju })}>
-  <input
-    type="checkbox"
-    id="pohadjaTeoriju"
-    checked={inputs.pohadjaTeoriju}
-    onChange={() => setInputs({ ...inputs, pohadjaTeoriju: !inputs.pohadjaTeoriju })}
-    style={{ display: 'none' }}
-  />
-  {inputs.pohadjaTeoriju ? 'Pohađa teoriju' : 'Ne pohađa teoriju'}
-</div>
-    </div>
-  </div>
-
-          <div className="div">
-          <label htmlFor="kor-napomene">Napomene:</label>
-            <textarea
-              className="input-login-signup"
-              value={inputs.napomene}
-              onChange={(e) => setInputs({ ...inputs, napomene: e.target.value })}
-              name="napomene"
-              id="kor-napomene"
-              placeholder="Unesite napomene o korisniku "
-              maxLength={5000}
-            />
+        <div className="div-radio">
+          <div className="checkbox-group">
+            <div
+              className={`checkbox-item ${inputs.pohadjaTeoriju ? 'checked' : ''}`}
+              onClick={() => setInputs((prev) => ({ ...prev, pohadjaTeoriju: !prev.pohadjaTeoriju }))}
+            >
+              <input
+                type="checkbox"
+                id="pohadjaTeoriju"
+                checked={inputs.pohadjaTeoriju}
+                onChange={() => setInputs((prev) => ({ ...prev, pohadjaTeoriju: !prev.pohadjaTeoriju }))}
+                style={{ display: 'none' }}
+              />
+              {inputs.pohadjaTeoriju ? 'Pohađa teoriju' : 'Ne pohađa teoriju'}
             </div>
- 
-      
-          <div className='div-radio'>
+          </div>
+        </div>
+
+        <div className="div">
+          <label htmlFor="kor-napomene">Napomene:</label>
+          <textarea
+            className="input-login-signup"
+            value={inputs.napomene}
+            onChange={handleChange}
+            name="napomene"
+            id="kor-napomene"
+            placeholder="Unesite napomene o korisniku"
+            maxLength={5000}
+          />
+        </div>
+
+        <div className="div-radio">
           <button
             className="gumb action-btn zatvoriBtn"
             onClick={() => onCancel()}
           >
             Zatvori
           </button>
-          <button className="gumb action-btn spremiBtn" type="submit" onClick={handleSubmit}>
-      {isSaving ? 'Spremanje...' : 'Spremi promjene'}
-    </button>
-          
-          </div>
-        </form>
-      </div>
-    )
-
+          <button className="gumb action-btn spremiBtn" type="submit">
+            {isSaving ? 'Spremanje...' : 'Spremi promjene'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
-export default KorisnikDetalji ;
+export default KorisnikDetalji;

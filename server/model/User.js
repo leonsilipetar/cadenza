@@ -37,22 +37,23 @@ const userSchema = new Schema({
     prezime: String,
     brojMobitela: String,
   },
-  mentor: {
+  mentors: [{ // Updated field name to plural
     type: Schema.Types.ObjectId,
     ref: 'Mentor',
-  },
-
+  }],
   rasporedId: {
     type: Schema.Types.ObjectId,
     ref: 'Raspored',
   },
-  
   rasporedTeorijaId: {
     type: Schema.Types.ObjectId,
     ref: 'Raspored',
   },
-},
-{timestamps: true }
-);
+  school: {
+    type: Schema.Types.ObjectId,
+    ref: 'School',
+    required: true,
+  },
+}, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

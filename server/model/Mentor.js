@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Define the Mentor schema
 const mentorSchema = new Schema({
   korisnickoIme: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -12,7 +11,7 @@ const mentorSchema = new Schema({
   oib: { type: String, required: true, unique: true },
   ime: { type: String, required: true },
   prezime: { type: String, required: true },
-  brojMobitela: { type: String }, 
+  brojMobitela: { type: String },
   datumRodjenja: { type: Date },
   adresa: {
     ulica: { type: String },
@@ -20,8 +19,8 @@ const mentorSchema = new Schema({
     mjesto: { type: String },
   },
   napomene: {
-    type: [String], // Define the type as an array of strings
-    default: [],    // Provide a default empty array if needed
+    type: [String],
+    default: [],
   },
   password: String,
   students: [
@@ -31,10 +30,13 @@ const mentorSchema = new Schema({
       prezime: String,
     }
   ],
+  school: {
+    type: Schema.Types.ObjectId,
+    ref: 'School',
+    required: true,
+  },
 });
 
-// Create the Mentor model
 const Mentor = mongoose.model('Mentor', mentorSchema);
 
-// Export the Mentor model
 module.exports = Mentor;
