@@ -272,6 +272,10 @@ header{
       border-radius: var(--radius);
       cursor: pointer;
     }
+    .rl:nth-child(1){
+      border-bottom: none;
+      color: white;
+    }
     .rl{
       width: 90%;
       text-align: center;

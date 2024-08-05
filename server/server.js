@@ -14,7 +14,6 @@ app.use(
     credentials: true,
     origin: function (origin, callback) {
       const allowedOrigins = ['http://localhost:3000', 'https://mai-cadenza.onrender.com'];
-
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -23,23 +22,7 @@ app.use(
     },
   })
 );
-/*
-const _dirname = path.dirname("");
-const buildPath = path.join(_dirname, "../client/build");
-app.use(express.static(buildPath));
 
-app.get("/*", function(req, res){
-
-  res.sendFile(
-    path.join(__dirname, "../client/build/index.html"),
-    function(err) {
-      if(err){
-        res.status(500),send(err);
-      }
-    }
-  )
-})
-*/
 // Handle preflight requests
 app.options('*', cors());
 
@@ -47,6 +30,18 @@ app.use(cookieParser());
 app.use(express.json());
 app.use('/api', router);
 
+// Serve static files from the React app
+const buildPath = path.join(__dirname, '../client/build');
+app.use(express.static(buildPath));
+
+// The catch-all handler: for any request that doesn't match the API routes, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(buildPath, 'index.html'), (err) => {
+    if (err) {
+      res.status(500).send(err);
+    }
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 
