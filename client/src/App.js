@@ -12,6 +12,7 @@ import Admin from './scenes/administracija/Admin.jsx';
 import Korisnici from './scenes/administracija/Korisnici.jsx';
 import RacuniAdmin from './scenes/administracija/RacuniAdmin.jsx';
 import Mentori from './scenes/administracija/Mentori.jsx';
+import Classroom from './scenes/administracija/Classroom.jsx';
 
 function App() {
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -46,6 +47,7 @@ function App() {
       {isLoggedIn && <Route path="/korisnici/*" element={<Korisnici />} />}
       {isLoggedIn && <Route path="/mentori/*" element={<Mentori />} />}
       {isLoggedIn && <Route path="/racuni-admin/*" element={<RacuniAdmin />} />}
+      {isLoggedIn && <Route path="/classrooms/*" element={<Classroom/>} />}
       <Route path="/login" element={<Login />} />
       <Route path="/*" element={<Login />} />
     </Routes>

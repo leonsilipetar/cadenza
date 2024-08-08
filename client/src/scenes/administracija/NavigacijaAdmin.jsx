@@ -6,6 +6,7 @@ import Profil from "../Profile";
 import { Icon } from '@iconify/react';
 import Admin from "./Admin";
 import RacuniAdmin from "./RacuniAdmin";
+import Classroom from "./Classroom";
 axios.defaults.withCredentials = true;
 
 const NavigacijaAdmin = ({ user, otvoreno}) => {
@@ -47,6 +48,12 @@ const NavigacijaAdmin = ({ user, otvoreno}) => {
           </Link>
           <p>Racuni</p>
         </div>
+        <div className={activeItem === 'classrooms' ? 'otvoreno' : ''} onClick={() => handleItemClick('classrooms')}>
+          <Link className="link" to="/classrooms">
+          <Icon className="icon" icon="solar:file-check-broken" />
+          </Link>
+          <p>Učionice</p>
+        </div>
       </nav>
     </header>
     <Routes>
@@ -54,6 +61,7 @@ const NavigacijaAdmin = ({ user, otvoreno}) => {
         <Route path="/korisnici" element={<Profil />} />
         <Route path="/racuni-admin" element={<RacuniAdmin />} />
         <Route path="/mentori" element={<Profil />} />
+        <Route path="/classrooms" element={<Classroom/>} />
     </Routes>
         </>
     )

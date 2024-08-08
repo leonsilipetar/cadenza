@@ -160,6 +160,7 @@ body.dark {
 }
 .notification {
   position: fixed;
+  bottom: 2rem;
   padding: 0.5rem 1rem;
   border-radius: var(--radius);
   color: var(--tekst);
@@ -441,17 +442,19 @@ color: rgb(var(--tekst));
 .p{
   padding: 0.3rem;
 }
-.popup{
+.popup {
   z-index: 5;
-  position: absolute;
+  position: fixed; /* Use fixed to ensure it's relative to the viewport */
   top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
   background-color: rgba(0, 0, 0, 0.8);
   padding: 1rem;
-  min-height: 100%;
+  overflow: auto; /* Allow the popup to scroll if content overflows */
 }
 .popup .div{
   width: 75%;

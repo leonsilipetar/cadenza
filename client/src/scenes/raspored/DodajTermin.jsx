@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ApiConfig from '../../components/apiConfig';
+import Notification from '../../components/Notifikacija'; // Adjust the path as needed
 
 axios.defaults.withCredentials = true;
 
@@ -14,6 +15,24 @@ const DodajTermin = ({ onCancel, studentID }) => {
     mentor: '',
   });
   const [selectedDay, setSelectedDay] = useState('');
+  const [classrooms, setClassrooms] = useState([]);
+  const [availableClassrooms, setAvailableClassrooms] = useState([]);
+  const [notification, setNotification] = useState(null); // Added notification state
+
+  useEffect(() => {
+    const fetchClassrooms = async () => {
+      try {
+        const res = await axios.get(`${ApiConfig.baseUrl}/api/classrooms`);
+        console.log('Classrooms fetched:', res.data); // Debugging line
+        setClassrooms(res.data);
+        setAvailableClassrooms(res.data); // Set all fetched classrooms as available initially
+      } catch (err) {
+        console.error('Error fetching classrooms:', err);
+      }
+    };
+
+    fetchClassrooms();
+  }, []);
 
   const handleDayToggle = (day) => {
     setSelectedDay(day);
@@ -27,7 +46,18 @@ const DodajTermin = ({ onCancel, studentID }) => {
   };
 
   const handleAddTerm = () => {
-    if (selectedDay) {
+    if (selectedDay && inputs.dvorana) {
+      const selectedClassroom = classrooms.find(c => c.name === inputs.dvorana);
+      if (selectedClassroom) {
+        setAvailableClassrooms(prevClassrooms => 
+          prevClassrooms.filter(c => c._id !== selectedClassroom._id)
+        );
+        selectedClassroom.isAvailable = false;
+        axios.put(`${ApiConfig.baseUrl}/api/classrooms/${selectedClassroom._id}`, selectedClassroom)
+          .then(() => console.log('Classroom updated:', selectedClassroom))
+          .catch(err => console.error('Error updating classroom:', err));
+      }
+
       setTerms((prevTerms) => [
         ...prevTerms,
         {
@@ -50,21 +80,18 @@ const DodajTermin = ({ onCancel, studentID }) => {
     try {
       let res;
       if (studentID) {
-        // If student is provided, save terms to student's schedule
         res = await axios.post(`${ApiConfig.baseUrl}/api/uredi/ucenik-raspored/${studentID}`, {
           schedules: terms,
         });
       } else {
-        // Otherwise, save terms as general teorija
         res = await axios.post(`${ApiConfig.baseUrl}/api/uredi/teorija`, {
           raspored: terms,
         });
       }
-      const data = res.data;
-      console.log('Server Response:', data);
-      return data;
+      console.log('Server Response:', res.data); // Debugging line
+      return res.data;
     } catch (err) {
-      console.error(err);
+      console.error('Error saving terms:', err);
       return null;
     }
   };
@@ -77,14 +104,23 @@ const DodajTermin = ({ onCancel, studentID }) => {
 
     if (result) {
       console.log('Raspored je uspjesno dodan:', result);
-      setStatus('Raspored je uspješno dodan!');
+      setNotification({
+        type: 'success',
+        message: 'Raspored je uspješno dodan!',
+      });
       setTerms([]);
     } else {
-      console.log('Doslo je do pogreske tijekom dodavanja rasporeda.');
-      setStatus('Došlo je do greške prilikom dodavanja rasporeda!');
+      console.log('Došlo je do pogreške tijekom dodavanja rasporeda.');
+      setNotification({
+        type: 'error',
+        message: 'Došlo je do greške prilikom dodavanja rasporeda!',
+      });
       setTimeout(() => {
         setIsDodajMentoraDisabled(false);
-        setStatus('Probajte ponovno!');
+        setNotification({
+          type: 'warning',
+          message: 'Pokušajte ponovno!',
+        });
       }, 3000);
     }
   };
@@ -92,14 +128,14 @@ const DodajTermin = ({ onCancel, studentID }) => {
   return (
     <div className="popup">
       <form onSubmit={handleSubmit}>
-        {terms?.length > 0  && (
-        <div className="div div-clmn">Dodani termini:
-        {terms.map((term, index) => (
-          <div key={index} className="div-clmn">
-            <p>{`${term.day}: ${term.dvorana}, ${term.vrijeme}, Mentor: ${term.mentor}`}</p>
+        {terms.length > 0 && (
+          <div className="div div-clmn">Dodani termini:
+            {terms.map((term, index) => (
+              <div key={index} className="div-clmn">
+                <p>{`${term.day}: ${term.dvorana}, ${term.vrijeme}, Mentor: ${term.mentor}`}</p>
+              </div>
+            ))}
           </div>
-        ))}
-        </div>
         )}
 
         <div className="div div-clmn">
@@ -124,15 +160,21 @@ const DodajTermin = ({ onCancel, studentID }) => {
 
           <div className="div">
             <label htmlFor="dvorana">Dvorana:</label>
-            <input
+            <select
               className="input-login-signup"
-              value={inputs.dvorana}
-              onChange={handleChange}
-              type="text"
               name="dvorana"
               id="dvorana"
-              placeholder="npr. učionica 1"
-            />
+              value={inputs.dvorana}
+              onChange={handleChange}
+              disabled={isDodajMentoraDisabled}
+            >
+              <option value="">Odaberite dvoranu</option>
+              {availableClassrooms.map(classroom => (
+                <option key={classroom._id} value={classroom.name}>
+                  {classroom.name}
+                </option>
+              ))}
+            </select>
             <label htmlFor="vrijeme">Vrijeme:</label>
             <input
               className="input-login-signup"
@@ -143,7 +185,7 @@ const DodajTermin = ({ onCancel, studentID }) => {
               id="vrijeme"
               placeholder="npr. 12:00"
             />
-            <label htmlFor="mentor">Tekst:</label>
+            <label htmlFor="mentor">Mentor:</label>
             <input
               className="input-login-signup"
               value={inputs.mentor}
@@ -155,9 +197,7 @@ const DodajTermin = ({ onCancel, studentID }) => {
             />
           </div>
           <button
-            className={`gumb action-btn spremiBtn ${
-              isDodajMentoraDisabled ? 'disabledSpremiBtn' : ''
-            }`}
+            className={`gumb action-btn spremiBtn ${isDodajMentoraDisabled ? 'disabledSpremiBtn' : ''}`}
             type="button"
             onClick={handleAddTerm}
             disabled={isDodajMentoraDisabled}
@@ -174,23 +214,20 @@ const DodajTermin = ({ onCancel, studentID }) => {
             Zatvori
           </button>
           <button
-            className={`gumb action-btn spremiBtn ${
-              isDodajMentoraDisabled ? 'disabledSpremiBtn' : ''
-            }`}
+            className={`gumb action-btn spremiBtn ${isDodajMentoraDisabled ? 'disabledSpremiBtn' : ''}`}
             type="submit"
-            onClick={handleSubmit}
             disabled={isDodajMentoraDisabled}
           >
-            {isDodajMentoraDisabled ? 'Spremanje' : 'Spremi termin'}
+            Spremi
           </button>
         </div>
-
-        {isDodajMentoraDisabled && (
-          <div className={`div`}>
-            <p>{status}</p>
-          </div>
-        )}
       </form>
+      {notification && (
+        <Notification
+          type={notification.type}
+          message={notification.message}
+        />
+      )}
     </div>
   );
 };
