@@ -405,6 +405,23 @@ const updateDetaljiKorisnika = async (req, res, next) => {
     next(err);
   }
 };
+const getUserInvoices = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId).populate('racuni');
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    res.json(user.racuni);
+  } catch (error) {
+    console.error('Error fetching user invoices:', error);
+    res.status(500).send('Error fetching invoices');
+  }
+};
+
+exports.getUserInvoices =  getUserInvoices ;
 
 exports.signup = signup;
 exports.login = login;

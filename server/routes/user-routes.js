@@ -10,6 +10,7 @@ const {
   updateDetaljiKorisnika,
   getAllStudents,
   searchUsersAndMentors,
+  getUserInvoices,
 } = require('../controllers/user-controller.js');
 const {
   signupMentor,
@@ -29,6 +30,7 @@ const {
   updateClassroom,
   deleteClassroom,
 } = require('../controllers/classroom-controller'); // Import classroom controller
+const { generateInvoice, addInvoice } = require('../controllers/invoice-controller'); // Import invoice controller
 
 const router = express.Router();
 
@@ -42,6 +44,7 @@ router.get("/profil", verifyToken, getUser);
 router.get("/korisnik/:userId", verifyToken, getDetaljiKorisnika);
 router.get('/all-students', getAllStudents);
 router.post('/users', searchUsersAndMentors);
+router.get('/api/users/:userId/invoices', getUserInvoices);
 router.post("/logout", verifyToken, logout);
 
 router.post('/signup-mentori', verifyToken, signupMentor);
@@ -65,5 +68,9 @@ router.delete('/classrooms/:id', verifyToken, deleteClassroom);
 
 // New route for fetching schools
 router.get('/schools', verifyToken, getSchools);
+
+// New route for generating invoice
+router.post('/generate-invoice', verifyToken, generateInvoice);
+router.post('/racuni', verifyToken, addInvoice);
 
 module.exports = router;

@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
-
 const Schema = mongoose.Schema;
 
+
 const userSchema = new Schema({
+  // existing fields...
   korisnickoIme: String,
   password: String,
   email: {
@@ -54,6 +55,7 @@ const userSchema = new Schema({
     ref: 'School',
     required: true,
   },
+  racuni: [{ type: Schema.Types.ObjectId, ref: 'Invoice' }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
