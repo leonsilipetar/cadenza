@@ -140,17 +140,16 @@ const login = asyncWrapper(async (req, res, next) => {
       return res.status(400).json({ message: "Invalid email/password!" });
     }
 
-    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
     Object.keys(req.cookies).forEach((cookieName) => {
       res.clearCookie(cookieName);
     });
 
-    res.cookie(String(existingUser._id), token, {
+    res.cookie(String(existingUser.id), token, {
       path: '/',
-      httpOnly: true, // Prevents client-side JS from reading the cookie
-      secure: process.env.NODE_ENV !== 'development', // Ensures the cookie is sent over HTTPS
-      sameSite: 'none', // Prevents the browser from sending this cookie along with cross-site requests
-
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: 'none',
     });
 
     return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });
@@ -308,34 +307,51 @@ const searchUsersAndMentors = async (req, res) => {
 
  
 const refreshToken = (req, res, next) => {
-    const cookies = req.headers.cookie;
-    const prevToken = cookies.split("=")[1];
-    console.log(prevToken)
-    if(!prevToken) {
-        return res.status(400).json({message: "Couldn't find token"});
-    }
-    jwt.verify(String(prevToken), process.env.JWT_SECRET, (err, user) => {
-        if(err) {
-            console.log(err);
-            return res.status(403).json({message: "Autentication faild"})
-        };
+  // Extract cookies from request headers
+  const cookies = req.headers.cookie;
+  if (!cookies) {
+      return res.status(400).json({ message: "No cookies found" });
+  }
 
-        res.clearCookie(`${user.id}`);
-        req.cookies[`${user.id}`] = "";
+  // Find the token in cookies
+  const tokenCookie = cookies.split(";").find(cookie => cookie.trim().startsWith(`${req.cookies[`${user.id}`]}=`));
+  const prevToken = tokenCookie ? tokenCookie.split("=")[1] : null;
 
-        const token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {
-            expiresIn: "1h"
-        });
-        res.cookie(String(user.id), token, {
-            path: '/',
-            httpOnly: true,
-            sameSite: 'lax',
-        });
+  if (!prevToken) {
+      return res.status(400).json({ message: "Couldn't find token" });
+  }
 
-        req.id = user.id;
-        next();
-    })
+  // Verify the old token
+  jwt.verify(prevToken, process.env.JWT_SECRET, (err, user) => {
+      if (err) {
+          console.log(err);
+          return res.status(403).json({ message: "Authentication failed" });
+      }
+
+      // Clear the old token cookie
+      res.clearCookie(`${user.id}`, {
+          path: '/',
+          httpOnly: true,
+          sameSite: 'lax',
+      });
+
+      // Create a new token
+      const newToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+          expiresIn: "1d" // Extend token validity as needed
+      });
+
+      // Set the new token in cookies
+      res.cookie(`${user.id}`, newToken, {
+          path: '/',
+          httpOnly: true,
+          sameSite: 'lax',
+      });
+
+      // Send success response
+      res.status(200).json({ message: "Token refreshed successfully" });
+  });
 };
+
 
 
 const getKorisnici = async (req, res, next) => {
@@ -427,7 +443,7 @@ exports.signup = signup;
 exports.login = login;
 exports.verifyToken = verifyToken;
 exports.getUser = getUser;
-//exports.refreshToken = refreshToken;
+exports.refreshToken = refreshToken;
 exports.logout = logout;
 exports.getKorisnici = getKorisnici;
 exports.getDetaljiKorisnika = getDetaljiKorisnika;

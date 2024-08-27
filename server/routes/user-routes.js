@@ -11,6 +11,7 @@ const {
   getAllStudents,
   searchUsersAndMentors,
   getUserInvoices,
+  refreshToken,
 } = require('../controllers/user-controller.js');
 const {
   signupMentor,
@@ -44,7 +45,8 @@ router.get("/profil", verifyToken, getUser);
 router.get("/korisnik/:userId", verifyToken, getDetaljiKorisnika);
 router.get('/all-students', getAllStudents);
 router.post('/users', searchUsersAndMentors);
-router.get('/api/users/:userId/invoices', getUserInvoices);
+router.get('/users/:userId/invoices',verifyToken, getUserInvoices);
+router.post('/refresh-token', verifyToken, refreshToken);
 router.post("/logout", verifyToken, logout);
 
 router.post('/signup-mentori', verifyToken, signupMentor);
