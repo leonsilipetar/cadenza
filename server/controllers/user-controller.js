@@ -302,55 +302,52 @@ const searchUsersAndMentors = async (req, res) => {
   }
 };
 
-
-
-
- 
 const refreshToken = (req, res, next) => {
   // Extract cookies from request headers
   const cookies = req.headers.cookie;
   if (!cookies) {
-      return res.status(400).json({ message: "No cookies found" });
+    return res.status(400).json({ message: "No cookies found" });
   }
 
   // Find the token in cookies
-  const tokenCookie = cookies.split(";").find(cookie => cookie.trim().startsWith(`${req.cookies[`${user.id}`]}=`));
+  const tokenCookie = cookies.split(";").find(cookie => cookie.trim().startsWith(`${process.env.COOKIE_NAME}=`));
   const prevToken = tokenCookie ? tokenCookie.split("=")[1] : null;
 
   if (!prevToken) {
-      return res.status(400).json({ message: "Couldn't find token" });
+    return res.status(400).json({ message: "Couldn't find token" });
   }
 
   // Verify the old token
   jwt.verify(prevToken, process.env.JWT_SECRET, (err, user) => {
-      if (err) {
-          console.log(err);
-          return res.status(403).json({ message: "Authentication failed" });
-      }
+    if (err) {
+      console.log(err);
+      return res.status(403).json({ message: "Authentication failed" });
+    }
 
-      // Clear the old token cookie
-      res.clearCookie(`${user.id}`, {
-          path: '/',
-          httpOnly: true,
-          sameSite: 'lax',
-      });
+    // Clear the old token cookie
+    res.clearCookie(`${process.env.COOKIE_NAME}`, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'none',
+    });
 
-      // Create a new token
-      const newToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-          expiresIn: "1d" // Extend token validity as needed
-      });
+    // Create a new token
+    const newToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1d" // Extend token validity as needed
+    });
 
-      // Set the new token in cookies
-      res.cookie(`${user.id}`, newToken, {
-          path: '/',
-          httpOnly: true,
-          sameSite: 'lax',
-      });
+    // Set the new token in cookies
+    res.cookie(`${process.env.COOKIE_NAME}`, newToken, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'none',
+    });
 
-      // Send success response
-      res.status(200).json({ message: "Token refreshed successfully" });
+    // Send success response
+    res.status(200).json({ message: "Token refreshed successfully" });
   });
 };
+
 
 
 

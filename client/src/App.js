@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Login from './components/Login';
@@ -20,25 +19,6 @@ function App() {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Refresh session every 15 minutes
-  useEffect(() => {
-    const refreshSession = async () => {
-      try {
-        await axios.post('/api/refresh-token', {}, { withCredentials: true });
-      } catch (error) {
-        console.error("Error refreshing session", error);
-        // Handle the error (e.g., redirect to login if the refresh failed)
-        navigate('/login');
-      }
-    };
-
-    // Call refreshSession initially and then every 15 minutes
-    refreshSession();
-    const intervalId = setInterval(refreshSession, 15 * 60 * 1000); // 15 minutes
-
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, [navigate]);
 
   useEffect(() => {
     // Check if the cookie exists
@@ -67,7 +47,7 @@ function App() {
       {isLoggedIn && <Route path="/korisnici/*" element={<Korisnici />} />}
       {isLoggedIn && <Route path="/mentori/*" element={<Mentori />} />}
       {isLoggedIn && <Route path="/racuni-admin/*" element={<RacuniAdmin />} />}
-      {isLoggedIn && <Route path="/classrooms/*" element={<Classroom />} />}
+      {isLoggedIn && <Route path="/classrooms/*" element={<Classroom/>} />}
       <Route path="/login" element={<Login />} />
       <Route path="/*" element={<Login />} />
     </Routes>
