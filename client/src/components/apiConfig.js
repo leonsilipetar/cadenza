@@ -1,7 +1,7 @@
 const ApiConfig = {
   // Set the base URL conditionally
   baseUrl: process.env.NODE_ENV === 'production'
-    ? 'https://musicartincubator-cadenza.onrender.com'
+    ? 'https://maiweb-server.onrender.com'
     : 'http://localhost:5000',
 };
 
