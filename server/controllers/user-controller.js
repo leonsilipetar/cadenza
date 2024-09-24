@@ -26,6 +26,7 @@ const signup = asyncWrapper(async (req, res, next) => {
     maloljetniClan,
     roditelj1,
     roditelj2,
+    school,
   } = req.body;
 
   const existingUser = await User.findOne({ email: email.trim().toLowerCase() });
@@ -64,6 +65,7 @@ if (existingUser) {
     roditelj1,
     roditelj2,
     password: hashPassword,
+    school,
   });
 
   await user.save();
