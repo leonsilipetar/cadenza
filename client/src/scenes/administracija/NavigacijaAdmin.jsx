@@ -50,7 +50,7 @@ const NavigacijaAdmin = ({ user, otvoreno}) => {
         </div>
         <div className={activeItem === 'classrooms' ? 'otvoreno' : ''} onClick={() => handleItemClick('classrooms')}>
           <Link className="link" to="/classrooms">
-          <Icon className="icon" icon="solar:file-check-broken" />
+          <Icon icon="solar:code-scan-broken" />
           </Link>
           <p>Učionice</p>
         </div>
