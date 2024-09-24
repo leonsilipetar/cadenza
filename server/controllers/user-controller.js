@@ -98,19 +98,53 @@ const sendPasswordEmail = async (email, password) => {
   const mailOptions = {
     from: 'leonosobni@gmail.com', // replace with your Gmail email
     to: email,
-    
     subject: 'Dobrodošli u MAI - Cadenza platformu - Detalji vašeg računa',
-    text: `Poštovani,
+    html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd;">
+      <!-- Header section with logo -->
+      <div style="text-align: center;">
+        <img src="https://mai-cadenza.onrender.com/Logo12.png" alt="MAI - Cadenza Logo" style="max-width: 150px;" />
+        <h1 style="color: rgb(252, 163, 17); font-size: 24px;">Dobrodošli u MAI - Cadenza!</h1>
+      </div>
 
-    Radujemo se što vas možemo pozdraviti na Music Art Incubator (MAI) platformi. Vaš korisnički račun je uspješno stvoren, a ovdje su vaši podaci za prijavu:
-    
-    E-mail adresa: ${email}
-    Lozinka: ${password}
-    
-    Molimo vas da čuvate ove informacije sigurno i ne dijelite lozinku. Ako imate bilo kakvih pitanja ili nedoumica, slobodno se obratite našem "timu" za podršku na leonosobni@gmail.com.
-    
-    S poštovanjem,
-    MAI - Cadenza`,
+      <!-- Email introduction -->
+      <p>Poštovani,</p>
+      <p>Radujemo se što vas možemo pozdraviti na Music Art Incubator (MAI) platformi. Vaš korisnički račun je uspješno stvoren, a ovdje su vaši podaci za prijavu:</p>
+
+      <!-- Highlighted user details -->
+      <div style="border: 1px solid #ddd; padding: 10px; background-color: #fff8e6; margin-bottom: 20px;">
+        <p><strong>E-mail adresa:</strong> ${email}</p>
+        <p><strong>Lozinka:</strong> ${password}</p>
+      </div>
+
+      <!-- Call to action button -->
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="https://mai-cadenza.com/login" style="
+          background-color: rgb(252, 163, 17); 
+          color: white; 
+          padding: 10px 20px; 
+          text-decoration: none; 
+          border-radius: 5px; 
+          font-size: 16px;
+          font-weight: bold;
+          display: inline-block;
+          transition: background-color 0.3s ease;
+          ">Posjetite našu aplikaciju</a>
+      </div>
+
+      <!-- Support and closing -->
+      <p>Molimo vas da čuvate ove informacije i ne dijelite lozinku. Ako imate bilo kakvih pitanja ili nedoumica, slobodno se obratite našem timu za podršku na <a href="mailto:leonosobni@gmail.com">leonosobni@gmail.com</a>.</p>
+      
+      <p>S poštovanjem,<br />MAI - Cadenza</p>
+    </div>
+
+    <!-- Styling for hover effect -->
+    <style>
+      a:hover {
+        background-color: rgba(252, 163, 17, 0.8);
+      }
+    </style>
+    `,
   };
 
   try {
@@ -120,6 +154,7 @@ const sendPasswordEmail = async (email, password) => {
     console.error('Error sending email:', error);
   }
 };
+
  
 const login = asyncWrapper(async (req, res, next) => {
   const { email, password } = req.body;
