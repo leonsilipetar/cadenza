@@ -42,7 +42,7 @@ if (existingUser) {
    console.log('password: ', randomPassword);
 
   try {
-    const hashPassword = bcrypt.hashSync(randomPassword);
+    const hashPassword = bcrypt.hashSync(randomPassword,8);
 
   const user = new User({
     korisnickoIme,
