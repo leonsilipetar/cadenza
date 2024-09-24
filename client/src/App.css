@@ -444,17 +444,14 @@ color: rgb(var(--tekst));
 }
 .popup {
   z-index: 5;
-  position: fixed; /* Use fixed to ensure it's relative to the viewport */
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: absolute;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.8);
   padding: 1rem;
-  overflow: auto; /* Allow the popup to scroll if content overflows */
+  overflow-x: hidden; /* Allow the popup to scroll if content overflows */
 }
 .popup .div{
   width: 75%;
