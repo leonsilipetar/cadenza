@@ -121,7 +121,7 @@ const sendPasswordEmail = async (email, password) => {
 
       <!-- Call to action button -->
       <div style="text-align: center; margin: 30px 0;">
-        <a href="https://mai-cadenza.com/login" style="
+        <a href="https://mai-cadenza.onrender.com/login" style="
           background-color: rgb(252, 163, 17); 
           color: white; 
           padding: 10px 20px; 

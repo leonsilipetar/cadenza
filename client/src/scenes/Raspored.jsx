@@ -123,6 +123,7 @@ const Raspored = () => {
         sendRequestStudentRaspored(data.user._id);
       }
     });
+    sendRequestTeorija();
   }, []);
 
   useEffect(() => {
@@ -267,7 +268,31 @@ const Raspored = () => {
                 </div>
               )}
             </div>
-          </>
+          <div className='div-radio bc-none'>
+            <div>
+              <p>Raspored teorija</p>
+            </div>
+          </div>
+          <div className="raspored">
+            {teorija ? (
+              ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
+                <RasporedDan
+                  key={day}
+                  day={day}
+                  teorija={teorija[day]}
+                  user={user}
+                  isTeorija={true}
+                  setSchedule={setTeorija}
+                  setNotification={setNotification}
+                />
+              ))
+            ) : (
+              <div>
+                <p>Nema dostupnog rasporeda</p>
+              </div>
+            )}
+          </div>
+        </>
         )}
         {user && user.isAdmin && (
           <>
