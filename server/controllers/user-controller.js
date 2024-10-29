@@ -10,7 +10,7 @@ const signup = asyncWrapper(async (req, res, next) => {
   const {
     korisnickoIme,
     email,
-    program,
+    program, // Pretpostavljam da ovdje dolazi ID programa
     isAdmin,
     isMentor,
     isStudent,
@@ -30,45 +30,55 @@ const signup = asyncWrapper(async (req, res, next) => {
   } = req.body;
 
   const existingUser = await User.findOne({ email: email.trim().toLowerCase() });
-
-
-if (existingUser) {
+  if (existingUser) {
     return res.status(400).json({ message: 'Korisnik već postoji!!' });
-}
-   // Generate a random password with only letters (lowercase and uppercase) and numbers
-   const passwordLength = 8; // You can change this to 6 if you prefer
-   const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-   const randomPassword = Array.from({ length: passwordLength }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
- 
-   console.log('password: ', randomPassword);
+  }
+
+  // Generate a random password
+  const passwordLength = 8;
+  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const randomPassword = Array.from({ length: passwordLength }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
+
+  console.log('password: ', randomPassword);
 
   try {
-    const hashPassword = bcrypt.hashSync(randomPassword,8);
+    const hashPassword = bcrypt.hashSync(randomPassword, 8);
 
-  const user = new User({
-    korisnickoIme,
-    email,
-    program,
-    isAdmin,
-    isMentor,
-    isStudent,
-    oib,
-    ime,
-    prezime,
-    brojMobitela,
-    mentor,
-    datumRodjenja,
-    adresa,
-    pohadjaTeoriju,
-    napomene,
-    maloljetniClan,
-    roditelj1,
-    roditelj2,
-    password: hashPassword,
-    school,
-  });
+    const user = new User({
+      korisnickoIme,
+      email,
+      isAdmin,
+      isMentor,
+      isStudent,
+      oib,
+      ime,
+      prezime,
+      brojMobitela,
+      mentor,
+      datumRodjenja,
+      adresa,
+      pohadjaTeoriju,
+      napomene,
+      maloljetniClan,
+      roditelj1,
+      roditelj2,
+      password: hashPassword,
+      school,
+    });
 
-  await user.save();
+    await user.save();
+
+    // Poveži učenika s programom
+    if (program) {
+      const programObj = await Program.findById(program);
+      if (programObj) {
+        programObj.students.push(user._id);
+        await programObj.save();
+        
+        user.programIds.push(program); // Dodaj program ID korisniku
+        await user.save(); // Spremi izmjene korisnika
+      }
+    }
 
     // Send the random password to the user's email
     await sendPasswordEmail(email, randomPassword);
@@ -81,6 +91,7 @@ if (existingUser) {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 
 

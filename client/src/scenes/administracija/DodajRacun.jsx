@@ -1,50 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import ApiConfig from '../../components/apiConfig';
 import Notification from '../../components/Notifikacija';
 
-axios.defaults.withCredentials = true;
-
 const DodajRacun = ({ onDodajRacun, onCancel }) => {
+  const [month, setMonth] = useState('');
   const [notification, setNotification] = useState(null);
-  const [inputs, setInputs] = useState({
-    brojRacuna: '',
-    datum: '',
-    iznos: '',
-    opis: '',
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInputs((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const dodajRacun = async () => {
-    try {
-      const res = await axios.post(`${ApiConfig.baseUrl}/api/racuni`, inputs);
-      return res.data;
-    } catch (err) {
-      console.error(err);
-      return null;
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await dodajRacun();
-    if (result) {
+    try {
+      // Slanje meseca na backend za generisanje računa
+      await axios.post(`${ApiConfig.baseUrl}/generate-invoice`, { month }, { withCredentials: true });
+      
       setNotification({
         type: 'success',
-        message: 'Račun uspješno dodan!',
+        message: 'Računi su uspješno generirani za mjesec: ' + month,
       });
-      onDodajRacun();
-    } else {
+      if (typeof onDodajRacun === 'function') {
+        onDodajRacun(); // Osvježi popis računa
+      }
+    } catch (error) {
+      console.error("Greška pri dodavanju računa:", error);
       setNotification({
         type: 'error',
-        message: 'Došlo je do greške! Pokušajte ponovno.',
+        message: 'Došlo je do greške prilikom dodavanja računa.',
       });
     }
   };
@@ -53,57 +33,23 @@ const DodajRacun = ({ onDodajRacun, onCancel }) => {
     <div className="popup">
       <form onSubmit={handleSubmit}>
         <div className="div">
-          <label htmlFor="racun-broj">Broj računa:</label>
+          <label htmlFor="month">Mjesec:</label>
           <input
             className="input-login-signup"
-            value={inputs.brojRacuna}
-            onChange={handleChange}
-            type="text"
-            name="brojRacuna"
-            id="racun-broj"
-            placeholder="Broj računa"
-          />
-          <label htmlFor="racun-datum">Datum:</label>
-          <input
-            className="input-login-signup"
-            value={inputs.datum}
-            onChange={handleChange}
-            type="date"
-            name="datum"
-            id="racun-datum"
-            placeholder="Datum"
-          />
-          <label htmlFor="racun-iznos">Iznos:</label>
-          <input
-            className="input-login-signup"
-            value={inputs.iznos}
-            onChange={handleChange}
-            type="text"
-            name="iznos"
-            id="racun-iznos"
-            placeholder="Iznos"
+            type="month" // Koristi tip "month" za olakšanje unosa
+            name="month"
+            id="month"
+            value={month}
+            onChange={(e) => setMonth(e.target.value)}
+            required
           />
         </div>
-
-        <div className="div">
-          <label htmlFor="racun-opis">Opis:</label>
-          <textarea
-            className="input-login-signup"
-            value={inputs.opis}
-            onChange={handleChange}
-            name="opis"
-            id="racun-opis"
-            placeholder="Unesite opis računa"
-            maxLength={5000}
-          />
-        </div>
-
         <div className="div-radio">
-          <button className="gumb action-btn zatvoriBtn" onClick={onCancel}>
-            Zatvori
+          <button className="gumb action-btn zatvoriBtn" type="button" onClick={onCancel}>
+            Otkaži
           </button>
           <button className="gumb action-btn spremiBtn" type="submit">
-            Dodaj račun
+            Dodaj
           </button>
         </div>
         {notification && (

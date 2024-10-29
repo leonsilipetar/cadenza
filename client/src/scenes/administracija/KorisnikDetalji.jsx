@@ -75,7 +75,13 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name in inputs.adresa) {
+  
+    if (name === "mentor" || name === "school") {
+      setInputs((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    } else if (name in inputs.adresa) {
       setInputs((prev) => ({
         ...prev,
         adresa: { ...prev.adresa, [name]: value },
@@ -87,6 +93,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
       }));
     }
   };
+  
 
   const urediKorisnika = async () => {
     try {

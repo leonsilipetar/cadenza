@@ -11,7 +11,6 @@ axios.defaults.withCredentials = true;
 const RacuniAdmin = () => {
   const [odabranoDodajRacun, setOdabranoDodajRacun] = useState(false);
   const [racuni, setRacuni] = useState([]);
-  const [isHovered, setIsHovered] = useState(false);
   const otvoreno = 'racuni';
 
   const sendRequestRacuni = async () => {
@@ -54,29 +53,18 @@ const RacuniAdmin = () => {
             <Icon icon="solar:file-plus-broken" fontSize="large" /> Dodaj račun
           </div>
         </div>
-        <div className="sbtwn">
-          <div className="p">
-            Dodavanjem računa se automatski ažurira popis računa.
-          </div>
-        </div>
         <div className="tablica">
           <div className="tr naziv">
             <div className="th">Broj računa</div>
             <div className="th">Datum</div>
             <div className="th mobile-none">Iznos</div>
-            <div></div>
           </div>
           {Array.isArray(racuni) && racuni.length > 0 ? (
             racuni.map((racun) => (
-              <div
-                className={`tr redak ${isHovered ? 'hovered' : ''}`}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                key={racun._id}
-              >
+              <div className="tr redak" key={racun._id}>
                 <div className="th">{racun.brojRacuna}</div>
                 <div className="th">{racun.datum}</div>
-                <div className="th mobile-none">{racun.iznos}</div>
+                <div className="th mobile-none">{racun.iznos} EUR</div>
               </div>
             ))
           ) : (

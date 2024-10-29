@@ -12,96 +12,143 @@ import UserInfoComponent from '../components/UserInfo';
 axios.defaults.withCredentials = true;
 
 const Profil = () => {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
+  const [schools, setSchools] = useState([]);
+  const [mentors, setMentors] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
   const otvoreno = 'profil';
   const dispatch = useDispatch();
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
+  // Fetch user profile
   const sendRequest = async () => {
-    const res = await axios.get(`${ApiConfig.baseUrl}/api/profil`, {
-      withCredentials: true,
-    }).catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
-
-  const refreshToken = async () => {
-    const res = await axios.get(`${ApiConfig.baseUrl}/api/refresh`, {
-      withCredentials: true,
-    }).catch((err) => console.log(err));
-
-    const data = await res.data;
-    return data;
-  };
-
-  const sendLogoutRequest = async () => {
-    axios.defaults.withCredentials = true;
-    const res = await axios.post(`${ApiConfig.baseUrl}/api/logout`, null, {
-      withCredentials: true,
-    });
-    if (res.status === 200) {
-      return res;
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/profil`, { withCredentials: true });
+      return res.data.user;
+    } catch (err) {
+      console.error('Error fetching user profile:', err);
+      return null;
     }
-    throw new Error('Unable to logout. Try again');
+  };
+
+  // Fetch schools
+  const fetchSchools = async () => {
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/schools`, { withCredentials: true });
+      setSchools(res.data); // Assuming response is an array of schools
+    } catch (err) {
+      console.error('Error fetching schools:', err);
+    }
+  };
+
+  // Fetch mentors
+  const fetchMentors = async () => {
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/mentori`, { withCredentials: true });
+      setMentors(res.data); // Assuming response is an array of mentors
+    } catch (err) {
+      console.error('Error fetching mentors:', err);
+    }
+  };
+
+  // Function to handle logout
+  const sendLogoutRequest = async () => {
+    try {
+      const res = await axios.post(`${ApiConfig.baseUrl}/api/logout`, null, { withCredentials: true });
+      if (res.status === 200) {
+        return res;
+      }
+      throw new Error('Unable to logout. Try again');
+    } catch (err) {
+      console.error('Error during logout:', err);
+    }
   };
 
   const handleLogout = async () => {
     try {
       await sendLogoutRequest();
-  
       dispatch(authActions.logout());
-      // Clear other user-related data or perform additional logout tasks
       localStorage.removeItem('isLoggedIn');
     } catch (error) {
       console.error('Logout failed:', error.message);
-      // Handle the error as needed (show a message to the user, etc.)
     }
   };
 
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  // Toggle theme state
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
+  // Save theme to local storage and apply to body
   useEffect(() => {
     localStorage.setItem('theme', theme);
     document.body.className = theme;
   }, [theme]);
 
+  // Fetch user data on component mount
   useEffect(() => {
-    sendRequest().then((data) => {
-      setUser(data.user);
-    });
+    const fetchData = async () => {
+      const userData = await sendRequest();
+      setUser(userData);
+      await fetchSchools(); // Fetch schools after user data is loaded
+      await fetchMentors(); // Fetch mentors after user data is loaded
+    };
+
+    fetchData();
   }, []);
+// Funkcija za dobijanje naziva škole
+const getSchoolName = (schoolId) => {
+  if (!schoolId || !schools.length) return 'Unknown School'; // Osiguraj da su škole učitane
+  const school = schools.find((school) => school._id === schoolId);
+  return school ? school.name : 'Unknown School';
+};
 
-  return (
-    <>
-      <Navigacija user={user} otvoreno={otvoreno} />
-      <NavTop user={user} naslov={'Profil'} />
-      <div className="main">
-        <div className="karticaZadatka sbtwn">
-          <div className={` btn ${isHovered ? 'hovered' : ''}`}>
-            <button className="gumb-novo gumb-nav" onClick={toggleTheme}>
-              <i id='tema' className="uil uil-swatchbook">
-                {theme === 'dark' ? 'Svijetla tema' : 'Tamna tema'}
-              </i>
-            </button>
-          </div>
+// Funkcija za dobijanje imena mentora
+const getMentorName = (mentorId) => {
+  if (!mentorId || !mentors.length) return 'Unknown Mentor'; // Osiguraj da su mentori učitani
+  const mentor = mentors.find((mentor) => mentor._id === mentorId);
+  return mentor ? mentor.korisnickoIme : 'Unknown Mentor';
+};
 
-          <div className={`action-btn btn abDelete ${isHovered ? 'hovered' : ''}`}>
-            <Link className='link' to="/login" onClick={handleLogout}>
-              <Icon icon="solar:logout-2-broken" /> Odjavi se
-            </Link>
-          </div>
+return (
+  <>
+    <Navigacija user={user} otvoreno={otvoreno} />
+    <NavTop user={user} naslov={'Profil'} />
+    <div className="main">
+      <div className="karticaZadatka sbtwn">
+        {/* Toggle button za temu */}
+        <div className={`btn ${isHovered ? 'hovered' : ''}`}>
+          <button className="gumb-novo gumb-nav" onClick={toggleTheme}>
+            <i id="tema" className="uil uil-swatchbook">
+              {theme === 'dark' ? 'Svijetla tema' : 'Tamna tema'}
+            </i>
+          </button>
         </div>
-        <div className="karticaZadatka">
-          <div className="profilDiv">
-            {user && <UserInfoComponent user={user} />}
-          </div>
+
+        {/* Logout dugme */}
+        <div className={`action-btn btn abDelete ${isHovered ? 'hovered' : ''}`}>
+          <Link className="link" to="/login" onClick={handleLogout}>
+            <Icon icon="solar:logout-2-broken" /> Odjavi se
+          </Link>
         </div>
       </div>
-    </>
-  );
+
+      {/* Prikaz korisničkih informacija */}
+      <div className="karticaZadatka">
+        <div className="profilDiv">
+          {user && schools.length > 0 && mentors.length > 0 && (
+            <UserInfoComponent
+              user={user}
+              schoolName={getSchoolName(user.school)} // Koristi `user.school` umesto `user.schoolId`
+              mentorName={getMentorName(user.mentors[0])} // Koristi prvi ID mentora
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  </>
+);
+
 };
 
 export default Profil;

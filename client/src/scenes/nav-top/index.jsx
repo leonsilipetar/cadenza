@@ -20,7 +20,9 @@ const NavTop = ({user, naslov}) => {
         <div className="nav-top">
           {user && user.isAdmin && (
             <div className="admin-gumb">
-              <Link className='link' to="/admin"><p>Administracija</p></Link>
+              <Link className='link' to="/admin">
+              <p>Admin</p>
+              </Link>
             </div>
           )}
             <h1>

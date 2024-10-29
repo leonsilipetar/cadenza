@@ -30,7 +30,8 @@ const {
   updateClassroom,
   deleteClassroom,
 } = require('../controllers/classroom-controller'); // Import classroom controller
-const { generateInvoice, addInvoice } = require('../controllers/invoice-controller'); // Import invoice controller
+const { generateInvoice, addInvoice, downloadInvoice } = require('../controllers/invoice-controller'); // Import invoice controller
+const { getAllPrograms, getProgramById, createProgram, updateProgram, deleteProgram } = require('../controllers/program-controller.js');
 
 const router = express.Router();
 
@@ -69,8 +70,12 @@ router.delete('/classrooms/:id', verifyToken, deleteClassroom);
 // New route for fetching schools
 router.get('/schools', verifyToken, getSchools);
 
-// New route for generating invoice
+// Nova ruta za generiranje računa
+// U ruti
+router.get('/api/users/:userId/invoices', verifyToken, getUserInvoices);
 router.post('/generate-invoice', verifyToken, generateInvoice);
+router.get('/download/:id', verifyToken, downloadInvoice);
 router.post('/racuni', verifyToken, addInvoice);
+
 
 module.exports = router;

@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-
 const userSchema = new Schema({
-  // existing fields...
   korisnickoIme: String,
   password: String,
   email: {
@@ -17,7 +15,6 @@ const userSchema = new Schema({
   isMentor: { type: Boolean, default: false },
   isStudent: { type: Boolean, default: false },
   oib: { type: String, required: true, unique: true },
-  program: String,
   brojMobitela: String,
   datumRodjenja: Date,
   adresa: {
@@ -26,6 +23,7 @@ const userSchema = new Schema({
     mjesto: String,
   },
   pohadjaTeoriju: Boolean,
+  programIds: [{ type: Schema.Types.ObjectId, ref: 'Program' }], // Reference na programe
   napomene: { type: [String], default: [] },
   maloljetniClan: Boolean,
   roditelj1: {
@@ -38,7 +36,7 @@ const userSchema = new Schema({
     prezime: String,
     brojMobitela: String,
   },
-  mentors: [{ // Updated field name to plural
+  mentors: [{ 
     type: Schema.Types.ObjectId,
     ref: 'Mentor',
   }],
