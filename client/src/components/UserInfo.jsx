@@ -32,7 +32,9 @@ const UserInfoComponent = ({ user, schoolName, mentorName }) => {
           <p>Email: {user.email}</p>
           <p>Program: {user.program}</p>
           <p>Škola: {schoolName}</p>
-          <p>Mentor: {mentorName}</p>
+          {user.isStudent &&
+            <p>Mentor: {mentorName}</p>
+          }
           <p>Uloga: {getUserRoles(user)}</p>
           <p>OIB: {user.oib}</p>
           <p>Broj mobitela: {user.brojMobitela}</p>
