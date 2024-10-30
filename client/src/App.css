@@ -942,21 +942,6 @@ nav div:active{
       margin-top: 0.5rem; /* Add space between name and data */
     }
   }
-  
-  .field-name {
-    font-weight: 600;
-    color: #333;
-    flex: 1; /* Allow the name to take available space */
-  }
-  
-  .field-data {
-    color: #666;
-    width: 100%;
-    flex: 2; /* Allow the data to take more space */
-    min-width: 0; /* Prevent overflow */
-    text-align: right; /* Align the text to the right */
-    white-space: nowrap; /* Prevent text from wrapping, ensuring right alignment */
-  }
   .error{
     display: flex;
     justify-content: center;
