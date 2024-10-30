@@ -5,21 +5,8 @@ const UserInfoComponent = ({ user, schoolName, mentorName }) => {
 
   useEffect(() => {
     if (user && user.datumRodjenja) {
-      // Assuming user.datumRodjenja is a string in ISO 8601 format
-      const isoDate = user.datumRodjenja;
-      
-      // Create a Date object from the ISO string
-      const date = new Date(isoDate);
-      
-      // Extract day, month, and year components
-      const day = date.getDate();
-      const month = date.getMonth() + 1; // Months are zero-indexed, so add 1
-      const year = date.getFullYear();
-      
-      // Format the date as dd/mm/yyyy
-      const formattedDate = `${day}.${month}.${year}.`;
-      
-      // Update the state with the formatted date
+      const date = new Date(user.datumRodjenja);
+      const formattedDate = `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}.`;
       setFormattedDate(formattedDate);
     }
   }, [user]);
@@ -28,27 +15,75 @@ const UserInfoComponent = ({ user, schoolName, mentorName }) => {
     <>
       {user && (
         <>
-          <p>Korisničko ime (ime i prezime): {user.korisnickoIme}</p>
-          <p>Email: {user.email}</p>
-          <p>Program: {user.program}</p>
-          <p>Škola: {schoolName}</p>
-          {user.isStudent &&
-            <p>Mentor: {mentorName}</p>
-          }
-          <p>Uloga: {getUserRoles(user)}</p>
-          <p>OIB: {user.oib}</p>
-          <p>Broj mobitela: {user.brojMobitela}</p>
-          <p>Datum rođenja: {formattedDate}</p>
-          <p>Adresa: {user.adresa.ulica}, {user.adresa.kucniBroj}, {user.adresa.mjesto}</p>
-          <p>Pohađa teoriju: {user.pohadjaTeoriju ? 'Da' : 'Ne'}</p>
-          <p>Napomene: {user.napomene}</p>
-          {user.maloljetniClan && 
-            <>
-              <p>Roditelj 1: {user.roditelj1.ime} {user.roditelj1.prezime}, mobitel: {user.roditelj1.brojMobitela}</p>
-              <p>Roditelj 2: {user.roditelj2.ime} {user.roditelj2.prezime}, mobitel: {user.roditelj2.brojMobitela}</p>
+            <div className="field">
+              <p className="field-name">Korisničko ime</p>
+              <p className="field-data">{user.korisnickoIme}</p>
+            </div>
+            <div className="field">
+              <p className="field-name">Email </p>
+              <p className="field-data"><a href={`mailto ${user.email}`}>{user.email}</a></p>
+            </div>
+            <div className="field">
+              <p className="field-name">Program </p>
+              <p className="field-data">{user.program}</p>
+            </div>
+            <div className="field">
+              <p className="field-name">Škola </p>
+              <p className="field-data">{schoolName}</p>
+            </div>
+            {user.isStudent && (
+              <div className="field">
+                <p className="field-name">Mentor </p>
+                <p className="field-data">{mentorName}</p>
+              </div>
+            )}
+            <div className="field">
+              <p className="field-name">Uloga </p>
+              <p className="field-data">{getUserRoles(user)}</p>
+            </div>
+            <div className="field">
+              <p className="field-name">OIB </p>
+              <p className="field-data">{user.oib}</p>
+            </div>
+            <div className="field">
+              <p className="field-name">Broj mobitela </p>
+              <p className="field-data">{user.brojMobitela}</p>
+            </div>
+            <div className="field">
+              <p className="field-name">Datum rođenja </p>
+              <p className="field-data">{formattedDate}</p>
+            </div>
+            <div className="field">
+              <p className="field-name">Adresa </p>
+              <p className="field-data">
+                {user.adresa.ulica}, {user.adresa.kucniBroj}, {user.adresa.mjesto}
+              </p>
+            </div>
+            <div className="field">
+              <p className="field-name">Pohađa teoriju </p>
+              <p className="field-data">{user.pohadjaTeoriju ? 'Da' : 'Ne'}</p>
+            </div>
+            <div className="field">
+              <p className="field-name">Napomene </p>
+              <p className="field-data">{user.napomene}</p>
+            </div>
+            {user.maloljetniClan && (
+              <>
+                <div className="field">
+                  <p className="field-name">Roditelj 1 </p>
+                  <p className="field-data">
+                    {user.roditelj1.ime} {user.roditelj1.prezime}, mobitel  {user.roditelj1.brojMobitela}
+                  </p>
+                </div>
+                <div className="field">
+                  <p className="field-name">Roditelj 2 </p>
+                  <p className="field-data">
+                    {user.roditelj2.ime} {user.roditelj2.prezime}, mobitel  {user.roditelj2.brojMobitela}
+                  </p>
+                </div>
+              </>
+            )}
             </>
-          }
-        </>
       )}
     </>
   );
@@ -56,19 +91,9 @@ const UserInfoComponent = ({ user, schoolName, mentorName }) => {
 
 const getUserRoles = (user) => {
   const roles = [];
-
-  if (user.isAdmin) {
-    roles.push('administrator');
-  }
-
-  if (user.isMentor) {
-    roles.push('mentor');
-  }
-
-  if (user.isStudent) {
-    roles.push('student');
-  }
-
+  if (user.isAdmin) roles.push('administrator');
+  if (user.isMentor) roles.push('mentor');
+  if (user.isStudent) roles.push('student');
   return roles.length > 0 ? roles.join(', ') : 'No roles';
 };
 

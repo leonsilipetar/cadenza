@@ -136,11 +136,17 @@ return (
       {/* Prikaz korisničkih informacija */}
       <div className="karticaZadatka">
         <div className="profilDiv">
-          {user && schools.length > 0 && mentors.length > 0 && (
+          {user && schools.length > 0 && mentors.length > 0 && user.isStudent && (
             <UserInfoComponent
               user={user}
               schoolName={getSchoolName(user.school)} // Koristi `user.school` umesto `user.schoolId`
               mentorName={getMentorName(user.mentors[0])} // Koristi prvi ID mentora
+            />
+          )}
+          {user && schools.length > 0 && mentors.length > 0 && user.isMentor &&(
+            <UserInfoComponent
+              user={user}
+              schoolName={getSchoolName(user.school)} // Koristi `user.school` umesto `user.schoolId`
             />
           )}
         </div>
