@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Login from './components/Login';
 import Naslovna from './scenes/naslovna/Naslovna';
 import { authActions } from './store/index.js';
@@ -13,6 +14,9 @@ import Korisnici from './scenes/administracija/Korisnici.jsx';
 import RacuniAdmin from './scenes/administracija/RacuniAdmin.jsx';
 import Mentori from './scenes/administracija/Mentori.jsx';
 import Classroom from './scenes/administracija/Classroom.jsx';
+import ApiConfig from './components/apiConfig.js';
+
+axios.defaults.withCredentials = true;
 
 function App() {
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -20,12 +24,21 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Check if the cookie exists
-    const cookieExists = document.cookie.includes('yourCookieNameHere');
+  const refreshToken = async () => {
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/refresh`, {
+        withCredentials: true,
+      });
+      const data = res.data;
+      return data;
+    } catch (error) {
+      console.log("Token refresh failed:", error);
+    }
+  };
 
+  useEffect(() => {
+    const cookieExists = document.cookie.includes('yourCookieNameHere');
     if (cookieExists) {
-      // Log the user in
       dispatch(authActions.login());
     }
   }, [dispatch]);
@@ -35,6 +48,21 @@ function App() {
       navigate('/login');
     }
   }, [isLoggedIn, location, navigate]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      axios.post(`${ApiConfig.baseUrl}/api/refresh`, {}, { withCredentials: true })
+        .then((response) => {
+          // Handle the new access token here if needed
+        })
+        .catch((error) => {
+          console.error("Failed to refresh token", error);
+        });
+    }, 50 * 1000); // 50 seconds
+  
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, []);
+  
 
   return (
     <Routes>
@@ -47,7 +75,7 @@ function App() {
       {isLoggedIn && <Route path="/korisnici/*" element={<Korisnici />} />}
       {isLoggedIn && <Route path="/mentori/*" element={<Mentori />} />}
       {isLoggedIn && <Route path="/racuni-admin/*" element={<RacuniAdmin />} />}
-      {isLoggedIn && <Route path="/classrooms/*" element={<Classroom/>} />}
+      {isLoggedIn && <Route path="/classrooms/*" element={<Classroom />} />}
       <Route path="/login" element={<Login />} />
       <Route path="/*" element={<Login />} />
     </Routes>

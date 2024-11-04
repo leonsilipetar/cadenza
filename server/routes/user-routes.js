@@ -3,6 +3,7 @@ const {
   signup,
   login,
   verifyToken,
+  refreshToken,
   getUser,
   logout,
   getKorisnici,
@@ -47,6 +48,9 @@ router.get('/all-students', getAllStudents);
 router.post('/users', searchUsersAndMentors);
 router.get('/api/users/:userId/invoices', getUserInvoices);
 router.post("/logout", verifyToken, logout);
+// Refresh token route
+router.post('/refresh', refreshToken);
+
 
 router.post('/signup-mentori', verifyToken, signupMentor);
 router.get("/mentori", verifyToken, getMentori);
