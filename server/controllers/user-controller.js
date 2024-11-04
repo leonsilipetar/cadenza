@@ -169,15 +169,11 @@ const sendPasswordEmail = async (email, password) => {
 };
 
  
-const login = asyncWrapper(async (req, res, next) => {
+const login = asyncWrapper(async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    let existingUser = await User.findOne({ email });
-
-    if (!existingUser) {
-      existingUser = await Mentor.findOne({ email });
-    }
+    let existingUser = await User.findOne({ email }) || await Mentor.findOne({ email });
 
     if (!existingUser) {
       return res.status(400).json({ message: "User not found. Sign up!" });
@@ -189,18 +185,16 @@ const login = asyncWrapper(async (req, res, next) => {
     }
 
     const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-    Object.keys(req.cookies).forEach((cookieName) => {
-      res.clearCookie(cookieName);
-    });
 
-    res.cookie(String(existingUser.id), token, {
+    // Postavi kolačić sa istim nazivom za sve sesije
+    res.cookie(`${process.env.COOKIE_NAME}`, token, {
       path: '/',
       httpOnly: true,
       secure: process.env.NODE_ENV !== 'development',
-      sameSite: 'none',
+      sameSite: 'None',
     });
 
-    return res.status(200).json({ message: "Successfully logged in! :)", user: existingUser, token });
+    return res.status(200).json({ message: "Successfully logged in!", user: existingUser, token });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -208,19 +202,14 @@ const login = asyncWrapper(async (req, res, next) => {
 });
 
 const verifyToken = (req, res, next) => {
-  const cookies = req.headers.cookie;
-
-  if (!cookies) {
-    return res.status(404).json({ message: "No cookies found" });
-  }
-
-  const token = cookies.split("=")[1];
+  const cookies = req.cookies;
+  const token = cookies[process.env.COOKIE_NAME];
 
   if (!token) {
     return res.status(404).json({ message: "No token found" });
   }
 
-  jwt.verify(String(token), process.env.JWT_SECRET, (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       return res.status(400).json({ message: "Invalid Token" });
     }
@@ -229,35 +218,21 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-const logout = (req, res, next) => {
-  const cookies = req.headers.cookie;
+const logout = (req, res) => {
+  const cookies = req.cookies;
 
-  if (!cookies) {
-    return res.status(400).json({ message: "No cookies found" });
+  if (!cookies[process.env.COOKIE_NAME]) {
+    return res.status(400).json({ message: "No token found in cookies" });
   }
 
-  const token = cookies.split("=")[1];
-
-  if (!token) {
-    return res.status(400).json({ message: "Couldn't find token" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      console.log(err);
-      return res.status(403).json({ message: "Authentication failed" });
-    }
-
-    console.log('Clearing cookie for user:', user.id);
-    res.clearCookie(String(user.id), {
-      path: '/',
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== 'development',
-      sameSite: 'strict'
-    });
-
-    return res.status(200).json({ message: "Successfully Logged Out" });
+  res.clearCookie(process.env.COOKIE_NAME, {
+    path: '/',
+    httpOnly: true,
+    secure: process.env.NODE_ENV !== 'development',
+    sameSite: 'None',
   });
+
+  return res.status(200).json({ message: "Successfully Logged Out" });
 };
 
     
@@ -350,51 +325,33 @@ const searchUsersAndMentors = async (req, res) => {
   }
 };
 
-const refreshToken = (req, res, next) => {
-  // Extract cookies from request headers
-  const cookies = req.headers.cookie;
-  if (!cookies) {
-    return res.status(400).json({ message: "No cookies found" });
+const refreshToken = async (req, res) => {
+  const cookies = req.cookies;
+
+  if (!cookies[process.env.COOKIE_NAME]) {
+    return res.status(400).json({ message: "No token found in cookies" });
   }
 
-  // Find the token in cookies
-  const tokenCookie = cookies.split(";").find(cookie => cookie.trim().startsWith(`${process.env.COOKIE_NAME}=`));
-  const prevToken = tokenCookie ? tokenCookie.split("=")[1] : null;
+  const prevToken = cookies[process.env.COOKIE_NAME];
 
-  if (!prevToken) {
-    return res.status(400).json({ message: "Couldn't find token" });
-  }
-
-  // Verify the old token
   jwt.verify(prevToken, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      console.log(err);
       return res.status(403).json({ message: "Authentication failed" });
     }
 
-    // Clear the old token cookie
-    res.clearCookie(`${process.env.COOKIE_NAME}`, {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'none',
-    });
+    const newToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
-    // Create a new token
-    const newToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1d" // Extend token validity as needed
-    });
-
-    // Set the new token in cookies
     res.cookie(`${process.env.COOKIE_NAME}`, newToken, {
       path: '/',
       httpOnly: true,
-      sameSite: 'none',
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: 'None',
     });
 
-    // Send success response
-    res.status(200).json({ message: "Token refreshed successfully" });
+    return res.status(200).json({ message: "Token refreshed successfully" });
   });
 };
+
 
 
 
