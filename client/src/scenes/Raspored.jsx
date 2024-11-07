@@ -176,7 +176,20 @@ const Raspored = () => {
                   />
                 ))}
               </div>
-            ) : (
+            ) : (<>
+              <div className='div-radio bc-none'>
+                  <div>
+                    <p>Raspored učenika: {selectedStudent && selectedStudent.ime} {selectedStudent && selectedStudent.prezime}</p>
+                  </div>
+                  {user && user.isMentor && (
+                    <div
+                      className="gumb action-btn abEdit "
+                      onClick={() => setDodajRasporedStudent(true)}
+                    >
+                      <Icon icon="solar:add-circle-broken" fontSize="large" />Uredi raspored
+                    </div>
+                  )}
+                </div>
               <div className="raspored">
                 {studentsRaspored ? (
                   ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
@@ -194,7 +207,7 @@ const Raspored = () => {
                 ) : (
                   <p>Nema dostupnog rasporeda</p>
                 )}
-              </div>
+              </div></>
             )}
           </>
         )}
