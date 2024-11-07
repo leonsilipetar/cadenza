@@ -58,30 +58,33 @@ const RasporedDan = ({
     <div className='dan'>
       <div className="nazivDana">{day}</div>
       {teorija && teorija.length > 0 && teorija.map((term, index) => {
-        const displayName = user?.isMentor
-          ? term.studentName // Prikazati ime studenta ako je korisnik mentor
-          : term.mentor; // Prikazati ime mentora ako je korisnik student
+  const displayName = user?.isMentor
+    ? term.studentName // Show student name if user is mentor
+    : term.mentor; // Show mentor name if user is student
 
-        return (
-          <div
-            key={index}
-            className={`termin ${isTeorija ? 'boja-teorija' : ''}`}
-          >
-            {user && user.isAdmin && (
-              <div className='obrisiTermin' onClick={() => obrisiTermin(term._id)}>
-                <Icon icon="solar:minus-circle-broken" />
-              </div>
-            )}
-            <div className="dvorana">{term.dvorana}</div>
-            <div className="vrijeme">{term.vrijeme}</div>
-            {isTeorija ? (
-            <div className="rasporedMentor">{term.mentor}</div>
-            ):(<div className="rasporedMentor">{displayName || user.korisnickoIme}</div>)
-            }
-            
-          </div>
-        );
-      })}
+  return (
+    <div
+      key={index}
+      className={`termin ${isTeorija ? 'boja-teorija' : ''}`}
+    >
+      {user && user.isAdmin && (
+        <div className='obrisiTermin' onClick={() => obrisiTermin(term._id)}>
+          <Icon icon="solar:minus-circle-broken" />
+        </div>
+      )}
+      <div className="dvorana">{term.dvorana}</div>
+      <div className="vrijeme">{term.vrijeme}</div>
+      {isTeorija ? (
+        <div className="rasporedMentor">{term.mentor}</div>
+      ) : (
+        <div className="rasporedMentor">
+          {user && user.isStudent ? term.mentor : displayName || user.korisnickoIme}
+        </div>
+      )}
+    </div>
+  );
+})}
+
     </div>
   );
 };
