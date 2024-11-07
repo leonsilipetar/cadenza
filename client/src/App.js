@@ -24,18 +24,6 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const refreshToken = async () => {
-    try {
-      const res = await axios.get(`${ApiConfig.baseUrl}/api/refresh`, {
-        withCredentials: true,
-      });
-      const data = res.data;
-      return data;
-    } catch (error) {
-      console.log("Token refresh failed:", error);
-    }
-  };
-
   useEffect(() => {
     const cookieExists = document.cookie.includes('yourCookieNameHere');
     if (cookieExists) {

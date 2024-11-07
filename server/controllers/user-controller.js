@@ -186,13 +186,13 @@ const login = asyncWrapper(async (req, res) => {
 
     const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
-    // Postavi kolačić sa istim nazivom za sve sesije
-    res.cookie(`${process.env.COOKIE_NAME}`, token, {
-      path: '/',
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== 'development',
-      sameSite: 'None',
-    });
+res.cookie(`${process.env.COOKIE_NAME}`, token, {
+  path: '/',
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',  // Only enable secure cookies in production
+  sameSite: 'None',  // Important for cross-site cookies in modern browsers
+});
+
 
     return res.status(200).json({ message: "Successfully logged in!", user: existingUser, token });
   } catch (err) {
