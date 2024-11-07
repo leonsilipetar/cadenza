@@ -52,7 +52,7 @@ router.post("/logout", verifyToken, logout);
 router.post('/refresh', refreshToken);
 
 
-router.post('/signup-mentori', verifyToken, signupMentor);
+router.post('/signup-mentori', verifyToken, signupMentor); 
 router.get("/mentori", verifyToken, getMentori);
 router.put("/update-mentor/:mentorId", verifyToken, updateDetaljiMentora);
 

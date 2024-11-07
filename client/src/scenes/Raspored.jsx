@@ -26,9 +26,7 @@ const Raspored = () => {
 
   const sendRequestStudentRaspored = async (studentId) => {
     try {
-      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenik/${studentId}`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenik/${studentId}`, { withCredentials: true });
       const data = res.data;
       setStudentsRaspored(data.schedule);
       setSelectedStudent(data.student);
@@ -45,9 +43,7 @@ const Raspored = () => {
 
   const sendRequest = async () => {
     try {
-      const res = await axios.get(`${ApiConfig.baseUrl}/api/user`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/user`, { withCredentials: true });
       const data = res.data;
       return data;
     } catch (err) {
@@ -57,16 +53,12 @@ const Raspored = () => {
 
   const sendRequestTeorija = async () => {
     try {
-      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedTeorija`, {
-        withCredentials: true
-      });
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedTeorija`, { withCredentials: true });
       const data = res.data;
-      // Ensure data structure is consistent
       const teorijaObj = data.teorija.reduce((acc, item) => {
         ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].forEach(day => {
           if (!acc[day]) acc[day] = [];
-          const daySchedule = item[day] || [];
-          acc[day] = acc[day].concat(daySchedule);
+          acc[day] = acc[day].concat(item[day] || []);
         });
         return acc;
       }, {});
@@ -78,9 +70,7 @@ const Raspored = () => {
 
   const sendRequestStudentsRaspored = useCallback(async () => {
     try {
-      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenici/${user._id}`, {
-        withCredentials: true
-      });
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenici/${user._id}`, { withCredentials: true });
       return res.data;
     } catch (err) {
       console.error('Error fetching students raspored:', err);
@@ -88,27 +78,26 @@ const Raspored = () => {
   }, [user]);
 
   const handleItemClickRasporedGumb = () => {
-    setRasporedGumb((prevValue) => !prevValue);
+    setRasporedGumb(prevValue => !prevValue);
   };
 
   const handleCombinedScheduleClick = async () => {
     try {
       const res = await sendRequestStudentsRaspored();
       const { schedules, students } = res;
-
       const combined = schedules.reduce((acc, studentSchedule) => {
         ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].forEach(day => {
           if (!acc[day]) acc[day] = [];
-          const daySchedule = studentSchedule[day] || [];
-          acc[day] = acc[day].concat(daySchedule.map(term => ({
-            ...term,
-            studentId: studentSchedule.ucenikId,
-            studentName: students.find(s => s._id === studentSchedule.ucenikId)?.ime + ' ' + students.find(s => s._id === studentSchedule.ucenikId)?.prezime
-          })));
+          acc[day] = acc[day].concat(
+            (studentSchedule[day] || []).map(term => ({
+              ...term,
+              studentId: studentSchedule.ucenikId,
+              studentName: `${students.find(s => s._id === studentSchedule.ucenikId)?.ime} ${students.find(s => s._id === studentSchedule.ucenikId)?.prezime}`
+            }))
+          );
         });
         return acc;
       }, {});
-
       setCombinedSchedule(combined);
       setShowCombinedSchedule(true);
     } catch (err) {
@@ -127,32 +116,25 @@ const Raspored = () => {
   }, []);
 
   useEffect(() => {
-    if (user) {
-      if (user.isMentor) {
-        sendRequestStudentsRaspored().then((data) => {
-          setStudentsRaspored(data.schedule);
-        });
-      }
+    if (user && user.isMentor) {
+      sendRequestStudentsRaspored().then((data) => setStudentsRaspored(data.schedule));
       sendRequestTeorija();
     }
   }, [user, sendRequestStudentsRaspored]);
-
-  useEffect(() => {
-    console.log('User:', user);
-    console.log('Students Raspored:', studentsRaspored);
-    console.log('Teorija:', teorija); // Added to debug
-  }, [user, studentsRaspored, teorija]);
+  
 
   return (
     <>
-      <Navigacija user={user} otvoreno={'raspored'} />
-      <NavTop user={user} naslov={'Raspored'} />
+      <Navigacija user={user} otvoreno="raspored" />
+      <NavTop user={user} naslov="Raspored" />
+      
       {dodajRasporedTeorija && (
         <DodajTermin
           dodajRasporedTeorija={dodajRasporedTeorija}
           onCancel={() => setDodajRasporedTeorija(false)}
         />
       )}
+      
       {dodajRasporedStudent && (
         <DodajTermin
           dodajRasporedTeorija={dodajRasporedStudent}
@@ -160,174 +142,98 @@ const Raspored = () => {
           studentID={selectedStudent._id}
         />
       )}
+      
       <div className="main">
         {user && user.isMentor && (
-          <div className="rl-gumb" onClick={handleItemClickRasporedGumb}>
-            {rasporedGumb ? (
-              <Icon className="icon" icon="solar:list-up-minimalistic-broken" />
-            ) : (
-              <Icon className="icon" icon="solar:list-down-minimalistic-broken" />
-            )}
-          </div>
-        )}
-        {user && user.isMentor && rasporedGumb && (
-          <NavSideRaspored
-            id={user._id}
-            students={user.students}
-            onStudentClick={handleStudentClick}
-            onCombinedScheduleClick={handleCombinedScheduleClick}
-          />
-        )}
-
-        {user && user.isMentor && (selectedStudentId || showCombinedSchedule) && (
           <>
-            {showCombinedSchedule ? (
-              <>
-                <div className='div-radio bc-none'>
-                  <div>
-                    <p>Raspored</p>
-                  </div>
-                </div>
-                <div className="raspored">
-                  {['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
-                    <RasporedDan
-                      key={day}
-                      day={day}
-                      teorija={combinedSchedule[day]}
-                      user={user}
-                      setSchedule={setCombinedSchedule}
-                      setNotification={setNotification}
-                      isTeorija={false}
-                    />
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <div className='div-radio bc-none'>
-                  <div>
-                    <p>Raspored učenika: {selectedStudent && selectedStudent.ime} {selectedStudent && selectedStudent.prezime}</p>
-                  </div>
-                  {user && user.isMentor && (
-                    <div
-                      className="gumb action-btn abEdit "
-                      onClick={() => setDodajRasporedStudent(true)}
-                    >
-                      <Icon icon="solar:add-circle-broken" fontSize="large" />Uredi raspored
-                    </div>
-                  )}
-                </div>
-                <div className="raspored">
-                  {studentsRaspored ? (
-                    ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
-                      <RasporedDan
-                        key={day}
-                        day={day}
-                        teorija={studentsRaspored[day]}
-                        user={user}
-                        student={selectedStudent}
-                        setSchedule={setStudentsRaspored}
-                        setNotification={setNotification}
-                        isTeorija={false}
-                      />
-                    ))
-                  ) : (
-                    <div>
-                      <p>Nema dostupnog rasporeda</p>
-                    </div>
-                  )}
-                </div>
-              </>
+            <div className="rl-gumb" onClick={handleItemClickRasporedGumb}>
+              <Icon className="icon" icon={rasporedGumb ? "solar:list-up-minimalistic-broken" : "solar:list-down-minimalistic-broken"} />
+            </div>
+            {rasporedGumb && (
+              <NavSideRaspored
+                id={user._id}
+                students={user.students}
+                onStudentClick={handleStudentClick}
+                onCombinedScheduleClick={handleCombinedScheduleClick}
+              />
             )}
           </>
         )}
-         {user && user.isStudent && (
+
+        {(selectedStudentId || showCombinedSchedule) && user.isMentor && (
           <>
-            <div className=' div-radio bc-none'>
-              <div>
-                <p>Raspored učenika</p>
-              </div>
-            </div>
-            <div className="raspored">
-              {studentsRaspored ? (
-                ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
+            {showCombinedSchedule ? (
+              <div className="raspored">
+                {['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
                   <RasporedDan
                     key={day}
                     day={day}
-                    teorija={studentsRaspored[day]}
+                    teorija={combinedSchedule[day]}
                     user={user}
-                    student={user}
-                    setSchedule={setStudentsRaspored}
+                    setSchedule={setCombinedSchedule}
                     setNotification={setNotification}
                     isTeorija={false}
                   />
-                ))
-              ) : (
-                <div>
-                  <p>Nema dostupnog rasporeda</p>
-                </div>
-              )}
-            </div>
-          <div className='div-radio bc-none'>
-            <div>
-              <p>Raspored teorija</p>
-            </div>
-          </div>
-          <div className="raspored">
-            {teorija ? (
-              ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
-                <RasporedDan
-                  key={day}
-                  day={day}
-                  teorija={teorija[day]}
-                  user={user}
-                  isTeorija={true}
-                  setSchedule={setTeorija}
-                  setNotification={setNotification}
-                />
-              ))
+                ))}
+              </div>
             ) : (
-              <div>
-                <p>Nema dostupnog rasporeda</p>
+              <div className="raspored">
+                {studentsRaspored ? (
+                  ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
+                    <RasporedDan
+                      key={day}
+                      day={day}
+                      teorija={studentsRaspored[day]}
+                      user={user}
+                      student={selectedStudent}
+                      setSchedule={setStudentsRaspored}
+                      setNotification={setNotification}
+                      isTeorija={false}
+                    />
+                  ))
+                ) : (
+                  <p>Nema dostupnog rasporeda</p>
+                )}
               </div>
             )}
-          </div>
-        </>
-        )}
-        {user && user.isAdmin && (
-          <>
-            <div className='div-radio bc-none'>
-              <div>
-                <p>Raspored teorija</p>
-              </div>
-              <div
-                className="gumb action-btn abEdit "
-                onClick={() => setDodajRasporedTeorija(true)}
-              >
-                <Icon icon="solar:add-circle-broken" fontSize="large" />Uredi teoriju
-              </div>
-            </div>
-            <div className="raspored">
-              {teorija ? (
-                ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
-                  <RasporedDan
-                    key={day}
-                    day={day}
-                    teorija={teorija[day]}
-                    user={user}
-                    isTeorija={true}
-                    setSchedule={setTeorija}
-                    setNotification={setNotification}
-                  />
-                ))
-              ) : (
-                <div>
-                  <p>Nema dostupnog rasporeda</p>
-                </div>
-              )}
-            </div>
           </>
         )}
+
+        {/* Teorija Schedule Display */}
+        <div className='div-radio bc-none'>
+          <div>
+            <p>Raspored teorija</p>
+          </div>
+          {user && user.isAdmin && (
+            <div
+              className="gumb action-btn abEdit "
+              onClick={() => setDodajRasporedTeorija(true)}
+            >
+              <Icon icon="solar:add-circle-broken" fontSize="large" />Uredi teoriju
+            </div>
+          )}
+        </div>
+
+        <div className="raspored">
+          {teorija ? (
+            ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
+              <RasporedDan
+                key={day}
+                day={day}
+                teorija={teorija[day]}
+                user={user}
+                isTeorija={true}
+                setSchedule={setTeorija}
+                setNotification={setNotification}
+              />
+            ))
+          ) : (
+            <div>
+              <p>Nema dostupnog teorijskog rasporeda</p>
+            </div>
+          )}
+        </div>
+
         {notification && (
           <Notification
             type={notification.type}

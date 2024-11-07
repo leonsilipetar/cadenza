@@ -58,6 +58,9 @@ const RasporedDan = ({
     <div className='dan'>
       <div className="nazivDana">{day}</div>
       {teorija && teorija.length > 0 && teorija.map((term, index) => {
+        const displayName = user?.isMentor
+          ? term.studentName // Prikazati ime studenta ako je korisnik mentor
+          : term.mentor; // Prikazati ime mentora ako je korisnik student
 
         return (
           <div
@@ -71,7 +74,11 @@ const RasporedDan = ({
             )}
             <div className="dvorana">{term.dvorana}</div>
             <div className="vrijeme">{term.vrijeme}</div>
+            {isTeorija ? (
             <div className="rasporedMentor">{term.mentor}</div>
+            ):(<div className="rasporedMentor">{displayName || user.korisnickoIme}</div>)
+            }
+            
           </div>
         );
       })}
