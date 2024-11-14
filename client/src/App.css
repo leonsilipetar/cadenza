@@ -282,6 +282,7 @@ header{
       text-align: center;
       padding: 1rem 0;
       border-bottom: 2px solid rgb(var(--isticanje2));
+      cursor: pointer;
     }
   .errorM{
     color: red;
@@ -725,6 +726,53 @@ align-items: center;
   text-align: center;
   border-radius: var(--radius);
 }
+.chat-container {
+  display: flex;
+  height: 100vh;
+}
+
+.raspored-lista {
+  width: 25%;
+  background-color: #f1f1f1;
+  border-right: 1px solid #ddd;
+}
+
+.chat-window {
+  width: 75%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chat-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.chat-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.message {
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border-radius: 4px;
+}
+
+.message.sent {
+  background-color: #dcf8c6;
+  align-self: flex-end;
+}
+
+.message.received {
+  background-color: #e5e5ea;
+  align-self: flex-start;
+}
+
 .termin{
   padding: 0.2rem;
   margin-top: 0.4rem;
@@ -735,6 +783,7 @@ align-items: center;
 }
 .boja-teorija{
   background-color: rgb(var(--isticanje3), 0.85);
+  color: rgb(var(--pozadina));
 }
 .vrijeme{
   display: flex;

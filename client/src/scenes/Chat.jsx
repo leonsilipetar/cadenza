@@ -1,66 +1,59 @@
-import React from 'react'
-import { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Navigacija from './navigacija';
 import NavTop from './nav-top';
+import NavSideRaspored from './mentori/NavSideRaspored';
+import ChatWindow from './chat/ChatWindow';
 import ApiConfig from '../components/apiConfig.js';
 
-
 axios.defaults.withCredentials = true;
-const Chat = () => {
 
+const Chat = () => {
   const [user, setUser] = useState();
+  const [students, setStudents] = useState([]);  // List of students for the sidebar
+  const [selectedStudent, setSelectedStudent] = useState(null);  // Current chat recipient
   const otvoreno = "chat";
 
-  
   const sendRequest = async () => {
-      const res = await axios.get(`${ApiConfig.baseUrl}/api/user`, {
-          withCredentials: true
-      }).catch((err) => console.log(err));
-      const data = await res.data;
-      return data;
+    const res = await axios.get(`${ApiConfig.baseUrl}/api/user`).catch((err) => console.log(err));
+    return res?.data;
   }
 
-  const refreshToken = async () => {
-      const res = await axios
-        .get(`${ApiConfig.baseUrl}/api/refresh`, {
-          withCredentials: true,
-        })
-        .catch((err) => console.log(err));
-  
-      const data = await res.data;
-      return data;
-    };
-    
-    
+  useEffect(() => {
+    sendRequest().then((data) => setUser(data.user));
+    fetchStudents();  // Fetch students when the component mounts
+  }, []);
 
+  const fetchStudents = async () => {
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/students`);
+      setStudents(res.data.students);
+    } catch (error) {
+      console.error("Error fetching students", error);
+    }
+  };
 
-    useEffect(() => {
+  const handleStudentClick = (studentId) => {
+    setSelectedStudent(studentId);  // Set the selected student for chat
+  };
 
-      
-        sendRequest().then((data) => {
-          setUser(data.user)
-        });
-
-    }, []);
-    
-    return (
-      <>
+  return (
+    <>
       <Navigacija user={user} otvoreno={otvoreno} />
-      <NavTop user={user} naslov={"Chat"}/>
+      <NavTop user={user} naslov={"Chat"} />
       <div className="main">
-
-  <div className="karticaZadatka">
-    <div className="ikona_ime_kartica">
-      <i className="uil uil-polygon" id="uil">
-        Chat
-      </i>
-      <p></p>
-    </div>
-  </div>
-</div>
-      </>
-    )
+        <div className="chat-container">
+          <NavSideRaspored
+            students={students} 
+            onStudentClick={handleStudentClick} 
+            onCombinedScheduleClick={() => console.log("Show combined schedule")}
+            biljeske={true}
+          />
+          <ChatWindow user={user} recipientId={selectedStudent} />
+        </div>
+      </div>
+    </>
+  )
 }
 
 export default Chat;
