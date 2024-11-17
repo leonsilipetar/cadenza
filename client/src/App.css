@@ -2,9 +2,8 @@
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+box-sizing: border-box;
 }
-
 /* Remove default margin */
 body,
 h1,
@@ -16,644 +15,513 @@ figure,
 blockquote,
 dl,
 dd {
-  margin: 0;
+margin: 0;
 }
-
 /* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
 ul[role='list'],
 ol[role='list'] {
-  list-style: none;
+list-style: none;
 }
-
 /* Set core root defaults */
 html:focus-within {
-  scroll-behavior: smooth;
+scroll-behavior: smooth;
 }
-
 /* Set core body defaults */
 body {
-  min-height: 100vh;
-  text-rendering: optimizeSpeed;
-  line-height: 1.5;
+min-height: 100vh;
+text-rendering: optimizeSpeed;
+line-height: 1.5;
 }
-
 /* A elements that don't have a class get default styles */
 a:not([class]) {
-  text-decoration-skip-ink: auto;
+text-decoration-skip-ink: auto;
 }
-
 /* Make images easier to work with */
 img,
 picture {
-  max-width: 100%;
-  display: block;
+max-width: 100%;
+display: block;
 }
-
 /* Inherit fonts for inputs and buttons */
 input,
 button,
 textarea,
 select {
-  font: inherit;
+font: inherit;
 }
-
 /* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
 @media (prefers-reduced-motion: reduce) {
-  html:focus-within {
-   scroll-behavior: auto;
-  }
-  
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+html:focus-within {
+scroll-behavior: auto;
 }
-
+*,
+*::before,
+*::after {
+animation-duration: 0.01ms !important;
+animation-iteration-count: 1 !important;
+transition-duration: 0.01ms !important;
+scroll-behavior: auto !important;
+}
+}
 :root{
-  --isticanje: var(--narancasta);
-  --isticanje2: 204, 204, 204;
-  --isticanje3: 48, 57, 131;
-  --isticanje-svijetlo: rgba(var(--isticanje), 0.425);
-  --pozadina-svijetlo: 255, 255, 255;
-  --pozadina-tamno: 17, 17, 17;
-
-  --iznad: rgb(var(--svijetlo-iznad));
-  --iznad-objava: rgb(var(--isticanje));
-
-  --tekst: rgb(var(--svijetlo-tekst));
-
-  --tamno-iznad: 66, 68, 66;
-  --tamno-iznad-nav: 76, 79, 76;
-  --svijetlo-iznad: 255,255,255;
-  --svijetlo-iznad-nav: 255,255,255;
-
-  --tamno-tekst: 218, 214, 214;
-  --svijetlo-tekst: 15, 15, 15;
-
-  --visinaKartice: 250px;
-
-  --boxShadow: var(--sjena-svijetlo);
-  --sjena-tamno-navtop: 0px 0px 40px 1px rgba(0, 0, 0, 0.6);
-  --sjena-tamno: 0px 0px 10px 1px rgba(0, 0, 0, 0.13);
-  --sjena-svijetlo: 0px 0px 20px 1px rgba(63, 63, 63, 0.13);
-  /* boje isticanja:*/
-  --ljubicasta: 150, 103, 224;
-  --crvena: 255, 104, 107;
-  --zuta: 254, 219, 114;
-  --siva: 97, 102, 107;
-  
-  --narancasta: 252, 163, 17;
-  --zelena: 132, 169, 140;
-  --radius: 0.5rem;
+--isticanje: var(--narancasta);
+--isticanje2: 204, 204, 204;
+--isticanje3: 48, 57, 131;
+--isticanje-svijetlo: rgba(var(--isticanje), 0.425);
+--pozadina-svijetlo: 255, 255, 255;
+--pozadina-tamno: 17, 17, 17;
+--iznad: rgb(var(--svijetlo-iznad));
+--iznad-objava: rgb(var(--isticanje));
+--tekst: rgb(var(--svijetlo-tekst));
+--tamno-iznad: 66, 68, 66;
+--tamno-iznad-nav: 76, 79, 76;
+--svijetlo-iznad: 255,255,255;
+--svijetlo-iznad-nav: 255,255,255;
+--tamno-tekst: 218, 214, 214;
+--svijetlo-tekst: 15, 15, 15;
+--visinaKartice: 250px;
+--boxShadow: var(--sjena-svijetlo);
+--sjena-tamno-navtop: 0px 0px 40px 1px rgba(0, 0, 0, 0.6);
+--sjena-tamno: 0px 0px 10px 1px rgba(0, 0, 0, 0.13);
+--sjena-svijetlo: 0px 0px 20px 1px rgba(63, 63, 63, 0.13);
+/* boje isticanja:*/
+--ljubicasta: 150, 103, 224;
+--crvena: 255, 104, 107;
+--zuta: 254, 219, 114;
+--siva: 97, 102, 107;
+--narancasta: 252, 163, 17;
+--zelena: 132, 169, 140;
+--radius: 0.5rem;
 }
 @font-face {
-  font-family: 'fOstalo';
-  src: url('fonts/HedvigLettersSans-Regular.ttf') format('truetype');
-  font-weight: bold;
-  font-display: swap;
+font-family: 'fOstalo';
+src: url('fonts/HedvigLettersSans-Regular.ttf') format('truetype');
+font-weight: bold;
+font-display: swap;
 }
-
 @font-face {
-  font-family: 'fNaslovi';
-  src: url('fonts/HeptaSlab-VariableFont_wght.ttf') format('truetype');
-  font-weight: 800;
-  font-display: swap;
+font-family: 'fNaslovi';
+src: url('fonts/HeptaSlab-VariableFont_wght.ttf') format('truetype');
+font-weight: 800;
+font-display: swap;
 }
-
 body {
-  font-family: 'fOstalo', sans-serif;
-  background-color: rgb(237, 237, 241);
+font-family: 'fOstalo', sans-serif;
+background-color: rgb(237, 237, 241);
 }
 body.light {
-  color: #000000;
-  --color: #151515;
-  --navtop: rgb(255, 255, 255);
-  --iznad: rgb(var(--svijetlo-iznad));
-  --boxShadow: var(--sjena-svijetlo);
-  --tekst: rgb(var(--svijetlo-tekst));
-  --iznad-nav: rgb(var(--svijetlo-iznad-nav));
-  --isticanje-svijetlo: rgb(var(--isticanje));
-  --iznad-objava: rgb(var(--isticanje));
-  --pozadina: 227, 227, 227;
-  background-color: rgb(237, 237, 241);
-  color-scheme: light;
+color: #000000;
+--color: #151515;
+--navtop: rgb(255, 255, 255);
+--iznad: rgb(var(--svijetlo-iznad));
+--boxShadow: var(--sjena-svijetlo);
+--tekst: rgb(var(--svijetlo-tekst));
+--iznad-nav: rgb(var(--svijetlo-iznad-nav));
+--isticanje-svijetlo: rgb(var(--isticanje));
+--iznad-objava: rgb(var(--isticanje));
+--pozadina: 227, 227, 227;
+background-color: rgb(237, 237, 241);
+color-scheme: light;
 }
-
 /* Dark Theme */
 body.dark {
-  color-scheme: dark;
-  background-color: rgb(14, 14, 15);
-  color: #ffffff;
-  --color:rgb(162, 162, 162)f;
-  --navtop: rgb(17, 17, 17);
-  --iznad: rgb(var(--tamno-iznad));
-  --iznad-nav: rgb(var(--tamno-iznad-nav));
-  --boxShadow: var(--sjena-tamno);
-  --tekst: rgb(var(--tamno-tekst));
-  --isticanje-svijetlo: rgba(var(--isticanje), 0.6);
-  --isticanje2: 108, 108, 108;
-  --iznad-objava: rgb(var(--isticanje));
+color-scheme: dark;
+background-color: rgb(14, 14, 15);
+color: #ffffff;
+--color:rgb(162, 162, 162)f;
+--navtop: rgb(17, 17, 17);
+--iznad: rgb(var(--tamno-iznad));
+--iznad-nav: rgb(var(--tamno-iznad-nav));
+--boxShadow: var(--sjena-tamno);
+--tekst: rgb(var(--tamno-tekst));
+--isticanje-svijetlo: rgba(var(--isticanje), 0.6);
+--isticanje2: 108, 108, 108;
+--iznad-objava: rgb(var(--isticanje));
 }
 .notification {
-  position: fixed;
-  bottom: 2rem;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius);
-  color: var(--tekst);
-  background-color: var(--iznad-nav);
-  box-shadow: var(--boxShadow);
-  max-width: 50%;
+position: fixed;
+bottom: 2rem;
+padding: 0.5rem 1rem;
+border-radius: var(--radius);
+color: var(--tekst);
+background-color: var(--iznad-nav);
+box-shadow: var(--boxShadow);
+max-width: 50%;
 }
 .hidden{
-  display: none;
+display: none;
 }
 .acc{
-  color: rgb(var(--isticanje));
-}
-.admin-gumb{
-  background-color: rgba(var(--isticanje),0.8);
-  padding: 10px;
-  border-radius: 1.2rem;
-}
-input[type="text"], input[type="email"], input[type="date"], textarea{
-  color: var(--color);
-}
-header{
-  z-index: 2;
-    width: 3.5rem;
-    height: 100%;
-    position: fixed;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background-color: var(--iznad-nav);
-    box-shadow: var(--boxShadow);
-  }
-  nav{
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    padding: 4rem 0 1rem 0;
-    align-items: center;
-    justify-content: space-between;
-  }
-  nav div{
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 3.2rem;
-    height: 3.2rem;
-    border-radius: 1rem;
-    transition: margin-left 0.2s ease-in-out;
-  }
-  nav div p{
-    font-size: 0.6rem;
-  }
-  .icon{
-    padding: 0.2rem 0 0 0;
-  }
-  nav div:hover{
-    color: var(--pozadina);
-    margin-left: 1rem;
-    background-color: rgb(var(--isticanje));
-    outline: 8px solid var(--iznad-nav);
-  }
-  nav div:active{
-    transform: scale(0.9);
-  }
-  nav div.otvoreno{
-    margin-left: 2rem;
-    width: 3.6rem;
-    height: 3.6rem;
-    outline: 8px solid var(--iznad-nav);
-    background-color: rgb(var(--isticanje));
-  }
-  .welcome-poruka{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .raspored-lista{
-    z-index:1;
-    position: fixed;
-  left: 3.5rem;
-  padding-top: 1rem;
-  top: 0;
-  height: 100%;
-  width: 20rem; /* Set the width as needed */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  background-color: var(--iznad-nav);
-  box-shadow: var(--boxShadow);
-    }
-    .rl-items{
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 1em;
-      padding: 2rem 0 1rem 0;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .rl-gumb{
-      z-index: 3;
-      position: fixed;
-      top: 80%;
-      left: 5rem;
-      background-color: rgb(var(--isticanje2));
-      padding: 0.2rem;
-      border-radius: var(--radius);
-      cursor: pointer;
-    }
-    .rl:nth-child(1){
-      border-bottom: none;
-      color: white;
-    }
-    .rl{
-      width: 90%;
-      text-align: center;
-      padding: 1rem 0;
-      border-bottom: 2px solid rgb(var(--isticanje2));
-      cursor: pointer;
-    }
-  .errorM{
-    color: red;
-    background-color: rgba(255, 0, 0, 0.185);
-    padding: 1% 2%;
-    border-radius: var(--radius);
-  }
- .icon{
-    font-size: 2.4em;
-  }
-  .opcije option{
-    color: #000000;
-  }
-  #tema{
-    font-size: 1.4em;
-    color: var(--tekst);
-  }
-  .gumb:hover{
-    cursor: pointer;
-  }
-  .gumb{
-    border: none;
-  }
-  .nav-top{
-    z-index: 1;
-    position: fixed;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    top: 0;
-    width: 100svw;
-    padding: 0.5rem;
-    height: 3.5rem;
-    box-shadow: var(--boxShadow);
-    background-color: var(--navtop);
-}
-.nav-top div{
-  margin: 0.5rem;
-  transition: margin 0.5s ease;
-}
-.nav-top div:hover{
-  margin: 2rem;
-}
-.gumb-novo{
-  border-radius: 5px;
-  border: none;
-  background-color: transparent;
-  text-align: center;
-  font-weight: bold;
-}
-.gumb-novo:hover{
-  background-color: var(--isticanje-svijetlo);
-  box-shadow: var(--boxShadow);
-}
-.link{
-  text-decoration: none;
-}
-h1{
-  font-family: 'fNaslovi', sans-serif;
-  color: var(--tekst);
-}
-.login-signup{
-  width: 100vw;
-  height: 100vh;
-}
-.header-forma-login-signup{
-  width: 50%;
-  height: 100%;
-  position: relative;
-  float: left;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-image: url(../public/Logo12.png);
-  background-repeat: no-repeat;
-  background-position: center;
-}
-.main-login-signup{
-  width: 50%;
-  height: 100%;
-  position: relative;
-  float: right;
-  flex-direction: column;
-}
-.pokazatelj{
-  width: 90%;
-  height: 10%;
-  position: relative;
-  top: 0;
-  border-radius: 0 0 1em 1em;
-  box-shadow: var(--boxShadow);
-  background-color: var(--iznad);
-}
-.pokazatelj .p{
-  font-weight: bold;
-  padding: 1.2rem;
-}
-.glavna-forma{
-  width: 90%;
-  height: 85%;
-  position: absolute;
-  bottom: 0px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  background-color: var(--iznad);
-  border-radius: 1em 1em 0 0;
-  box-shadow: var(--boxShadow);
-}
-.naziv-ime{
-  padding: 2%;
-}
-form{
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-direction: column;
-}
-.input-login-signup{
-  width: 75%;
-  margin: 2%;
-  border-radius: var(--radius);
-  padding: var(--radius);
-  box-shadow: var(--boxShadow);
-  color: rgb(var(--svijetlo-tekst));
-  outline: none;
-  border: 1px solid rgb(208, 208, 208);
-  transition: border 0.1s ease-in-out;
-}
-.input-login-signup:focus{
-  border: 1px solid rgb(var(--isticanje));
-  border-bottom: 4px solid rgb(var(--isticanje));
-}
-.gumb-login-signup{
-  font-weight: bold;
-  text-decoration: none;
-  width: 75%;
-  margin-top: 5%;
-  color: rgb(var(--pozadina-svijetlo));
-  background-color: rgb(var(--isticanje));
-  border-radius: var(--radius);
-  border: none;
-  outline: none;
-  padding: 0.8rem 2rem;
-}
-.gumb-login-signup:hover{
-outline: 2px solid rgb(var(--isticanje));
-background-color: rgb(var(--pozadina-svijetlo));
 color: rgb(var(--isticanje));
 }
-a{
-  text-decoration: none;
-color: rgb(var(--tekst));
+.admin-gumb{
+background-color: rgba(var(--isticanje),0.8);
+padding: 10px;
+border-radius: 1.2rem;
 }
-
+input[type="text"], input[type="email"], input[type="date"], textarea{
+color: var(--color);
+}
+header{
+z-index: 2;
+width: 3.5rem;
+height: 100%;
+position: fixed;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+background-color: var(--iznad-nav);
+box-shadow: var(--boxShadow);
+}
+nav{
+position: relative;
+display: flex;
+flex-direction: column;
+gap: 1em;
+padding: 4rem 0 1rem 0;
+align-items: center;
+justify-content: space-between;
+}
+nav div{
+position: relative;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+width: 3.2rem;
+height: 3.2rem;
+border-radius: 1rem;
+transition: margin-left 0.2s ease-in-out;
+}
+nav div p{
+font-size: 0.6rem;
+}
+.icon{
+padding: 0.2rem 0 0 0;
+}
+nav div:hover{
+color: var(--pozadina);
+margin-left: 1rem;
+background-color: rgb(var(--isticanje));
+outline: 8px solid var(--iznad-nav);
+}
+nav div:active{
+transform: scale(0.9);
+}
+nav div.otvoreno{
+margin-left: 2rem;
+width: 3.6rem;
+height: 3.6rem;
+outline: 8px solid var(--iznad-nav);
+background-color: rgb(var(--isticanje));
+}
+.welcome-poruka{
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+.raspored-lista{
+z-index:1;
+position: fixed;
+left: 3.5rem;
+padding-top: 1rem;
+top: 0;
+height: 100%;
+width: 20rem; /* Set the width as needed */
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+background-color: var(--iznad-nav);
+box-shadow: var(--boxShadow);
+}
+.rl-items{
+position: relative;
+display: flex;
+flex-direction: column;
+gap: 1em;
+padding: 2rem 0 1rem 0;
+align-items: center;
+justify-content: space-between;
+}
+.rl-gumb{
+z-index: 3;
+position: fixed;
+top: 80%;
+left: 5rem;
+background-color: rgb(var(--isticanje2));
+padding: 0.2rem;
+border-radius: var(--radius);
+cursor: pointer;
+}
+.rl:nth-child(1){
+border-bottom: none;
+color: white;
+}
+.rl{
+width: 90%;
+text-align: center;
+padding: 1rem 0;
+border-bottom: 2px solid rgb(var(--isticanje2));
+cursor: pointer;
+}
+.errorM{
+color: red;
+background-color: rgba(255, 0, 0, 0.185);
+padding: 1% 2%;
+border-radius: var(--radius);
+}
+.icon{
+font-size: 2.4em;
+}
+.opcije option{
+color: #000000;
+}
+#tema{
+font-size: 1.4em;
+color: var(--tekst);
+}
+.gumb:hover{
+cursor: pointer;
+}
+.gumb{
+border: none;
+}
+.nav-top{
+z-index: 1;
+position: fixed;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: row;
+top: 0;
+width: 100svw;
+padding: 0.5rem;
+height: 3.5rem;
+box-shadow: var(--boxShadow);
+background-color: var(--navtop);
+}
+.nav-top div{
+margin: 0.5rem;
+transition: margin 0.5s ease;
+}
+.nav-top div:hover{
+margin: 2rem;
+}
+.gumb-novo{
+border-radius: 5px;
+border: none;
+background-color: transparent;
+text-align: center;
+font-weight: bold;
+}
+.gumb-novo:hover{
+background-color: var(--isticanje-svijetlo);
+box-shadow: var(--boxShadow);
+}
+.link{
+text-decoration: none;
+}
 .p{
-  padding: 0.3rem;
+padding: 0.3rem;
 }
 .popup {
-  z-index: 5;
-  position: absolute;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 1rem;
-  overflow-x: hidden; /* Allow the popup to scroll if content overflows */
+z-index: 5;
+position: absolute;
+width: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: rgba(0, 0, 0, 0.8);
+padding: 1rem;
+overflow-x: hidden; /* Allow the popup to scroll if content overflows */
 }
 .popup .div{
-  width: 75%;
-  background-color: var(--iznad);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  border-radius: var(--radius);
-  margin: 1rem 0;
+width: 75%;
+background-color: var(--iznad);
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 1rem;
+border-radius: var(--radius);
+margin: 1rem 0;
 }
 .div-clmn{
-  flex-direction: column;
+flex-direction: column;
 }
 .div-radio{
-  width: 75%;
-  display: flex;
-  justify-content: space-evenly;
-  padding: 1rem;
-  border-radius: var(--radius);
-  margin: 1rem 0;
+width: 75%;
+display: flex;
+justify-content: space-evenly;
+padding: 1rem;
+border-radius: var(--radius);
+margin: 1rem 0;
 }
-
 .main{
-  position: relative;
-  width: 100%;
-  float: right;
-  display: flex;
-  top: 4.5rem;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-direction: column;
+position: relative;
+width: 100%;
+float: right;
+display: flex;
+top: 4.5rem;
+justify-content: space-evenly;
+align-items: center;
+flex-direction: column;
 }
 .karticaZadatka{
-  background-color: var(--iznad);
-  box-shadow: var(--boxShadow);
-  border-radius: var(--radius);
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  position: relative;
-  width: 60%;
-  align-items: flex-start;
-  margin-bottom: 2%;
-  padding: 0.8rem;
+background-color: var(--iznad);
+box-shadow: var(--boxShadow);
+border-radius: var(--radius);
+display: flex;
+justify-content: center;
+flex-direction: column;
+position: relative;
+width: 60%;
+align-items: flex-start;
+margin-bottom: 2%;
+padding: 0.8rem;
 }
 .profilDiv{
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-direction: column;
-  gap: 0.2rem;
-  padding: 2rem;
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: flex-start;
+flex-direction: column;
+gap: 0.2rem;
+padding: 2rem;
 }
 .field{
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  background-color: #3333331f;
-  padding: 2rem 1rem;
-  flex-wrap: wrap;
+width: 100%;
+display: flex;
+justify-content: space-between;
+background-color: #3333331f;
+padding: 2rem 1rem;
+flex-wrap: wrap;
 }
 .field-name {
-  font-weight: 600;
-  color: #333;
-  flex: 1; /* Allow the name to take available space */
+font-weight: 600;
+color: #333;
+flex: 1; /* Allow the name to take available space */
 }
-
 .field-data {
-  color: #666;
-  flex: 2; /* Allow the data to take more space */
-  min-width: 0; /* Prevent overflow */
-  text-align: right;
+color: #666;
+flex: 2; /* Allow the data to take more space */
+min-width: 0; /* Prevent overflow */
+text-align: right;
 }
 .profilDiv .field:nth-child(1){
-  border-radius: 0.2rem 0.2rem 0 0;
+border-radius: 0.2rem 0.2rem 0 0;
 }
 .profilDiv .field:nth-last-child(1){
-  border-radius: 0 0 0.2rem 0.2rem;
+border-radius: 0 0 0.2rem 0.2rem;
 }
 .tablica{
-  display: grid;
-  grid-template-rows: auto auto;
+display: grid;
+grid-template-rows: auto auto;
 }
 .fje{
-  width: 10rem;
+width: 10rem;
 }
 .naziv{
-  background-color: var(--iznad-objava);
-  border-radius: 0.7rem 0.7rem 0.2rem 0.2rem;
-  padding: 0.5rem;
+background-color: var(--iznad-objava);
+border-radius: 0.7rem 0.7rem 0.2rem 0.2rem;
+padding: 0.5rem;
 }
 .tablica .tr{
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  gap: 1.5rem;
-  border-bottom: 1px solid var(--iznad);
-  padding: 0.5rem;
-  justify-content: space-between;
-  align-items: center;
+display: grid;
+grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+gap: 1.5rem;
+border-bottom: 1px solid var(--iznad);
+padding: 0.5rem;
+justify-content: space-between;
+align-items: center;
 }
-
 .th{
-  flex: 1;
+flex: 1;
 }
-
 .redak:hover{
-  background-color:rgba(153, 153, 153, 0.195);
+background-color:rgba(153, 153, 153, 0.195);
 }
-
 .action-btn {
-  cursor: pointer;
-  display: inline-flex; /* Use inline-flex to ensure they stay in a row */
-  align-items: center;
-  padding: 0.5rem;
-  transition: all 0.1s ease-in-out;
-  border-radius: var(--radius);
+cursor: pointer;
+display: inline-flex; /* Use inline-flex to ensure they stay in a row */
+align-items: center;
+padding: 0.5rem;
+transition: all 0.1s ease-in-out;
+border-radius: var(--radius);
 }
-
 .abEdit:hover,
 .abDelete:hover,
 .abExpand:hover {
-  border-radius: 10rem;
-  outline: none;
+border-radius: 10rem;
+outline: none;
 }
-
 .abEdit:hover {
-  background-color: #4CAF50;
+background-color: #4CAF50;
 }
 .abExpand:hover {
-  background-color: rgb(var(--isticanje));
+background-color: rgb(var(--isticanje));
 }
-
 .abDelete:hover {
-  background-color: #f15145;
+background-color: #f15145;
 }
-
 .abEdit:hover::after,
 .abDelete:hover::after,
 .abExpand:hover::after {
-  content: attr(data-text);
-  display: inline-block;
-  opacity: 1;
-  margin-left: 5px;
-  transition: all 0.3s ease-in-out;
+content: attr(data-text);
+display: inline-block;
+opacity: 1;
+margin-left: 5px;
+transition: all 0.3s ease-in-out;
 }
-
 .abEdit::after,
 .abDelete::after {
-  content: '';
-  opacity: 0;
-  display: inline-block;
-  margin-left: 5px;
-  transition: all 0.3s ease-in-out;
+content: '';
+opacity: 0;
+display: inline-block;
+margin-left: 5px;
+transition: all 0.3s ease-in-out;
 }
 .inline{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: row;
 }
 .sbtwn{
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-direction: row;
-  padding-bottom: 1rem;
+display: flex;
+justify-content: space-evenly;
+align-items: center;
+flex-direction: row;
+padding-bottom: 1rem;
 }
 .checkbox-group {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+display: flex;
+flex-direction: row;
+align-items: center;
 }
-
 .checkbox-item {
-  border: 2px solid #777777;
-  padding: 1rem;
-  margin: 1rem;
-  cursor: pointer;
-  border-radius: var(--radius);
-  background-color: rgba(var(--isticanje),0.6);
+border: 2px solid #777777;
+padding: 1rem;
+margin: 1rem;
+cursor: pointer;
+border-radius: var(--radius);
+background-color: rgba(var(--isticanje),0.6);
 }
-
 .checkbox-item.checked {
-  border: none;
-  outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
+border: none;
+outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
 }
 .div-radio {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
-  background-color: var(--iznad);
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: space-evenly;
+background-color: var(--iznad);
 }
 .bc-none{
-  background-color: transparent;
+background-color: transparent;
 }
 .search-result-item{
-  width: 100%;
+width: 100%;
 border-bottom: solid 1px rgb(var(--isticanje2));
 padding: 1.2rem 0.5rem;
 display: flex;
@@ -662,344 +530,2301 @@ justify-content: space-between;
 align-items: center;
 }
 .txt-min2{
-  color: rgb(var(--isticanje));
-  font-size: 0.8rem;
+color: rgb(var(--isticanje));
+font-size: 0.8rem;
 }
 .txt-min{
-  color: rgb(var(--isticanje2));
-  font-size: 0.8rem;
+color: rgb(var(--isticanje2));
+font-size: 0.8rem;
 }
-
 .radio-item {
-  padding: 1rem;
-  margin: 1rem;
-  cursor: pointer;
-  border-radius: var(--radius);
-  background-color: rgba(var(--isticanje), 0.6);
+padding: 1rem;
+margin: 1rem;
+cursor: pointer;
+border-radius: var(--radius);
+background-color: rgba(var(--isticanje), 0.6);
 }
 .radio-item:hover{
-  transform: scale(1.1);
+transform: scale(1.1);
 }
 .radio-item.checked {
-  border: none;
-  outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
-  transform: scale(1.15);
+border: none;
+outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
+transform: scale(1.15);
 }
 .spremiBtn{
-  padding: 0.8rem;
-  border-radius: 5rem;
-  background-color: rgb(var(--isticanje));
+padding: 0.8rem;
+border-radius: 5rem;
+background-color: rgb(var(--isticanje));
 }
 .disabledSpremiBtn{
-  display: none;
+display: none;
 }
 .spremiBtn:hover{
-  background-color: rgb(var(--pozadina));
-  outline: 3px solid rgb(var(--isticanje));
-  color: rgb(var(--isticanje));
+background-color: rgb(var(--pozadina));
+outline: 3px solid rgb(var(--isticanje));
+color: rgb(var(--isticanje));
 }
 .zatvoriBtn{
-  color: rgb(var(--isticanje));
+color: rgb(var(--isticanje));
 }
 .zatvoriBtn:hover{
-  text-decoration: underline;
+text-decoration: underline;
 }
 .raspored{
-  display: grid;
-  grid-template-columns: repeat(6, 10rem);
-  background-color: var(--iznad);
-  box-shadow: var(--boxShadow);
-  border-radius: var(--radius);
-  padding: 1rem;
-  margin-bottom: 2rem;
+display: grid;
+grid-template-columns: repeat(6, 10rem);
+background-color: var(--iznad);
+box-shadow: var(--boxShadow);
+border-radius: var(--radius);
+padding: 1rem;
+margin-bottom: 2rem;
 }
 .dan{
-  padding: 1rem;
-  border-right: 2px solid rgb(var(--isticanje));
+padding: 1rem;
+border-right: 2px solid rgb(var(--isticanje));
 }
 .dan:last-child{
-  border: none;
+border: none;
 }
 .nazivDana{
-  background-color: rgba(var(--isticanje), 0.6);
-  padding: 0.3rem 0.7rem;
-  text-align: center;
-  border-radius: var(--radius);
+background-color: rgba(var(--isticanje), 0.6);
+padding: 0.3rem 0.7rem;
+text-align: center;
+border-radius: var(--radius);
 }
 .chat-container {
-  display: flex;
-  height: 100vh;
+display: flex;
+height: 100vh;
 }
-
 .raspored-lista {
-  width: 25%;
-  background-color: #f1f1f1;
-  border-right: 1px solid #ddd;
+width: 25%;
+background-color: #f1f1f1;
+border-right: 1px solid #ddd;
 }
-
 .chat-window {
-  width: 75%;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+width: 75%;
+padding: 1rem;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
 }
-
 .chat-messages {
-  flex-grow: 1;
-  overflow-y: auto;
-  padding: 0.5rem;
+flex-grow: 1;
+overflow-y: auto;
+padding: 0.5rem;
 }
-
 .chat-input {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+display: flex;
+align-items: center;
+gap: 0.5rem;
 }
-
 .message {
-  padding: 0.5rem;
-  margin: 0.5rem 0;
-  border-radius: 4px;
+padding: 0.5rem;
+margin: 0.5rem 0;
+border-radius: 4px;
 }
-
 .message.sent {
-  background-color: #dcf8c6;
-  align-self: flex-end;
+background-color: #dcf8c6;
+align-self: flex-end;
 }
-
 .message.received {
-  background-color: #e5e5ea;
-  align-self: flex-start;
+background-color: #e5e5ea;
+align-self: flex-start;
 }
-
 .termin{
-  padding: 0.2rem;
-  margin-top: 0.4rem;
-  border-radius: var(--radius);
-  background-color: rgb(var(--isticanje));
-  display: grid;
-  grid-template-rows: 1fr 2fr 1fr;
+padding: 0.2rem;
+margin-top: 0.4rem;
+border-radius: var(--radius);
+background-color: rgb(var(--isticanje));
+display: grid;
+grid-template-rows: 1fr 2fr 1fr;
 }
 .boja-teorija{
-  background-color: rgb(var(--isticanje3), 0.85);
-  color: rgb(var(--pozadina));
+background-color: rgb(var(--isticanje3), 0.85);
+color: rgb(var(--pozadina));
 }
 .vrijeme{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.2rem;
+display: flex;
+justify-content: center;
+align-items: center;
+font-size: 1.2rem;
 }
 .dvorana{
-  display: flex;
-  justify-content: center;
-  align-items: center;
+display: flex;
+justify-content: center;
+align-items: center;
 }
 .rasporedMentor{
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  font-size: 0.7rem;
+display: flex;
+justify-content: flex-end;
+align-items: center;
+font-size: 0.7rem;
 }
 .obrisiTermin {
-  position: absolute; /* Changed to relative to make :after positioned relative to this */
+position: absolute; /* Changed to relative to make :after positioned relative to this */
 }
-
 .obrisiTermin:after {
-  content: "obriši";
-  position: relative;
-  top: 0;
-  left: 0;
-  display: none; /* Initially hide the content */
+content: "obriši";
+position: relative;
+top: 0;
+left: 0;
+display: none; /* Initially hide the content */
 }
-
 .obrisiTermin:hover {
-  display: inline-block; /* Show the content when the parent is hovered */
-  padding: 0.3rem;
-  background-color: #f44336;
-  border-radius: var(--radius);
-  color: var(--tekst);
+display: inline-block; /* Show the content when the parent is hovered */
+padding: 0.3rem;
+background-color: #f44336;
+border-radius: var(--radius);
+color: var(--tekst);
 }
 .obrisiTermin:hover:after {
-  display: inline-block; /* Show the content when the parent is hovered */
-  background-color: #f44336;
-  color: var(--tekst);
+display: inline-block; /* Show the content when the parent is hovered */
+background-color: #f44336;
+color: var(--tekst);
 }
 .show-password-toggle {
-  background: none;
-  border: 1px solid rgb(var(--isticanje));
-  cursor: pointer;
-  color: #333; /* Adjust color as needed */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem;
-  border-radius: var(--radius);
+background: none;
+border: 1px solid rgb(var(--isticanje));
+cursor: pointer;
+color: #333; /* Adjust color as needed */
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 0.5rem;
+border-radius: var(--radius);
 }
 .linkMAI{
-  padding:1rem;
+padding:1rem;
 }
 .moj-raspored{
-  background-color: rgb(var(--isticanje));
-  border-radius: var(--radius);
+background-color: rgb(var(--isticanje));
+border-radius: var(--radius);
 }
-  @media only screen and (max-width: 1080px) {
-    .raspored-lista{
-    left: 0;
-    height: 100%;
-    width: 100%; /* Set the width as needed */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    background-color: var(--iznad-nav);
-    box-shadow: var(--boxShadow);
-      }
-      .rl-gumb{
-        position: fixed;
-        padding: 0.6rem;
-        left: 1rem;
-      }
-    .show-password-toggle {
-      right: 8%;
-      top: 44%;
-    }
-    .mobile-none{
-      display: none;
-    }
-    .tablica .tr{
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-    .icon{
-      font-size: 2rem;
-    }
-    header{
-        justify-content: space-evenly;
-        align-items: center;
-        width: 100%;
-        height: 8svh;
-        bottom: 0;
-        flex-direction: row;
-        border-radius: 15px 15px 0 0;
-      }
-      .main{
-        width: 100%;
-        padding-bottom: 10%;
-      }
-      .karticaZadatka{
-        width: 96%;
-      }
-      nav {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-      }
-    
-      nav div {
-        position: relative;
-        width: 2.2rem;
-        height: 2.2rem;
-        bottom: 1.3rem;
-        transition: height 0.3s ease-in-out, margin-bottom 0.2s ease-in-out;
-      }
-      nav div:hover{
-        margin-left: 0;
-        margin-bottom: 1rem;
-        border-radius: 0.7rem;
-      }
-      nav div.otvoreno{
-        margin-left: 0;
-        margin-bottom: 1rem;
-      }
-      .nav-top{
-        width: 100%;
-        padding: 0.5rem;
-    }
-    .div{
-      flex-direction: column;
-    }
-  .header-forma-login-signup{
-      width: 100%;
-      height: 90vh;
-  }
-  h1{
-    font-size: 2rem;
-  }
-  .input-login-signup{width: 90%;}
-  .main-login-signup{
-      width: 100%;
-      display: flex;
-      align-items: center;
-  }
-  .pokazatelj{
-      border-radius: 1em;
-  }
-  .gumb-login-signup{
-    width: 90%;
-  }
+@media only screen and (max-width: 1080px) {
+.raspored-lista{
+left: 0;
+height: 100%;
+width: 100%; /* Set the width as needed */
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+background-color: var(--iznad-nav);
+box-shadow: var(--boxShadow);
+}
+.rl-gumb{
+position: fixed;
+padding: 0.6rem;
+left: 1rem;
+}
+.show-password-toggle {
+right: 8%;
+top: 44%;
+}
+.mobile-none{
+display: none;
+}
+.tablica .tr{
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+}
+.icon{
+font-size: 2rem;
+}
+header{
+justify-content: space-evenly;
+align-items: center;
+width: 100%;
+height: 8svh;
+bottom: 0;
+flex-direction: row;
+border-radius: 15px 15px 0 0;
+}
+.main{
+width: 100%;
+padding-bottom: 10%;
+}
+.karticaZadatka{
+width: 96%;
+}
+nav {
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: center;
+}
+nav div {
+position: relative;
+width: 2.2rem;
+height: 2.2rem;
+bottom: 1.3rem;
+transition: height 0.3s ease-in-out, margin-bottom 0.2s ease-in-out;
+}
+nav div:hover{
+margin-left: 0;
+margin-bottom: 1rem;
+border-radius: 0.7rem;
+}
+nav div.otvoreno{
+margin-left: 0;
+margin-bottom: 1rem;
+}
+.nav-top{
+width: 100%;
+padding: 0.5rem;
+}
+.div{
+flex-direction: column;
+}
+.header-forma-login-signup{
+width: 100%;
+height: 90vh;
+}
+h1{
+font-size: 2rem;
+}
+.input-login-signup{width: 90%;}
+.main-login-signup{
+width: 100%;
+display: flex;
+align-items: center;
+}
+.pokazatelj{
+border-radius: 1em;
+}
+.gumb-login-signup{
+width: 90%;
+}
 input{
-    width: 100%;
+width: 100%;
 }
 .checkbox-group{
-  flex-direction: column;
+flex-direction: column;
 }
 .popup .div, .div-radio{
-  width: 95%;
+width: 95%;
 }
 .raspored-divs{
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
 }
 .raspored{
-  display: grid;
-  width: 80%;
-  grid-template-columns: 1fr;
-  background-color: var(--iznad);
-  box-shadow: var(--boxShadow);
-  border-radius: var(--radius);
-  padding: 1rem; 
+display: grid;
+width: 80%;
+grid-template-columns: 1fr;
+background-color: var(--iznad);
+box-shadow: var(--boxShadow);
+border-radius: var(--radius);
+padding: 1rem;
 }
 .dan{
-  padding: 1rem;
-  border-right: none;
-  border-bottom: 2px solid rgb(var(--isticanje));
+padding: 1rem;
+border-right: none;
+border-bottom: 2px solid rgb(var(--isticanje));
 }
 .dan:last-child{
-  border: none;
+border: none;
 }
 .rasporedMentor{
-  justify-content: center;
+justify-content: center;
 }
 nav div:active{
-  transform: none;
+transform: none;
 }
 .notification{
-  max-width: 95%;
+max-width: 95%;
 }
-  }
-  @media (max-width: 400px) {
-    .field {
-      flex-direction: column; /* Stack items vertically on smaller screens */
-      align-items: flex-start; /* Align items to the start (left) */
-    }
-  
-    .field-data {
-      text-align: left; /* Align text to the right for field data */
-      width: 100%; /* Ensure data takes full width */
-      margin-top: 0.5rem; /* Add space between name and data */
-    }
-  }
-  .error{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(0, 0, 0, 0.4);
-    z-index: 4;
-    top: 0;
-    left: 0;
-  }
+}
+@media (max-width: 400px) {
+.field {
+flex-direction: column; /* Stack items vertically on smaller screens */
+align-items: flex-start; /* Align items to the start (left) */
+}
+.field-data {
+text-align: left; /* Align text to the right for field data */
+width: 100%; /* Ensure data takes full width */
+margin-top: 0.5rem; /* Add space between name and data */
+}
+}
+.error{
+display: flex;
+justify-content: center;
+align-items: center;
+position: absolute;
+width: 100%;
+height: 100%;
+background-color: rgb(0, 0, 0, 0.4);
+z-index: 4;
+top: 0;
+left: 0;
+}
+.welcome-content {
+max-width: 600px;
+text-align: center;
+padding: 2rem;
+background: rgba(255, 255, 255, 0.1);
+border-radius: var(--radius);
+backdrop-filter: blur(10px);
+}
+.welcome-text {
+margin: 2rem 0;
+}
+.main-text {
+font-size: 1.5rem;
+margin-bottom: 1rem;
+color: rgb(var(--tekst));
+}
+.sub-text {
+font-size: 1.1rem;
+color: rgba(var(--tekst), 0.8);
+line-height: 1.6;
+}
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+box-sizing: border-box;
+}
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+margin: 0;
+}
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role='list'],
+ol[role='list'] {
+list-style: none;
+}
+/* Set core root defaults */
+html:focus-within {
+scroll-behavior: smooth;
+}
+/* Set core body defaults */
+body {
+min-height: 100vh;
+text-rendering: optimizeSpeed;
+line-height: 1.5;
+}
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+text-decoration-skip-ink: auto;
+}
+/* Make images easier to work with */
+img,
+picture {
+max-width: 100%;
+display: block;
+}
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+font: inherit;
+}
+/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+html:focus-within {
+scroll-behavior: auto;
+}
+*,
+*::before,
+*::after {
+animation-duration: 0.01ms !important;
+animation-iteration-count: 1 !important;
+transition-duration: 0.01ms !important;
+scroll-behavior: auto !important;
+}
+}
+:root{
+--isticanje: var(--narancasta);
+--isticanje2: 204, 204, 204;
+--isticanje3: 48, 57, 131;
+--isticanje-svijetlo: rgba(var(--isticanje), 0.425);
+--pozadina-svijetlo: 255, 255, 255;
+--pozadina-tamno: 17, 17, 17;
+--iznad: rgb(var(--svijetlo-iznad));
+--iznad-objava: rgb(var(--isticanje));
+--tekst: rgb(var(--svijetlo-tekst));
+--tamno-iznad: 66, 68, 66;
+--tamno-iznad-nav: 76, 79, 76;
+--svijetlo-iznad: 255,255,255;
+--svijetlo-iznad-nav: 255,255,255;
+--tamno-tekst: 218, 214, 214;
+--svijetlo-tekst: 15, 15, 15;
+--visinaKartice: 250px;
+--boxShadow: var(--sjena-svijetlo);
+--sjena-tamno-navtop: 0px 0px 40px 1px rgba(0, 0, 0, 0.6);
+--sjena-tamno: 0px 0px 10px 1px rgba(0, 0, 0, 0.13);
+--sjena-svijetlo: 0px 0px 20px 1px rgba(63, 63, 63, 0.13);
+/* boje isticanja:*/
+--ljubicasta: 150, 103, 224;
+--crvena: 255, 104, 107;
+--zuta: 254, 219, 114;
+--siva: 97, 102, 107;
+--narancasta: 252, 163, 17;
+--zelena: 132, 169, 140;
+--radius: 0.5rem;
+}
+@font-face {
+font-family: 'fOstalo';
+src: url('fonts/HedvigLettersSans-Regular.ttf') format('truetype');
+font-weight: bold;
+font-display: swap;
+}
+@font-face {
+font-family: 'fNaslovi';
+src: url('fonts/HeptaSlab-VariableFont_wght.ttf') format('truetype');
+font-weight: 800;
+font-display: swap;
+}
+body {
+font-family: 'fOstalo', sans-serif;
+background-color: rgb(237, 237, 241);
+}
+body.light {
+color: #000000;
+--color: #151515;
+--navtop: rgb(255, 255, 255);
+--iznad: rgb(var(--svijetlo-iznad));
+--boxShadow: var(--sjena-svijetlo);
+--tekst: rgb(var(--svijetlo-tekst));
+--iznad-nav: rgb(var(--svijetlo-iznad-nav));
+--isticanje-svijetlo: rgb(var(--isticanje));
+--iznad-objava: rgb(var(--isticanje));
+--pozadina: 227, 227, 227;
+background-color: rgb(237, 237, 241);
+color-scheme: light;
+}
+/* Dark Theme */
+body.dark {
+color-scheme: dark;
+background-color: rgb(14, 14, 15);
+color: #ffffff;
+--color:rgb(162, 162, 162)f;
+--navtop: rgb(17, 17, 17);
+--iznad: rgb(var(--tamno-iznad));
+--iznad-nav: rgb(var(--tamno-iznad-nav));
+--boxShadow: var(--sjena-tamno);
+--tekst: rgb(var(--tamno-tekst));
+--isticanje-svijetlo: rgba(var(--isticanje), 0.6);
+--isticanje2: 108, 108, 108;
+--iznad-objava: rgb(var(--isticanje));
+}
+.notification {
+position: fixed;
+bottom: 2rem;
+padding: 0.5rem 1rem;
+border-radius: var(--radius);
+color: var(--tekst);
+background-color: var(--iznad-nav);
+box-shadow: var(--boxShadow);
+max-width: 50%;
+}
+.hidden{
+display: none;
+}
+.acc{
+color: rgb(var(--isticanje));
+}
+.admin-gumb{
+background-color: rgba(var(--isticanje),0.8);
+padding: 10px;
+border-radius: 1.2rem;
+}
+input[type="text"], input[type="email"], input[type="date"], textarea{
+color: var(--color);
+}
+header{
+z-index: 2;
+width: 3.5rem;
+height: 100%;
+position: fixed;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+background-color: var(--iznad-nav);
+box-shadow: var(--boxShadow);
+}
+nav{
+position: relative;
+display: flex;
+flex-direction: column;
+gap: 1em;
+padding: 4rem 0 1rem 0;
+align-items: center;
+justify-content: space-between;
+}
+nav div{
+position: relative;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+width: 3.2rem;
+height: 3.2rem;
+border-radius: 1rem;
+transition: margin-left 0.2s ease-in-out;
+}
+nav div p{
+font-size: 0.6rem;
+}
+.icon{
+padding: 0.2rem 0 0 0;
+}
+nav div:hover{
+color: var(--pozadina);
+margin-left: 1rem;
+background-color: rgb(var(--isticanje));
+outline: 8px solid var(--iznad-nav);
+}
+nav div:active{
+transform: scale(0.9);
+}
+nav div.otvoreno{
+margin-left: 2rem;
+width: 3.6rem;
+height: 3.6rem;
+outline: 8px solid var(--iznad-nav);
+background-color: rgb(var(--isticanje));
+}
+.welcome-poruka{
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+.raspored-lista{
+z-index:1;
+position: fixed;
+left: 3.5rem;
+padding-top: 1rem;
+top: 0;
+height: 100%;
+width: 20rem; /* Set the width as needed */
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+background-color: var(--iznad-nav);
+box-shadow: var(--boxShadow);
+}
+.rl-items{
+position: relative;
+display: flex;
+flex-direction: column;
+gap: 1em;
+padding: 2rem 0 1rem 0;
+align-items: center;
+justify-content: space-between;
+}
+.rl-gumb{
+z-index: 3;
+position: fixed;
+top: 80%;
+left: 5rem;
+background-color: rgb(var(--isticanje2));
+padding: 0.2rem;
+border-radius: var(--radius);
+cursor: pointer;
+}
+.rl:nth-child(1){
+border-bottom: none;
+color: white;
+}
+.rl{
+width: 90%;
+text-align: center;
+padding: 1rem 0;
+border-bottom: 2px solid rgb(var(--isticanje2));
+cursor: pointer;
+}
+.errorM{
+color: red;
+background-color: rgba(255, 0, 0, 0.185);
+padding: 1% 2%;
+border-radius: var(--radius);
+}
+.icon{
+font-size: 2.4em;
+}
+.opcije option{
+color: #000000;
+}
+#tema{
+font-size: 1.4em;
+color: var(--tekst);
+}
+.gumb:hover{
+cursor: pointer;
+}
+.gumb{
+border: none;
+}
+.nav-top{
+z-index: 1;
+position: fixed;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: row;
+top: 0;
+width: 100svw;
+padding: 0.5rem;
+height: 3.5rem;
+box-shadow: var(--boxShadow);
+background-color: var(--navtop);
+}
+.nav-top div{
+margin: 0.5rem;
+transition: margin 0.5s ease;
+}
+.nav-top div:hover{
+margin: 2rem;
+}
+.gumb-novo{
+border-radius: 5px;
+border: none;
+background-color: transparent;
+text-align: center;
+font-weight: bold;
+}
+.gumb-novo:hover{
+background-color: var(--isticanje-svijetlo);
+box-shadow: var(--boxShadow);
+}
+.link{
+text-decoration: none;
+}
+.p{
+padding: 0.3rem;
+}
+.popup {
+z-index: 5;
+position: absolute;
+width: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: rgba(0, 0, 0, 0.8);
+padding: 1rem;
+overflow-x: hidden; /* Allow the popup to scroll if content overflows */
+}
+.popup .div{
+width: 75%;
+background-color: var(--iznad);
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 1rem;
+border-radius: var(--radius);
+margin: 1rem 0;
+}
+.div-clmn{
+flex-direction: column;
+}
+.div-radio{
+width: 75%;
+display: flex;
+justify-content: space-evenly;
+padding: 1rem;
+border-radius: var(--radius);
+margin: 1rem 0;
+}
+.main{
+position: relative;
+width: 100%;
+float: right;
+display: flex;
+top: 4.5rem;
+justify-content: space-evenly;
+align-items: center;
+flex-direction: column;
+}
+.karticaZadatka{
+background-color: var(--iznad);
+box-shadow: var(--boxShadow);
+border-radius: var(--radius);
+display: flex;
+justify-content: center;
+flex-direction: column;
+position: relative;
+width: 60%;
+align-items: flex-start;
+margin-bottom: 2%;
+padding: 0.8rem;
+}
+.profilDiv{
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: flex-start;
+flex-direction: column;
+gap: 0.2rem;
+padding: 2rem;
+}
+.field{
+width: 100%;
+display: flex;
+justify-content: space-between;
+background-color: #3333331f;
+padding: 2rem 1rem;
+flex-wrap: wrap;
+}
+.field-name {
+font-weight: 600;
+color: #333;
+flex: 1; /* Allow the name to take available space */
+}
+.field-data {
+color: #666;
+flex: 2; /* Allow the data to take more space */
+min-width: 0; /* Prevent overflow */
+text-align: right;
+}
+.profilDiv .field:nth-child(1){
+border-radius: 0.2rem 0.2rem 0 0;
+}
+.profilDiv .field:nth-last-child(1){
+border-radius: 0 0 0.2rem 0.2rem;
+}
+.tablica{
+display: grid;
+grid-template-rows: auto auto;
+}
+.fje{
+width: 10rem;
+}
+.naziv{
+background-color: var(--iznad-objava);
+border-radius: 0.7rem 0.7rem 0.2rem 0.2rem;
+padding: 0.5rem;
+}
+.tablica .tr{
+display: grid;
+grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+gap: 1.5rem;
+border-bottom: 1px solid var(--iznad);
+padding: 0.5rem;
+justify-content: space-between;
+align-items: center;
+}
+.th{
+flex: 1;
+}
+.redak:hover{
+background-color:rgba(153, 153, 153, 0.195);
+}
+.action-btn {
+cursor: pointer;
+display: inline-flex; /* Use inline-flex to ensure they stay in a row */
+align-items: center;
+padding: 0.5rem;
+transition: all 0.1s ease-in-out;
+border-radius: var(--radius);
+}
+.abEdit:hover,
+.abDelete:hover,
+.abExpand:hover {
+border-radius: 10rem;
+outline: none;
+}
+.abEdit:hover {
+background-color: #4CAF50;
+}
+.abExpand:hover {
+background-color: rgb(var(--isticanje));
+}
+.abDelete:hover {
+background-color: #f15145;
+}
+.abEdit:hover::after,
+.abDelete:hover::after,
+.abExpand:hover::after {
+content: attr(data-text);
+display: inline-block;
+opacity: 1;
+margin-left: 5px;
+transition: all 0.3s ease-in-out;
+}
+.abEdit::after,
+.abDelete::after {
+content: '';
+opacity: 0;
+display: inline-block;
+margin-left: 5px;
+transition: all 0.3s ease-in-out;
+}
+.inline{
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: row;
+}
+.sbtwn{
+display: flex;
+justify-content: space-evenly;
+align-items: center;
+flex-direction: row;
+padding-bottom: 1rem;
+}
+.checkbox-group {
+display: flex;
+flex-direction: row;
+align-items: center;
+}
+.checkbox-item {
+border: 2px solid #777777;
+padding: 1rem;
+margin: 1rem;
+cursor: pointer;
+border-radius: var(--radius);
+background-color: rgba(var(--isticanje),0.6);
+}
+.checkbox-item.checked {
+border: none;
+outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
+}
+.div-radio {
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: space-evenly;
+background-color: var(--iznad);
+}
+.bc-none{
+background-color: transparent;
+}
+.search-result-item{
+width: 100%;
+border-bottom: solid 1px rgb(var(--isticanje2));
+padding: 1.2rem 0.5rem;
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+}
+.txt-min2{
+color: rgb(var(--isticanje));
+font-size: 0.8rem;
+}
+.txt-min{
+color: rgb(var(--isticanje2));
+font-size: 0.8rem;
+}
+.radio-item {
+padding: 1rem;
+margin: 1rem;
+cursor: pointer;
+border-radius: var(--radius);
+background-color: rgba(var(--isticanje), 0.6);
+}
+.radio-item:hover{
+transform: scale(1.1);
+}
+.radio-item.checked {
+border: none;
+outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
+transform: scale(1.15);
+}
+.spremiBtn{
+padding: 0.8rem;
+border-radius: 5rem;
+background-color: rgb(var(--isticanje));
+}
+.disabledSpremiBtn{
+display: none;
+}
+.spremiBtn:hover{
+background-color: rgb(var(--pozadina));
+outline: 3px solid rgb(var(--isticanje));
+color: rgb(var(--isticanje));
+}
+.zatvoriBtn{
+color: rgb(var(--isticanje));
+}
+.zatvoriBtn:hover{
+text-decoration: underline;
+}
+.raspored{
+display: grid;
+grid-template-columns: repeat(6, 10rem);
+background-color: var(--iznad);
+box-shadow: var(--boxShadow);
+border-radius: var(--radius);
+padding: 1rem;
+margin-bottom: 2rem;
+}
+.dan{
+padding: 1rem;
+border-right: 2px solid rgb(var(--isticanje));
+}
+.dan:last-child{
+border: none;
+}
+.nazivDana{
+background-color: rgba(var(--isticanje), 0.6);
+padding: 0.3rem 0.7rem;
+text-align: center;
+border-radius: var(--radius);
+}
+.chat-container {
+display: flex;
+height: 100vh;
+}
+.raspored-lista {
+width: 25%;
+background-color: #f1f1f1;
+border-right: 1px solid #ddd;
+}
+.chat-window {
+width: 75%;
+padding: 1rem;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+.chat-messages {
+flex-grow: 1;
+overflow-y: auto;
+padding: 0.5rem;
+}
+.chat-input {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.message {
+padding: 0.5rem;
+margin: 0.5rem 0;
+border-radius: 4px;
+}
+.message.sent {
+background-color: #dcf8c6;
+align-self: flex-end;
+}
+.message.received {
+background-color: #e5e5ea;
+align-self: flex-start;
+}
+.termin{
+padding: 0.2rem;
+margin-top: 0.4rem;
+border-radius: var(--radius);
+background-color: rgb(var(--isticanje));
+display: grid;
+grid-template-rows: 1fr 2fr 1fr;
+}
+.boja-teorija{
+background-color: rgb(var(--isticanje3), 0.85);
+color: rgb(var(--pozadina));
+}
+.vrijeme{
+display: flex;
+justify-content: center;
+align-items: center;
+font-size: 1.2rem;
+}
+.dvorana{
+display: flex;
+justify-content: center;
+align-items: center;
+}
+.rasporedMentor{
+display: flex;
+justify-content: flex-end;
+align-items: center;
+font-size: 0.7rem;
+}
+.obrisiTermin {
+position: absolute; /* Changed to relative to make :after positioned relative to this */
+}
+.obrisiTermin:after {
+content: "obriši";
+position: relative;
+top: 0;
+left: 0;
+display: none; /* Initially hide the content */
+}
+.obrisiTermin:hover {
+display: inline-block; /* Show the content when the parent is hovered */
+padding: 0.3rem;
+background-color: #f44336;
+border-radius: var(--radius);
+color: var(--tekst);
+}
+.obrisiTermin:hover:after {
+display: inline-block; /* Show the content when the parent is hovered */
+background-color: #f44336;
+color: var(--tekst);
+}
+.show-password-toggle {
+background: none;
+border: 1px solid rgb(var(--isticanje));
+cursor: pointer;
+color: #333; /* Adjust color as needed */
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 0.5rem;
+border-radius: var(--radius);
+}
+.linkMAI{
+padding:1rem;
+}
+.moj-raspored{
+background-color: rgb(var(--isticanje));
+border-radius: var(--radius);
+}
+@media only screen and (max-width: 1080px) {
+.raspored-lista{
+left: 0;
+height: 100%;
+width: 100%; /* Set the width as needed */
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+background-color: var(--iznad-nav);
+box-shadow: var(--boxShadow);
+}
+.rl-gumb{
+position: fixed;
+padding: 0.6rem;
+left: 1rem;
+}
+.show-password-toggle {
+right: 8%;
+top: 44%;
+}
+.mobile-none{
+display: none;
+}
+.tablica .tr{
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+}
+.icon{
+font-size: 2rem;
+}
+header{
+justify-content: space-evenly;
+align-items: center;
+width: 100%;
+height: 8svh;
+bottom: 0;
+flex-direction: row;
+border-radius: 15px 15px 0 0;
+}
+.main{
+width: 100%;
+padding-bottom: 10%;
+}
+.karticaZadatka{
+width: 96%;
+}
+nav {
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: center;
+}
+nav div {
+position: relative;
+width: 2.2rem;
+height: 2.2rem;
+bottom: 1.3rem;
+transition: height 0.3s ease-in-out, margin-bottom 0.2s ease-in-out;
+}
+nav div:hover{
+margin-left: 0;
+margin-bottom: 1rem;
+border-radius: 0.7rem;
+}
+nav div.otvoreno{
+margin-left: 0;
+margin-bottom: 1rem;
+}
+.nav-top{
+width: 100%;
+padding: 0.5rem;
+}
+.div{
+flex-direction: column;
+}
+.header-forma-login-signup{
+width: 100%;
+height: 90vh;
+}
+h1{
+font-size: 2rem;
+}
+.input-login-signup{width: 90%;}
+.main-login-signup{
+width: 100%;
+display: flex;
+align-items: center;
+}
+.pokazatelj{
+border-radius: 1em;
+}
+.gumb-login-signup{
+width: 90%;
+}
+input{
+width: 100%;
+}
+.checkbox-group{
+flex-direction: column;
+}
+.popup .div, .div-radio{
+width: 95%;
+}
+.raspored-divs{
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+}
+.raspored{
+display: grid;
+width: 80%;
+grid-template-columns: 1fr;
+background-color: var(--iznad);
+box-shadow: var(--boxShadow);
+border-radius: var(--radius);
+padding: 1rem;
+}
+.dan{
+padding: 1rem;
+border-right: none;
+border-bottom: 2px solid rgb(var(--isticanje));
+}
+.dan:last-child{
+border: none;
+}
+.rasporedMentor{
+justify-content: center;
+}
+nav div:active{
+transform: none;
+}
+.notification{
+max-width: 95%;
+}
+}
+@media (max-width: 400px) {
+.field {
+flex-direction: column; /* Stack items vertically on smaller screens */
+align-items: flex-start; /* Align items to the start (left) */
+}
+.field-data {
+text-align: left; /* Align text to the right for field data */
+width: 100%; /* Ensure data takes full width */
+margin-top: 0.5rem; /* Add space between name and data */
+}
+}
+.error{
+display: flex;
+justify-content: center;
+align-items: center;
+position: absolute;
+width: 100%;
+height: 100%;
+background-color: rgb(0, 0, 0, 0.4);
+z-index: 4;
+top: 0;
+left: 0;
+}
+.welcome-content {
+max-width: 600px;
+text-align: center;
+padding: 2rem;
+background: rgba(255, 255, 255, 0.1);
+border-radius: var(--radius);
+backdrop-filter: blur(10px);
+}
+.welcome-text {
+margin: 2rem 0;
+}
+.main-text {
+font-size: 1.5rem;
+margin-bottom: 1rem;
+color: rgb(var(--tekst));
+}
+.sub-text {
+font-size: 1.1rem;
+color: rgba(var(--tekst), 0.8);
+line-height: 1.6;
+}
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+box-sizing: border-box;
+}
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+margin: 0;
+}
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role='list'],
+ol[role='list'] {
+list-style: none;
+}
+/* Set core root defaults */
+html:focus-within {
+scroll-behavior: smooth;
+}
+/* Set core body defaults */
+body {
+min-height: 100vh;
+text-rendering: optimizeSpeed;
+line-height: 1.5;
+}
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+text-decoration-skip-ink: auto;
+}
+/* Make images easier to work with */
+img,
+picture {
+max-width: 100%;
+display: block;
+}
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+font: inherit;
+}
+/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+html:focus-within {
+scroll-behavior: auto;
+}
+*,
+*::before,
+*::after {
+animation-duration: 0.01ms !important;
+animation-iteration-count: 1 !important;
+transition-duration: 0.01ms !important;
+scroll-behavior: auto !important;
+}
+}
+:root{
+--isticanje: var(--narancasta);
+--isticanje2: 204, 204, 204;
+--isticanje3: 48, 57, 131;
+--isticanje-svijetlo: rgba(var(--isticanje), 0.425);
+--pozadina-svijetlo: 255, 255, 255;
+--pozadina-tamno: 17, 17, 17;
+--iznad: rgb(var(--svijetlo-iznad));
+--iznad-objava: rgb(var(--isticanje));
+--tekst: rgb(var(--svijetlo-tekst));
+--tamno-iznad: 66, 68, 66;
+--tamno-iznad-nav: 76, 79, 76;
+--svijetlo-iznad: 255,255,255;
+--svijetlo-iznad-nav: 255,255,255;
+--tamno-tekst: 218, 214, 214;
+--svijetlo-tekst: 15, 15, 15;
+--visinaKartice: 250px;
+--boxShadow: var(--sjena-svijetlo);
+--sjena-tamno-navtop: 0px 0px 40px 1px rgba(0, 0, 0, 0.6);
+--sjena-tamno: 0px 0px 10px 1px rgba(0, 0, 0, 0.13);
+--sjena-svijetlo: 0px 0px 20px 1px rgba(63, 63, 63, 0.13);
+/* boje isticanja:*/
+--ljubicasta: 150, 103, 224;
+--crvena: 255, 104, 107;
+--zuta: 254, 219, 114;
+--siva: 97, 102, 107;
+--narancasta: 252, 163, 17;
+--zelena: 132, 169, 140;
+--radius: 0.5rem;
+}
+@font-face {
+font-family: 'fOstalo';
+src: url('fonts/HedvigLettersSans-Regular.ttf') format('truetype');
+font-weight: bold;
+font-display: swap;
+}
+@font-face {
+font-family: 'fNaslovi';
+src: url('fonts/HeptaSlab-VariableFont_wght.ttf') format('truetype');
+font-weight: 800;
+font-display: swap;
+}
+body {
+font-family: 'fOstalo', sans-serif;
+background-color: rgb(237, 237, 241);
+}
+body.light {
+color: #000000;
+--color: #151515;
+--navtop: rgb(255, 255, 255);
+--iznad: rgb(var(--svijetlo-iznad));
+--boxShadow: var(--sjena-svijetlo);
+--tekst: rgb(var(--svijetlo-tekst));
+--iznad-nav: rgb(var(--svijetlo-iznad-nav));
+--isticanje-svijetlo: rgb(var(--isticanje));
+--iznad-objava: rgb(var(--isticanje));
+--pozadina: 227, 227, 227;
+background-color: rgb(237, 237, 241);
+color-scheme: light;
+}
+/* Dark Theme */
+body.dark {
+color-scheme: dark;
+background-color: rgb(14, 14, 15);
+color: #ffffff;
+--color:rgb(162, 162, 162)f;
+--navtop: rgb(17, 17, 17);
+--iznad: rgb(var(--tamno-iznad));
+--iznad-nav: rgb(var(--tamno-iznad-nav));
+--boxShadow: var(--sjena-tamno);
+--tekst: rgb(var(--tamno-tekst));
+--isticanje-svijetlo: rgba(var(--isticanje), 0.6);
+--isticanje2: 108, 108, 108;
+--iznad-objava: rgb(var(--isticanje));
+}
+.notification {
+position: fixed;
+bottom: 2rem;
+padding: 0.5rem 1rem;
+border-radius: var(--radius);
+color: var(--tekst);
+background-color: var(--iznad-nav);
+box-shadow: var(--boxShadow);
+max-width: 50%;
+}
+.hidden{
+display: none;
+}
+.acc{
+color: rgb(var(--isticanje));
+}
+.admin-gumb{
+background-color: rgba(var(--isticanje),0.8);
+padding: 10px;
+border-radius: 1.2rem;
+}
+input[type="text"], input[type="email"], input[type="date"], textarea{
+color: var(--color);
+}
+header{
+z-index: 2;
+width: 3.5rem;
+height: 100%;
+position: fixed;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+background-color: var(--iznad-nav);
+box-shadow: var(--boxShadow);
+}
+nav{
+position: relative;
+display: flex;
+flex-direction: column;
+gap: 1em;
+padding: 4rem 0 1rem 0;
+align-items: center;
+justify-content: space-between;
+}
+nav div{
+position: relative;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+width: 3.2rem;
+height: 3.2rem;
+border-radius: 1rem;
+transition: margin-left 0.2s ease-in-out;
+}
+nav div p{
+font-size: 0.6rem;
+}
+.icon{
+padding: 0.2rem 0 0 0;
+}
+nav div:hover{
+color: var(--pozadina);
+margin-left: 1rem;
+background-color: rgb(var(--isticanje));
+outline: 8px solid var(--iznad-nav);
+}
+nav div:active{
+transform: scale(0.9);
+}
+nav div.otvoreno{
+margin-left: 2rem;
+width: 3.6rem;
+height: 3.6rem;
+outline: 8px solid var(--iznad-nav);
+background-color: rgb(var(--isticanje));
+}
+.welcome-poruka{
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+.raspored-lista{
+z-index:1;
+position: fixed;
+left: 3.5rem;
+padding-top: 1rem;
+top: 0;
+height: 100%;
+width: 20rem; /* Set the width as needed */
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+background-color: var(--iznad-nav);
+box-shadow: var(--boxShadow);
+}
+.rl-items{
+position: relative;
+display: flex;
+flex-direction: column;
+gap: 1em;
+padding: 2rem 0 1rem 0;
+align-items: center;
+justify-content: space-between;
+}
+.rl-gumb{
+z-index: 3;
+position: fixed;
+top: 80%;
+left: 5rem;
+background-color: rgb(var(--isticanje2));
+padding: 0.2rem;
+border-radius: var(--radius);
+cursor: pointer;
+}
+.rl:nth-child(1){
+border-bottom: none;
+color: white;
+}
+.rl{
+width: 90%;
+text-align: center;
+padding: 1rem 0;
+border-bottom: 2px solid rgb(var(--isticanje2));
+cursor: pointer;
+}
+.errorM{
+color: red;
+background-color: rgba(255, 0, 0, 0.185);
+padding: 1% 2%;
+border-radius: var(--radius);
+}
+.icon{
+font-size: 2.4em;
+}
+.opcije option{
+color: #000000;
+}
+#tema{
+font-size: 1.4em;
+color: var(--tekst);
+}
+.gumb:hover{
+cursor: pointer;
+}
+.gumb{
+border: none;
+}
+.nav-top{
+z-index: 1;
+position: fixed;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: row;
+top: 0;
+width: 100svw;
+padding: 0.5rem;
+height: 3.5rem;
+box-shadow: var(--boxShadow);
+background-color: var(--navtop);
+}
+.nav-top div{
+margin: 0.5rem;
+transition: margin 0.5s ease;
+}
+.nav-top div:hover{
+margin: 2rem;
+}
+.gumb-novo{
+border-radius: 5px;
+border: none;
+background-color: transparent;
+text-align: center;
+font-weight: bold;
+}
+.gumb-novo:hover{
+background-color: var(--isticanje-svijetlo);
+box-shadow: var(--boxShadow);
+}
+.link{
+text-decoration: none;
+}
+h1{
+font-family: 'fNaslovi', sans-serif;
+color: var(--tekst);
+}
+.login-signup{
+width: 100vw;
+height: 100vh;
+}
+.header-forma-login-signup{
+width: 50%;
+height: 100%;
+position: relative;
+float: left;
+display: flex;
+justify-content: center;
+align-items: center;
+background-image: url(../public/Logo12.png);
+background-repeat: no-repeat;
+background-position: center;
+}
+.main-login-signup{
+width: 50%;
+height: 100%;
+position: relative;
+float: right;
+flex-direction: column;
+}
+.pokazatelj{
+width: 90%;
+height: 10%;
+position: relative;
+top: 0;
+border-radius: 0 0 1em 1em;
+box-shadow: var(--boxShadow);
+background-color: var(--iznad);
+}
+.pokazatelj .p{
+font-weight: bold;
+padding: 1.2rem;
+}
+.glavna-forma{
+width: 90%;
+height: 85%;
+position: absolute;
+bottom: 0px;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+background-color: var(--iznad);
+border-radius: 1em 1em 0 0;
+box-shadow: var(--boxShadow);
+}
+.naziv-ime{
+padding: 2%;
+}
+form{
+width: 100%;
+display: flex;
+justify-content: flex-start;
+align-items: center;
+flex-direction: column;
+}
+.input-login-signup{
+width: 75%;
+margin: 2%;
+border-radius: var(--radius);
+padding: var(--radius);
+box-shadow: var(--boxShadow);
+color: rgb(var(--svijetlo-tekst));
+outline: none;
+border: 1px solid rgb(208, 208, 208);
+transition: border 0.1s ease-in-out;
+}
+.input-login-signup:focus{
+border: 1px solid rgb(var(--isticanje));
+border-bottom: 4px solid rgb(var(--isticanje));
+}
+.gumb-login-signup{
+font-weight: bold;
+text-decoration: none;
+width: 75%;
+margin-top: 5%;
+color: rgb(var(--pozadina-svijetlo));
+background-color: rgb(var(--isticanje));
+border-radius: var(--radius);
+border: none;
+outline: none;
+padding: 0.8rem 2rem;
+}
+.gumb-login-signup:hover{
+outline: 2px solid rgb(var(--isticanje));
+background-color: rgb(var(--pozadina-svijetlo));
+color: rgb(var(--isticanje));
+}
+a{
+text-decoration: none;
+color: rgb(var(--tekst));
+}
+.p{
+padding: 0.3rem;
+}
+.popup {
+z-index: 5;
+position: absolute;
+width: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: rgba(0, 0, 0, 0.8);
+padding: 1rem;
+overflow-x: hidden; /* Allow the popup to scroll if content overflows */
+}
+.popup .div{
+width: 75%;
+background-color: var(--iznad);
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 1rem;
+border-radius: var(--radius);
+margin: 1rem 0;
+}
+.div-clmn{
+flex-direction: column;
+}
+.div-radio{
+width: 75%;
+display: flex;
+justify-content: space-evenly;
+padding: 1rem;
+border-radius: var(--radius);
+margin: 1rem 0;
+}
+.main{
+position: relative;
+width: 100%;
+float: right;
+display: flex;
+top: 4.5rem;
+justify-content: space-evenly;
+align-items: center;
+flex-direction: column;
+}
+.karticaZadatka{
+background-color: var(--iznad);
+box-shadow: var(--boxShadow);
+border-radius: var(--radius);
+display: flex;
+justify-content: center;
+flex-direction: column;
+position: relative;
+width: 60%;
+align-items: flex-start;
+margin-bottom: 2%;
+padding: 0.8rem;
+}
+.profilDiv{
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: flex-start;
+flex-direction: column;
+gap: 0.2rem;
+padding: 2rem;
+}
+.field{
+width: 100%;
+display: flex;
+justify-content: space-between;
+background-color: #3333331f;
+padding: 2rem 1rem;
+flex-wrap: wrap;
+}
+.field-name {
+font-weight: 600;
+color: #333;
+flex: 1; /* Allow the name to take available space */
+}
+.field-data {
+color: #666;
+flex: 2; /* Allow the data to take more space */
+min-width: 0; /* Prevent overflow */
+text-align: right;
+}
+.profilDiv .field:nth-child(1){
+border-radius: 0.2rem 0.2rem 0 0;
+}
+.profilDiv .field:nth-last-child(1){
+border-radius: 0 0 0.2rem 0.2rem;
+}
+.tablica{
+display: grid;
+grid-template-rows: auto auto;
+}
+.fje{
+width: 10rem;
+}
+.naziv{
+background-color: var(--iznad-objava);
+border-radius: 0.7rem 0.7rem 0.2rem 0.2rem;
+padding: 0.5rem;
+}
+.tablica .tr{
+display: grid;
+grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+gap: 1.5rem;
+border-bottom: 1px solid var(--iznad);
+padding: 0.5rem;
+justify-content: space-between;
+align-items: center;
+}
+.th{
+flex: 1;
+}
+.redak:hover{
+background-color:rgba(153, 153, 153, 0.195);
+}
+.action-btn {
+cursor: pointer;
+display: inline-flex; /* Use inline-flex to ensure they stay in a row */
+align-items: center;
+padding: 0.5rem;
+transition: all 0.1s ease-in-out;
+border-radius: var(--radius);
+}
+.abEdit:hover,
+.abDelete:hover,
+.abExpand:hover {
+border-radius: 10rem;
+outline: none;
+}
+.abEdit:hover {
+background-color: #4CAF50;
+}
+.abExpand:hover {
+background-color: rgb(var(--isticanje));
+}
+.abDelete:hover {
+background-color: #f15145;
+}
+.abEdit:hover::after,
+.abDelete:hover::after,
+.abExpand:hover::after {
+content: attr(data-text);
+display: inline-block;
+opacity: 1;
+margin-left: 5px;
+transition: all 0.3s ease-in-out;
+}
+.abEdit::after,
+.abDelete::after {
+content: '';
+opacity: 0;
+display: inline-block;
+margin-left: 5px;
+transition: all 0.3s ease-in-out;
+}
+.inline{
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: row;
+}
+.sbtwn{
+display: flex;
+justify-content: space-evenly;
+align-items: center;
+flex-direction: row;
+padding-bottom: 1rem;
+}
+.checkbox-group {
+display: flex;
+flex-direction: row;
+align-items: center;
+}
+.checkbox-item {
+border: 2px solid #777777;
+padding: 1rem;
+margin: 1rem;
+cursor: pointer;
+border-radius: var(--radius);
+background-color: rgba(var(--isticanje),0.6);
+}
+.checkbox-item.checked {
+border: none;
+outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
+}
+.div-radio {
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: space-evenly;
+background-color: var(--iznad);
+}
+.bc-none{
+background-color: transparent;
+}
+.search-result-item{
+width: 100%;
+border-bottom: solid 1px rgb(var(--isticanje2));
+padding: 1.2rem 0.5rem;
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+}
+.txt-min2{
+color: rgb(var(--isticanje));
+font-size: 0.8rem;
+}
+.txt-min{
+color: rgb(var(--isticanje2));
+font-size: 0.8rem;
+}
+.radio-item {
+padding: 1rem;
+margin: 1rem;
+cursor: pointer;
+border-radius: var(--radius);
+background-color: rgba(var(--isticanje), 0.6);
+}
+.radio-item:hover{
+transform: scale(1.1);
+}
+.radio-item.checked {
+border: none;
+outline: 2px solid rgb(var(--isticanje)); /* Change the color as needed */
+transform: scale(1.15);
+}
+.spremiBtn{
+padding: 0.8rem;
+border-radius: 5rem;
+background-color: rgb(var(--isticanje));
+}
+.disabledSpremiBtn{
+display: none;
+}
+.spremiBtn:hover{
+background-color: rgb(var(--pozadina));
+outline: 3px solid rgb(var(--isticanje));
+color: rgb(var(--isticanje));
+}
+.zatvoriBtn{
+color: rgb(var(--isticanje));
+}
+.zatvoriBtn:hover{
+text-decoration: underline;
+}
+.raspored{
+display: grid;
+grid-template-columns: repeat(6, 10rem);
+background-color: var(--iznad);
+box-shadow: var(--boxShadow);
+border-radius: var(--radius);
+padding: 1rem;
+margin-bottom: 2rem;
+}
+.dan{
+padding: 1rem;
+border-right: 2px solid rgb(var(--isticanje));
+}
+.dan:last-child{
+border: none;
+}
+.nazivDana{
+background-color: rgba(var(--isticanje), 0.6);
+padding: 0.3rem 0.7rem;
+text-align: center;
+border-radius: var(--radius);
+}
+.chat-container {
+display: flex;
+height: 100vh;
+}
+.raspored-lista {
+width: 25%;
+background-color: #f1f1f1;
+border-right: 1px solid #ddd;
+}
+.chat-window {
+width: 75%;
+padding: 1rem;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+.chat-messages {
+flex-grow: 1;
+overflow-y: auto;
+padding: 0.5rem;
+}
+.chat-input {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.message {
+padding: 0.5rem;
+margin: 0.5rem 0;
+border-radius: 4px;
+}
+.message.sent {
+background-color: #dcf8c6;
+align-self: flex-end;
+}
+.message.received {
+background-color: #e5e5ea;
+align-self: flex-start;
+}
+.termin{
+padding: 0.2rem;
+margin-top: 0.4rem;
+border-radius: var(--radius);
+background-color: rgb(var(--isticanje));
+display: grid;
+grid-template-rows: 1fr 2fr 1fr;
+}
+.boja-teorija{
+background-color: rgb(var(--isticanje3), 0.85);
+color: rgb(var(--pozadina));
+}
+.vrijeme{
+display: flex;
+justify-content: center;
+align-items: center;
+font-size: 1.2rem;
+}
+.dvorana{
+display: flex;
+justify-content: center;
+align-items: center;
+}
+.rasporedMentor{
+display: flex;
+justify-content: flex-end;
+align-items: center;
+font-size: 0.7rem;
+}
+.obrisiTermin {
+position: absolute; /* Changed to relative to make :after positioned relative to this */
+}
+.obrisiTermin:after {
+content: "obriši";
+position: relative;
+top: 0;
+left: 0;
+display: none; /* Initially hide the content */
+}
+.obrisiTermin:hover {
+display: inline-block; /* Show the content when the parent is hovered */
+padding: 0.3rem;
+background-color: #f44336;
+border-radius: var(--radius);
+color: var(--tekst);
+}
+.obrisiTermin:hover:after {
+display: inline-block; /* Show the content when the parent is hovered */
+background-color: #f44336;
+color: var(--tekst);
+}
+.show-password-toggle {
+background: none;
+border: 1px solid rgb(var(--isticanje));
+cursor: pointer;
+color: #333; /* Adjust color as needed */
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 0.5rem;
+border-radius: var(--radius);
+}
+.linkMAI{
+padding:1rem;
+}
+.moj-raspored{
+background-color: rgb(var(--isticanje));
+border-radius: var(--radius);
+}
+@media only screen and (max-width: 1080px) {
+.raspored-lista{
+left: 0;
+height: 100%;
+width: 100%; /* Set the width as needed */
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+background-color: var(--iznad-nav);
+box-shadow: var(--boxShadow);
+}
+.rl-gumb{
+position: fixed;
+padding: 0.6rem;
+left: 1rem;
+}
+.show-password-toggle {
+right: 8%;
+top: 44%;
+}
+.mobile-none{
+display: none;
+}
+.tablica .tr{
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+}
+.icon{
+font-size: 2rem;
+}
+header{
+justify-content: space-evenly;
+align-items: center;
+width: 100%;
+height: 8svh;
+bottom: 0;
+flex-direction: row;
+border-radius: 15px 15px 0 0;
+}
+.main{
+width: 100%;
+padding-bottom: 10%;
+}
+.karticaZadatka{
+width: 96%;
+}
+nav {
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: center;
+}
+nav div {
+position: relative;
+width: 2.2rem;
+height: 2.2rem;
+bottom: 1.3rem;
+transition: height 0.3s ease-in-out, margin-bottom 0.2s ease-in-out;
+}
+nav div:hover{
+margin-left: 0;
+margin-bottom: 1rem;
+border-radius: 0.7rem;
+}
+nav div.otvoreno{
+margin-left: 0;
+margin-bottom: 1rem;
+}
+.nav-top{
+width: 100%;
+padding: 0.5rem;
+}
+.div{
+flex-direction: column;
+}
+.header-forma-login-signup{
+width: 100%;
+height: 90vh;
+}
+h1{
+font-size: 2rem;
+}
+.input-login-signup{width: 90%;}
+.main-login-signup{
+width: 100%;
+display: flex;
+align-items: center;
+}
+.pokazatelj{
+border-radius: 1em;
+}
+.gumb-login-signup{
+width: 90%;
+}
+input{
+width: 100%;
+}
+.checkbox-group{
+flex-direction: column;
+}
+.popup .div, .div-radio{
+width: 95%;
+}
+.raspored-divs{
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+}
+.raspored{
+display: grid;
+width: 80%;
+grid-template-columns: 1fr;
+background-color: var(--iznad);
+box-shadow: var(--boxShadow);
+border-radius: var(--radius);
+padding: 1rem;
+}
+.dan{
+padding: 1rem;
+border-right: none;
+border-bottom: 2px solid rgb(var(--isticanje));
+}
+.dan:last-child{
+border: none;
+}
+.rasporedMentor{
+justify-content: center;
+}
+nav div:active{
+transform: none;
+}
+.notification{
+max-width: 95%;
+}
+}
+@media (max-width: 400px) {
+.field {
+flex-direction: column; /* Stack items vertically on smaller screens */
+align-items: flex-start; /* Align items to the start (left) */
+}
+.field-data {
+text-align: left; /* Align text to the right for field data */
+width: 100%; /* Ensure data takes full width */
+margin-top: 0.5rem; /* Add space between name and data */
+}
+}
+.error{
+display: flex;
+justify-content: center;
+align-items: center;
+position: absolute;
+width: 100%;
+height: 100%;
+background-color: rgb(0, 0, 0, 0.4);
+z-index: 4;
+top: 0;
+left: 0;
+}
+.welcome-content {
+max-width: 600px;
+text-align: center;
+padding: 2rem;
+background: rgba(255, 255, 255, 0.1);
+border-radius: var(--radius);
+backdrop-filter: blur(10px);
+}
+.welcome-text {
+margin: 2rem 0;
+}
+.main-text {
+font-size: 1.5rem;
+margin-bottom: 1rem;
+color: rgb(var(--tekst));
+}
+.sub-text {
+font-size: 1.1rem;
+color: rgba(var(--tekst), 0.8);
+line-height: 1.6;
+}
+.feature-list {
+display: flex;
+flex-direction: column;
+gap: 1rem;
+margin-top: 2rem;
+}
+.feature-item {
+display: flex;
+align-items: center;
+gap: 1rem;
+padding: 0.8rem;
+background: rgba(var(--isticanje), 0.1);
+border-radius: var(--radius);
+transition: transform 0.2s ease;
+}
+.feature-item:hover {
+transform: translateX(10px);
+}
+.feature-icon {
+font-size: 1.5rem;
+}
+.login-content {
+text-align: center;
+}
+.login-content h2 {
+margin-bottom: 2rem;
+color: rgb(var(--tekst));
+}
+/* Enhance existing button styles */
+.gumb-login-signup {
+transition: all 0.3s ease;
+box-shadow: 0 4px 6px rgba(var(--isticanje), 0.2);
+}
+.gumb-login-signup:hover {
+transform: translateY(-2px);
+box-shadow: 0 6px 12px rgba(var(--isticanje), 0.3);
+}
+/* Make it responsive */
+@media (max-width: 768px) {
+.login-signup {
+flex-direction: column;
+}
+.header-forma-login-signup,
+.main-login-signup {
+width: 100%;
+}
+.welcome-content {
+padding: 1rem;
+}
+.feature-list {
+gap: 0.5rem;
+}
+}
+/* Update logo styles */
+.logo-container {
+display: flex;
+flex-direction: column;
+align-items: center;
+margin-bottom: 2.5rem;
+}
+.welcome-logo {
+max-width: 180px;
+height: auto;
+opacity: 0.9;
+transition: opacity 0.3s ease;
+}
+.welcome-logo:hover {
+opacity: 1;
+}
+/* Update media query for responsive logo */
+@media (max-width: 768px) {
+.welcome-logo {
+max-width: 150px;
+}
+}
+.app-name {
+margin-top: 1rem;
+font-size: 2rem;
+color: rgb(var(--isticanje));
+font-family: 'fNaslovi', sans-serif;
+font-weight: 800;
+letter-spacing: 1px;
+text-align: center;
+transition: color 0.3s ease;
+}
+.app-name:hover {
+color: rgba(var(--isticanje), 0.8);
+}
