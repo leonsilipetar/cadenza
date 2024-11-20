@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const ServerConfig = require('./serverConfig');
 require('dotenv').config();
+const recipeRoutes = require('./routes/recipe-routes.js');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.options('*', cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use('/api', router);
+app.use('/api/recepti', recipeRoutes);
 
 // Serve static files from the React app
 const buildPath = path.join(__dirname, '../client/build');

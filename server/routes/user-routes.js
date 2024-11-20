@@ -33,6 +33,7 @@ const {
 } = require('../controllers/classroom-controller'); // Import classroom controller
 const { generateInvoice, addInvoice, downloadInvoice } = require('../controllers/invoice-controller'); // Import invoice controller
 const { getAllPrograms, getProgramById, createProgram, updateProgram, deleteProgram } = require('../controllers/program-controller.js');
+const recipeRoutes = require('./recipe-routes');
 
 const router = express.Router();
 
@@ -46,13 +47,13 @@ router.get("/profil", verifyToken, getUser);
 router.get("/korisnik/:userId", verifyToken, getDetaljiKorisnika);
 router.get('/all-students', getAllStudents);
 router.post('/users', searchUsersAndMentors);
-router.get('/api/users/:userId/invoices', getUserInvoices);
+router.get('/users/:userId/invoices', getUserInvoices);
 router.post("/logout", verifyToken, logout);
 // Refresh token route
 router.post('/refresh', refreshToken);
 
 
-router.post('/signup-mentori', verifyToken, signupMentor); 
+router.post('/signup-mentori', verifyToken, signupMentor);
 router.get("/mentori", verifyToken, getMentori);
 router.put("/update-mentor/:mentorId", verifyToken, updateDetaljiMentora);
 
@@ -76,10 +77,9 @@ router.get('/schools', verifyToken, getSchools);
 
 // Nova ruta za generiranje računa
 // U ruti
-router.get('/api/users/:userId/invoices', verifyToken, getUserInvoices);
+router.get('/users/:userId/invoices', verifyToken, getUserInvoices);
 router.post('/generate-invoice', verifyToken, generateInvoice);
 router.get('/download/:id', verifyToken, downloadInvoice);
 router.post('/racuni', verifyToken, addInvoice);
-
 
 module.exports = router;
