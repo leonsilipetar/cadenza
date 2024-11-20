@@ -70,7 +70,7 @@ const ReceptiHome = () => {
 
   return (
     <div className="container">
-      <h1>Knjiga Recepata</h1>
+      <h1 id="h1">Knjiga Recepata</h1>
 
       <div className="search-section">
         <div className="search-container">

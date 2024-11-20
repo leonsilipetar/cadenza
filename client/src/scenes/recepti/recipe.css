@@ -31,10 +31,10 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-h1, .recipe-detail-title {
-  font-family: 'Playfair Display', serif;
+#h1, .recipe-detail-title {
+  font-family: 'fNaslovi', serif;
   text-align: center;
-  color: white;
+  color: black;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin-bottom: 2rem;
 }

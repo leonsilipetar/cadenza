@@ -50,6 +50,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Welcome />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/recepti/*" element={<Recepti />} />
+      <Route path="/*" element={<Welcome />} />
       {isLoggedIn && <Route path="/user/*" element={<Naslovna />} />}
       {isLoggedIn && <Route path="/profil/*" element={<Profil />} />}
       {isLoggedIn && <Route path="/chat/*" element={<Chat />} />}
@@ -60,8 +62,7 @@ function App() {
       {isLoggedIn && <Route path="/mentori/*" element={<Mentori />} />}
       {isLoggedIn && <Route path="/racuni-admin/*" element={<RacuniAdmin />} />}
       {isLoggedIn && <Route path="/classrooms/*" element={<Classroom />} />}
-      <Route path="/recepti/*" element={<Recepti />} />
-      <Route path="/*" element={<Welcome />} />
+
     </Routes>
   );
 }

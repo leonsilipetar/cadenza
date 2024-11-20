@@ -12,7 +12,7 @@ const ReceptiNav = () => {
   return (
     <div className="recipe-header">
       <div className="recipe-brand">
-        <h1>Cookbook</h1>
+        <h1 id="h1">Cookbook</h1>
       </div>
       <nav className="recipe-nav">
         <Link to="/recepti" className={`recipe-nav-item ${isActive('/recepti') ? 'active' : ''}`}>

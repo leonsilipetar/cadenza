@@ -70,7 +70,7 @@ const ReceptForm = ({ isEditing }) => {
         >
           <ArrowBackIcon /> Natrag
         </button>
-        <h1>{isEditing ? 'Uredi Recept' : 'Novi Recept'}</h1>
+        <h1 id="h1">{isEditing ? 'Uredi Recept' : 'Novi Recept'}</h1>
       </div>
       <form onSubmit={handleSubmit} className="recipe-form">
         <div className="form-section basic-info">
