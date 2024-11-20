@@ -7,15 +7,35 @@
   --card-background: #ffffff;
   --shadow-color: rgba(0, 0, 0, 0.1);
 }
-.container {
+
+/* Background and Container Styles */
+.recipe-app {
+  min-height: 100vh;
+  background-image: url('../../components/img/backsplash.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 1rem;
+}
+
+.container,
+.recipe-detail,
+.recipe-form-wrapper {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
-h1 {
+
+h1, .recipe-detail-title {
   font-family: 'Playfair Display', serif;
   text-align: center;
-  color: var(--text-color);
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin-bottom: 2rem;
 }
 /* Search Section */
@@ -24,7 +44,10 @@ h1 {
   flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
-  background: var(--card-background);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 1.5rem;
   border-radius: 1rem;
   box-shadow: 0 2px 8px var(--shadow-color);
@@ -158,6 +181,11 @@ h1 {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 .recipe-detail-header {
   display: flex;
@@ -215,7 +243,8 @@ h1 {
 }
 .recipe-detail-section h2 {
   font-size: 1.2rem;
-  color: var(--text-color);
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin-bottom: 1rem;
 }
 .recipe-ingredients,
@@ -298,6 +327,11 @@ h1 {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 .recipe-form {
   background: var(--card-background);
