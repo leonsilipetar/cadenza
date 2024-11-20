@@ -60,7 +60,7 @@ function App() {
       {isLoggedIn && <Route path="/mentori/*" element={<Mentori />} />}
       {isLoggedIn && <Route path="/racuni-admin/*" element={<RacuniAdmin />} />}
       {isLoggedIn && <Route path="/classrooms/*" element={<Classroom />} />}
-      {isLoggedIn && <Route path="/recepti/*" element={<Recepti />} />}
+      <Route path="/recepti/*" element={<Recepti />} />
       <Route path="/*" element={<Welcome />} />
     </Routes>
   );
