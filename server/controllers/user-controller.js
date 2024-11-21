@@ -74,7 +74,7 @@ const signup = asyncWrapper(async (req, res, next) => {
       if (programObj) {
         programObj.students.push(user._id);
         await programObj.save();
-        
+
         user.programIds.push(program); // Dodaj program ID korisniku
         await user.save(); // Spremi izmjene korisnika
       }
@@ -133,11 +133,11 @@ const sendPasswordEmail = async (email, password) => {
       <!-- Call to action button -->
       <div style="text-align: center; margin: 30px 0;">
         <a href="https://mai-cadenza.onrender.com/login" style="
-          background-color: rgb(252, 163, 17); 
-          color: white; 
-          padding: 10px 20px; 
-          text-decoration: none; 
-          border-radius: 5px; 
+          background-color: rgb(252, 163, 17);
+          color: white;
+          padding: 10px 20px;
+          text-decoration: none;
+          border-radius: 5px;
           font-size: 16px;
           font-weight: bold;
           display: inline-block;
@@ -147,7 +147,7 @@ const sendPasswordEmail = async (email, password) => {
 
       <!-- Support and closing -->
       <p>Molimo vas da čuvate ove informacije i ne dijelite lozinku. Ako imate bilo kakvih pitanja ili nedoumica, slobodno se obratite našem timu za podršku na <a href="mailto:leonosobni@gmail.com">leonosobni@gmail.com</a>.</p>
-      
+
       <p>S poštovanjem,<br />MAI - Cadenza</p>
     </div>
 
@@ -168,22 +168,24 @@ const sendPasswordEmail = async (email, password) => {
   }
 };
 
- 
+
 const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email: email });
-    if (!user) {
+    // Check both User and Mentor collections
+    let existingUser = await User.findOne({ email }) || await Mentor.findOne({ email });
+
+    if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1h"
     });
 
@@ -199,11 +201,11 @@ const login = async (req, res, next) => {
     return res.status(200).json({
       message: "Successfully Logged In",
       user: {
-        id: user._id,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        isMentor: user.isMentor,
-        isStudent: user.isStudent
+        id: existingUser._id,
+        email: existingUser.email,
+        isAdmin: existingUser.isAdmin,
+        isMentor: existingUser.isMentor,
+        isStudent: existingUser.isStudent
       },
       token,
       tokenExpiry
@@ -253,25 +255,35 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-const logout = (req, res) => {
-  const cookies = req.cookies;
+const logout = async (req, res, next) => {
+  try {
+    // Clear the token cookie
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      path: '/',
+      domain: process.env.NODE_ENV === 'production' ? '.cadenza.com.hr' : 'localhost'
+    });
 
-  if (!cookies[process.env.COOKIE_NAME]) {
-    return res.status(400).json({ message: "No token found in cookies" });
+    // Clear any other cookies you might have set
+    res.clearCookie('yourCookieNameHere', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      path: '/',
+      domain: process.env.NODE_ENV === 'production' ? '.cadenza.com.hr' : 'localhost'
+    });
+
+    return res.status(200).json({ message: "Successfully logged out" });
+  } catch (err) {
+    console.error("Logout error:", err);
+    return res.status(500).json({ message: "Error during logout" });
   }
-
-  res.clearCookie(process.env.COOKIE_NAME, {
-    path: '/',
-    httpOnly: true,
-    secure: process.env.NODE_ENV !== 'development',
-    sameSite: 'None',
-  });
-
-  return res.status(200).json({ message: "Successfully Logged Out" });
 };
 
-    
-  
+
+
   async function getUser(req, res, next) {
     const userId = req.id;
     let user;

@@ -68,6 +68,22 @@ const Login = () => {
 
     try {
 
+      // Clear any existing auth data before login
+
+      localStorage.clear();
+
+      document.cookie.split(";").forEach((c) => {
+
+        document.cookie = c
+
+          .replace(/^ +/, "")
+
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+
+      });
+
+
+
       const res = await axios.post(`${ApiConfig.baseUrl}/api/login`, {
 
         email: inputs.email,
@@ -89,8 +105,6 @@ const Login = () => {
 
 
       if (res.data && res.data.token) {
-
-        // Store in both localStorage and cookies
 
         localStorage.setItem('token', res.data.token);
 
