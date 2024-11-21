@@ -26,41 +26,15 @@ app.use(
 
   cors({
 
+    origin: ['http://localhost:3000', 'https://cadenza.com.hr'],
+
     credentials: true,
-
-    origin: function (origin, callback) {
-
-      const allowedOrigins = [
-
-        'http://localhost:3000',
-
-        'https://cadenza.com.hr',
-
-        'https://mai.cadenza.com.hr',
-
-        'https://recepti.cadenza.com.hr'
-
-      ];
-
-      if (!origin || allowedOrigins.includes(origin)) {
-
-        callback(null, true);
-
-      } else {
-
-        callback(new Error('Not allowed by CORS'));
-
-      }
-
-    },
 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 
     allowedHeaders: ['Content-Type', 'Authorization'],
 
-    exposedHeaders: ['set-cookie'],
-
-    credentials: true
+    exposedHeaders: ['Set-Cookie']
 
   })
 
@@ -79,6 +53,16 @@ app.options('*', cors());
 app.use(cookieParser());
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+
+  res.header('Access-Control-Allow-Credentials', 'true');
+
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
+  next();
+
+});
 
 app.use('/api', (req, res, next) => {
 

@@ -169,59 +169,88 @@ const sendPasswordEmail = async (email, password) => {
 };
 
  
-const login = asyncWrapper(async (req, res) => {
+const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    let existingUser = await User.findOne({ email }) || await Mentor.findOne({ email });
-
-    if (!existingUser) {
-      return res.status(400).json({ message: "User not found. Sign up!" });
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    const isPasswordCorrect = bcrypt.compareSync(password, existingUser.password);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Invalid email/password!" });
+      return res.status(400).json({ message: "Invalid password" });
     }
 
-    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h"
+    });
 
-    // Set cookie
-    res.cookie(process.env.COOKIE_NAME, token, {
-      path: '/',
+    const tokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
+
+    res.cookie('token', token, {
+      expires: tokenExpiry,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     });
 
-    return res.status(200).json({ 
-      message: "Successfully logged in!", 
-      user: existingUser, 
+    return res.status(200).json({
+      message: "Successfully Logged In",
+      user: {
+        id: user._id,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        isMentor: user.isMentor,
+        isStudent: user.isStudent
+      },
       token,
-      tokenExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+      tokenExpiry
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.error("Login error:", err);
+    return res.status(500).json({ message: "Login failed" });
   }
-});
+};
 
 const verifyToken = (req, res, next) => {
-  const cookies = req.cookies;
-  const token = cookies[process.env.COOKIE_NAME];
+  try {
+    // First check for cookie
+    const cookies = req.cookies;
+    let token = cookies.token;
 
-  if (!token) {
-    return res.status(404).json({ message: "No token found" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(400).json({ message: "Invalid Token" });
+    // If no cookie token, check Authorization header
+    if (!token) {
+      const authHeader = req.headers['authorization'];
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
+      }
     }
-    req.id = user.id;
-    next();
-  });
+
+    if (!token) {
+      // For recipe routes, continue without token
+      if (req.path.startsWith('/recepti')) {
+        return next();
+      }
+      return res.status(401).json({ message: "No token found" });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        // For recipe routes, continue even with invalid token
+        if (req.path.startsWith('/recepti')) {
+          return next();
+        }
+        return res.status(401).json({ message: "Invalid token" });
+      }
+      req.id = decoded.id;
+      next();
+    });
+  } catch (err) {
+    console.error('Token verification error:', err);
+    return res.status(401).json({ message: "Token verification failed" });
+  }
 };
 
 const logout = (req, res) => {
