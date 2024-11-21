@@ -184,17 +184,23 @@ const login = asyncWrapper(async (req, res) => {
       return res.status(400).json({ message: "Invalid email/password!" });
     }
 
-    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 
-res.cookie(`${process.env.COOKIE_NAME}`, token, {
-  path: '/',
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',  // Only enable secure cookies in production
-  sameSite: 'None',  // Important for cross-site cookies in modern browsers
-});
+    // Set cookie
+    res.cookie(process.env.COOKIE_NAME, token, {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+    });
 
-
-    return res.status(200).json({ message: "Successfully logged in!", user: existingUser, token });
+    return res.status(200).json({ 
+      message: "Successfully logged in!", 
+      user: existingUser, 
+      token,
+      tokenExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Internal Server Error" });
