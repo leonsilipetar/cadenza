@@ -48,8 +48,7 @@ function App() {
   }, []);
   return (
     <Routes>
-      <Route path="/" element={<Welcome />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/login/*" element={<Login />} />
       <Route path="/recepti/*" element={<Recepti />} />
       <Route path="/*" element={<Welcome />} />
       {isLoggedIn && <Route path="/user/*" element={<Naslovna />} />}
