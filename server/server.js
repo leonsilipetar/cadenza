@@ -68,7 +68,7 @@ app.use('/api', (req, res, next) => {
 
   if (req.path.includes('login') || req.path.includes('signup')) {
 
-    res.cookie('yourCookieNameHere', 'value', {
+    res.cookie('myCookieName', 'value', {
 
       httpOnly: true,
 
