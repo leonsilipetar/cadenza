@@ -16,6 +16,7 @@ const Raspored = () => {
   const [selectedStudent, setSelectedStudent] = useState({});
   const [studentsRaspored, setStudentsRaspored] = useState([]);
   const [teorija, setTeorija] = useState({});
+  const [teorijaID, setTeorijaID] = useState({});
   const [dodajRasporedTeorija, setDodajRasporedTeorija] = useState(false);
   const [dodajRasporedStudent, setDodajRasporedStudent] = useState(false);
   const [rasporedGumb, setRasporedGumb] = useState(false);
@@ -62,6 +63,7 @@ const Raspored = () => {
         });
         return acc;
       }, {});
+      setTeorijaID(data.teorija[0]._id);
       setTeorija(teorijaObj);
     } catch (err) {
       console.error('Error fetching teorija data:', err);
@@ -264,6 +266,7 @@ const Raspored = () => {
                 key={day}
                 day={day}
                 teorija={teorija[day]}
+                teorijaID={teorijaID}
                 user={user}
                 isTeorija={true}
                 setSchedule={setTeorija}

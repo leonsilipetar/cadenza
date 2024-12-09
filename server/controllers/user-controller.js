@@ -282,6 +282,28 @@ const logout = async (req, res, next) => {
   }
 };
 
+const refreshToken = async (req, res) => {
+  const cookies = req.cookies;
+  const prevToken = cookies.token;
+
+  jwt.verify(prevToken, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "Authentication failed" });
+    }
+
+    const newToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+
+    res.cookie(`${process.env.COOKIE_NAME}`, newToken, {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    });
+
+    return res.status(200).json({ message: "Token refreshed successfully" });
+  });
+};
+
 
 
   async function getUser(req, res, next) {
@@ -371,36 +393,6 @@ const searchUsersAndMentors = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
-
-const refreshToken = async (req, res) => {
-  const cookies = req.cookies;
-
-  if (!cookies[process.env.COOKIE_NAME]) {
-    return res.status(400).json({ message: "No token found in cookies" });
-  }
-
-  const prevToken = cookies[process.env.COOKIE_NAME];
-
-  jwt.verify(prevToken, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ message: "Authentication failed" });
-    }
-
-    const newToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-
-    res.cookie(`${process.env.COOKIE_NAME}`, newToken, {
-      path: '/',
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== 'development',
-      sameSite: 'None',
-    });
-
-    return res.status(200).json({ message: "Token refreshed successfully" });
-  });
-};
-
-
-
 
 
 const getKorisnici = async (req, res, next) => {
