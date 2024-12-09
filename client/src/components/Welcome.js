@@ -27,7 +27,7 @@ const Welcome = () => {
 
               <p className="sub-text">
 
-                <i>Otkrijte svijet glazbe kroz personalizirano mentorstvo, 
+                <i>Otkrijte svijet glazbe kroz personalizirano mentorstvo,
 
                 fleksibilno planiranje i interaktivnu suradnju.</i>
 
@@ -67,12 +67,6 @@ const Welcome = () => {
 
         </div>
 
-        <div className="mobile-scroll-indicator">
-
-          <KeyboardArrowDownIcon style={{ fontSize: '2.5rem' }} />
-
-        </div>
-
       </div>
 
       <div className="main-login-signup">
@@ -89,11 +83,11 @@ const Welcome = () => {
 
             <div className="logo-container">
 
-              <img 
+              <img
 
-                src="/Logo12.png" 
+                src="/Logo12.png"
 
-                alt="MAI Logo" 
+                alt="MAI Logo"
 
                 className="welcome-logo"
 
@@ -107,9 +101,9 @@ const Welcome = () => {
 
             <p className='p'>
 
-              <Link 
+              <Link
 
-                className='gumb-login-signup' 
+                className='gumb-login-signup'
 
                 to="/login"
 

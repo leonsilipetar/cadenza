@@ -28,13 +28,13 @@ const Naslovna = () => {
 
   const handleSearch = async (query) => {
     setSearchQuery(query);
-  
+
     // Check if query length is less than 2 characters
     if (query.length < 2) {
       setSearchResults([]); // Clear search results or keep previous results (based on desired behavior)
       return; // Exit the function to avoid making an API call
     }
-  
+
     try {
       const res = await axios.post(`${ApiConfig.baseUrl}/api/users`, { query });
       setSearchResults(res.data.results);
@@ -68,10 +68,10 @@ const Naslovna = () => {
               <div key={result._id} className="search-result-item">
                 <div>
                   <div><p>{result.ime} {result.prezime}</p> <p className='txt-min2'>{result.email}</p></div>
-                <p className='txt-min'>{result.uloga}</p>
+                <p className='txt-min'>{result.school.name}</p>
                 </div>
                 <div>
-                  <p>funkcije</p>
+                  <p>{result.uloga}</p>
                 </div>
               </div>
             ))

@@ -352,7 +352,9 @@ const searchUsersAndMentors = async (req, res) => {
         { korisnickoIme: { $regex: query, $options: 'i' } },
         { email: { $regex: query, $options: 'i' } },
       ],
-    }).select('ime prezime isMentor email isStudent isAdmin');
+    })
+      .select('ime prezime isMentor email isStudent isAdmin school')
+      .populate('school', 'name'); // Adjust fields as necessary
 
     // Search mentors by name, surname, or username
     const mentors = await Mentor.find({
@@ -362,7 +364,9 @@ const searchUsersAndMentors = async (req, res) => {
         { korisnickoIme: { $regex: query, $options: 'i' } },
         { email: { $regex: query, $options: 'i' } },
       ],
-    }).select('ime prezime email isMentor isStudent isAdmin');
+    })
+      .select('ime prezime email isMentor isStudent isAdmin school')
+      .populate('school', 'name'); // Adjust fields as necessary
 
     // Process users to include roles
     const processedUsers = users.map(user => {
@@ -393,6 +397,7 @@ const searchUsersAndMentors = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+
 
 
 const getKorisnici = async (req, res, next) => {
