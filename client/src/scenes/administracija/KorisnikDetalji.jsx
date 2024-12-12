@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ApiConfig from '../../components/apiConfig';
+import Notification from '../../components/Notifikacija';
 
 axios.defaults.withCredentials = true;
 
@@ -41,6 +42,9 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
       brojMobitela: '',
     },
   });
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+  const [notification, setNotification] = useState(null);
 
   const fetchMentors = async () => {
     try {
@@ -75,7 +79,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
+
     if (name === "mentor" || name === "school") {
       setInputs((prev) => ({
         ...prev,
@@ -93,7 +97,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
       }));
     }
   };
-  
+
 
   const urediKorisnika = async () => {
     try {
@@ -115,6 +119,29 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
       console.log('User update failed.');
     }
     setIsSaving(false);
+  };
+
+  const handlePasswordReset = async () => {
+    try {
+      setIsResetting(true);
+      await axios.post(`${ApiConfig.baseUrl}/api/reset-password`, {
+        userId: korisnikId,
+        userType: 'student',
+        email: inputs.email
+      });
+      setNotification({
+        message: 'Nova lozinka je poslana na email.',
+        type: 'success'
+      });
+      setShowResetConfirm(false);
+    } catch (error) {
+      setNotification({
+        message: error.response?.data?.message || 'Greška pri resetiranju lozinke.',
+        type: 'error'
+      });
+    } finally {
+      setIsResetting(false);
+    }
   };
 
   useEffect(() => {
@@ -355,11 +382,47 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           >
             Zatvori
           </button>
-          <button className="gumb action-btn spremiBtn" type="submit">
+          <button
+            className="gumb action-btn spremiBtn"
+            type="submit"
+          >
             {isSaving ? 'Spremanje...' : 'Spremi promjene'}
           </button>
+          {!showResetConfirm ? (
+            <button
+              className="gumb action-btn abExpand"
+              type="button"
+              onClick={() => setShowResetConfirm(true)}
+            >
+              Resetiraj lozinku
+            </button>
+          ) : (
+            <>
+              <button
+                className="gumb action-btn abDelete"
+                type="button"
+                onClick={() => setShowResetConfirm(false)}
+              >
+                Odustani
+              </button>
+              <button
+                className="gumb action-btn abEdit"
+                type="button"
+                onClick={handlePasswordReset}
+                disabled={isResetting}
+              >
+                {isResetting ? 'Resetiranje...' : 'Resetiraj'}
+              </button>
+            </>
+          )}
         </div>
       </form>
+      {notification && (
+        <Notification
+          message={notification.message}
+          notification={notification}
+        />
+      )}
     </div>
   );
 };

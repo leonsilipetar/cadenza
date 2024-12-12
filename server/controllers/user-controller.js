@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const asyncWrapper = require("../middleware/asyncWrapper.js");
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+
 const signup = asyncWrapper(async (req, res, next) => {
   const {
     korisnickoIme,
@@ -168,6 +169,116 @@ const sendPasswordEmail = async (email, password) => {
   }
 };
 
+
+const updatePassword = asyncWrapper(async (req, res) => {
+  const { userId, userType, email } = req.body;
+
+  try {
+    // Find user
+    const Model = userType === 'student' ? User : Mentor;
+    const user = await Model.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Korisnik nije pronađen.' });
+    }
+
+    // Check cooldown
+    if (user.lastPasswordReset &&
+        Date.now() - new Date(user.lastPasswordReset).getTime() < 24 * 60 * 60 * 1000) {
+      return res.status(429).json({
+        message: 'Molimo pričekajte 24 sata između resetiranja lozinke.'
+      });
+    }
+
+    // Generate new password (using existing logic from signup)
+    const passwordLength = 8;
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const newPassword = Array.from(
+      { length: passwordLength },
+      () => characters.charAt(Math.floor(Math.random() * characters.length))
+    ).join('');
+
+    // Hash password
+    const hashedPassword = bcrypt.hashSync(newPassword, 8);
+
+    // Update user
+    user.password = hashedPassword;
+    user.lastPasswordReset = new Date();
+    await user.save();
+
+    // Send email using existing transporter config
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: 'leonosobni@gmail.com',
+        pass: 'vrsj acql nqyh lnvr',
+      },
+      secureOptions: 'TLSv1_2',
+    });
+
+    const mailOptions = {
+      from: 'leonosobni@gmail.com',
+      to: email,
+      subject: 'Nova lozinka - Music Art Incubator',
+      html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd;">
+        <!-- Header section with logo -->
+        <div style="text-align: center;">
+          <img src="https://mai-cadenza.onrender.com/Logo12.png" alt="MAI - Cadenza Logo" style="max-width: 150px;" />
+          <h1 style="color: rgb(252, 163, 17); font-size: 24px;">Nova lozinka za vaš račun</h1>
+        </div>
+
+        <!-- Email introduction -->
+        <p>Poštovani,</p>
+        <p>Vaša lozinka je resetirana. Ovdje su vaši novi podaci za prijavu:</p>
+
+        <!-- Highlighted user details -->
+        <div style="border: 1px solid #ddd; padding: 10px; background-color: #fff8e6; margin-bottom: 20px;">
+          <p><strong>E-mail adresa:</strong> ${email}</p>
+          <p><strong>Nova lozinka:</strong> ${newPassword}</p>
+        </div>
+
+        <!-- Call to action button -->
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="https://mai-cadenza.onrender.com/login" style="
+            background-color: rgb(252, 163, 17);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+            ">Prijavite se</a>
+        </div>
+
+        <!-- Support and closing -->
+        <p>Molimo vas da čuvate ove informacije i ne dijelite lozinku. Ako imate bilo kakvih pitanja ili nedoumica, slobodno se obratite našem timu za podršku na <a href="mailto:leonosobni@gmail.com">leonosobni@gmail.com</a>.</p>
+
+        <p>S poštovanjem,<br />MAI - Cadenza</p>
+      </div>
+
+      <!-- Styling for hover effect -->
+      <style>
+        a:hover {
+          background-color: rgba(252, 163, 17, 0.8);
+        }
+      </style>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({ message: 'Nova lozinka je poslana na email.' });
+  } catch (error) {
+    console.error('Password reset error:', error);
+    return res.status(500).json({ message: 'Greška pri resetiranju lozinke.' });
+  }
+});
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -486,6 +597,7 @@ const getUserInvoices = async (req, res) => {
 exports.getUserInvoices =  getUserInvoices ;
 
 exports.signup = signup;
+exports.updatePassword = updatePassword;
 exports.login = login;
 exports.verifyToken = verifyToken;
 exports.getUser = getUser;

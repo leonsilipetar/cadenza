@@ -16,6 +16,7 @@ import RacuniAdmin from './scenes/administracija/RacuniAdmin.jsx';
 import Mentori from './scenes/administracija/Mentori.jsx';
 import Classroom from './scenes/administracija/Classroom.jsx';
 import ApiConfig from './components/apiConfig.js';
+import { ToastContainer } from 'react-toastify';
 axios.defaults.withCredentials = true;
 function App() {
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -54,26 +55,29 @@ function App() {
     return () => clearInterval(interval); // Clear interval on component unmount
   }, [dispatch, navigate]);
   return (
-    <Routes>
-      <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/user" />} />
-      <Route path="/" element={isLoggedIn ? <Navigate to="/user" /> : <Welcome />} />
-      {/* Protected Routes */}
-      {isLoggedIn && (
-        <>
-          <Route path="/user/*" element={<Naslovna />} />
-          <Route path="/profil/*" element={<Profil />} />
-          <Route path="/chat/*" element={<Chat />} />
-          <Route path="/racuni/*" element={<Racuni />} />
-          <Route path="/raspored/*" element={<Raspored />} />
-          <Route path="/admin/*" element={<Admin />} />
-          <Route path="/korisnici/*" element={<Korisnici />} />
-          <Route path="/mentori/*" element={<Mentori />} />
-          <Route path="/racuni-admin/*" element={<RacuniAdmin />} />
-          <Route path="/classrooms/*" element={<Classroom />} />
-        </>
-      )}
-      {/* Catch-all route - exclude recipes from the redirect */}
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/user" />} />
+        <Route path="/" element={isLoggedIn ? <Navigate to="/user" /> : <Welcome />} />
+        {/* Protected Routes */}
+        {isLoggedIn && (
+          <>
+            <Route path="/user/*" element={<Naslovna />} />
+            <Route path="/profil/*" element={<Profil />} />
+            <Route path="/chat/*" element={<Chat />} />
+            <Route path="/racuni/*" element={<Racuni />} />
+            <Route path="/raspored/*" element={<Raspored />} />
+            <Route path="/admin/*" element={<Admin />} />
+            <Route path="/korisnici/*" element={<Korisnici />} />
+            <Route path="/mentori/*" element={<Mentori />} />
+            <Route path="/racuni-admin/*" element={<RacuniAdmin />} />
+            <Route path="/classrooms/*" element={<Classroom />} />
+          </>
+        )}
+        {/* Catch-all route - exclude recipes from the redirect */}
+      </Routes>
+      <ToastContainer position="top-right" autoClose={3000} />
+    </>
   );
 }
 export default App;

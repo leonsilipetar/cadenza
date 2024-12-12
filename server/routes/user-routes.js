@@ -12,6 +12,7 @@ const {
   getAllStudents,
   searchUsersAndMentors,
   getUserInvoices,
+  updatePassword,
 } = require('../controllers/user-controller.js');
 const {
   signupMentor,
@@ -48,6 +49,7 @@ router.get("/korisnik/:userId", verifyToken, getDetaljiKorisnika);
 router.get('/all-students', getAllStudents);
 router.post('/users', searchUsersAndMentors);
 router.get('/users/:userId/invoices', getUserInvoices);
+router.post("/reset-password", verifyToken, updatePassword);
 router.post("/logout", verifyToken, logout);
 // Refresh token route
 router.post('/refresh', refreshToken);
