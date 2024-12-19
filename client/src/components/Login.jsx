@@ -176,23 +176,19 @@ const Login = () => {
 
             <input
 
-              className={`input-login-signup ${emailFocused ? 'focused' : ''}`}
+              type="email"
+
+              id="email"
+
+              name="email"
 
               value={inputs.email}
 
               onChange={handleChange}
 
-              type="email"
+              placeholder="E-mail"
 
-              name="email"
-
-              placeholder="e-mail adresa"
-
-              autoComplete='email'
-
-              onFocus={() => setEmailFocused(true)}
-
-              onBlur={() => setEmailFocused(false)}
+              autoComplete="email"
 
               required
 
@@ -200,23 +196,19 @@ const Login = () => {
 
             <input
 
-              className={`input-login-signup ${passwordFocused ? 'focused' : ''}`}
+              type="password"
+
+              id="password"
+
+              name="password"
 
               value={inputs.password}
 
               onChange={handleChange}
 
-              type={showPassword ? 'text' : 'password'}
+              placeholder="Lozinka"
 
-              name="password"
-
-              placeholder="lozinka"
-
-              autoComplete='current-password'
-
-              onFocus={() => setPasswordFocused(true)}
-
-              onBlur={() => setPasswordFocused(false)}
+              autoComplete="current-password"
 
               required
 
