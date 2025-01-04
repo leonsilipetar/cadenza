@@ -171,43 +171,47 @@ const sendPasswordEmail = async (email, password) => {
     };
 
     const updateDetaljiMentora = async (req, res, next) => {
-  try {
-    const mentorId = req.params.mentorId;
-    const updateData = req.body;
-
-    if (!mongoose.Types.ObjectId.isValid(mentorId)) {
-      return res.status(400).json({ message: 'Invalid mentor ID' });
-    }
-
-    const detaljiMentora = await Mentor.findById(mentorId);
-
-    if (!detaljiMentora) {
-      return res.status(404).json({ message: 'Mentor not found' });
-    }
-
-    // If students field is not null or undefined and is an array
-    if (updateData.students && Array.isArray(updateData.students)) {
-      // Use $each and $elemMatch to add new students to the mentor's students array
-      await Mentor.updateOne(
-        { _id: mentorId, students: { $not: { $elemMatch: { $in: updateData.students } } } },
-        { $addToSet: { students: { $each: updateData.students } } }
-      );
-
-      // Remove the students field from updateData to prevent overwriting the students array
-      delete updateData.students;
-    }
-
-    // Update other mentor fields with the values from the request body
-    Object.assign(detaljiMentora, updateData);
-
-    // Save the updated mentor
-    await detaljiMentora.save();
-
-    res.json({ message: 'Mentor updated successfully', mentor: detaljiMentora });
-  } catch (err) {
-    next(err);
-  }
-};
+      try {
+        const mentorId = req.params.mentorId;
+        const updateData = req.body;
+    
+        if (!mongoose.Types.ObjectId.isValid(mentorId)) {
+          return res.status(400).json({ message: 'Invalid mentor ID' });
+        }
+    
+        const detaljiMentora = await Mentor.findById(mentorId);
+    
+        if (!detaljiMentora) {
+          return res.status(404).json({ message: 'Mentor not found' });
+        }
+    
+        // Directly remove students
+        if (updateData.studentsToRemove && Array.isArray(updateData.studentsToRemove)) {
+          const studentsToRemove = updateData.studentsToRemove;
+          // Remove the students from the mentor's students array
+          detaljiMentora.students = detaljiMentora.students.filter(student => !studentsToRemove.includes(student._id.toString()));
+          delete updateData.studentsToRemove; // remove this from the update data
+        }
+    
+        // Update students if any are provided
+        if (updateData.students && Array.isArray(updateData.students)) {
+          // Directly replace or add new students to the mentor
+          detaljiMentora.students = updateData.students;
+          delete updateData.students; // remove this from the update data
+        }
+    
+        // Update other mentor fields with the values from the request body
+        Object.assign(detaljiMentora, updateData);
+    
+        // Save the updated mentor
+        await detaljiMentora.save();
+    
+        res.json({ message: 'Mentor updated successfully', mentor: detaljiMentora });
+      } catch (err) {
+        next(err);
+      }
+    };
+    
 
     
     

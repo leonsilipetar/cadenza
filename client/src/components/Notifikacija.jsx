@@ -1,23 +1,50 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom/client';
 import '../App.css';
 
-const Notification = ({ message, action, onActionClick, notification }) => {
-    const [isVisible, setIsVisible] = useState(true);
+const Notifikacija = ({ message, type }) => {
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
+    const timer = setTimeout(() => {
       setIsVisible(false);
-    }, 5000); // Adjust the delay (in milliseconds) as needed
+    }, 3000);
 
-    return () => clearTimeout(timeoutId);
-  }, [notification]);
-  return (
-    <div className={`notification ${isVisible ? 'visible' : 'hidden'}`}>
+    return () => clearTimeout(timer);
+  }, []);
+
+  return isVisible ? (
+    <div className={`notification ${type}`}>
       <p>{message}</p>
-      {action && <button onClick={onActionClick}>{action}</button>}
     </div>
-  );
+  ) : null;
 };
 
-export default Notification;
+// Notification manager
+let notificationContainer = null;
+
+export const notifikacija = (message, type = 'info') => {
+  // Create container if it doesn't exist
+  if (!notificationContainer) {
+    notificationContainer = document.createElement('div');
+    notificationContainer.className = 'notification-container';
+    document.body.appendChild(notificationContainer);
+  }
+
+  // Create a new div for this notification
+  const notificationElement = document.createElement('div');
+  const root = ReactDOM.createRoot(notificationElement);
+  root.render(<Notifikacija message={message} type={type} />);
+  notificationContainer.appendChild(notificationElement);
+
+  // Remove the notification after animation
+  setTimeout(() => {
+    notificationContainer.removeChild(notificationElement);
+    if (notificationContainer.children.length === 0) {
+      document.body.removeChild(notificationContainer);
+      notificationContainer = null;
+    }
+  }, 3500); // Slightly longer than the visibility timeout
+};
+
+export default Notifikacija;

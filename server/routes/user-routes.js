@@ -13,6 +13,7 @@ const {
   searchUsersAndMentors,
   getUserInvoices,
   updatePassword,
+  deleteUser,
 } = require('../controllers/user-controller.js');
 const {
   signupMentor,
@@ -50,7 +51,26 @@ router.get('/all-students', getAllStudents);
 router.post('/users', searchUsersAndMentors);
 router.get('/users/:userId/invoices', getUserInvoices);
 router.post("/reset-password", verifyToken, updatePassword);
-router.post("/logout", verifyToken, logout);
+router.post("/logout", async (req, res) => {
+  try {
+    res.cookie('token', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: new Date(0),
+      path: '/'
+    });
+
+    if (req.session) {
+      req.session.destroy();
+    }
+
+    res.status(200).json({ message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ message: 'Error during logout' });
+  }
+});
 // Refresh token route
 router.post('/refresh', refreshToken);
 
@@ -83,5 +103,32 @@ router.get('/users/:userId/invoices', verifyToken, getUserInvoices);
 router.post('/generate-invoice', verifyToken, generateInvoice);
 router.get('/download/:id', verifyToken, downloadInvoice);
 router.post('/racuni', verifyToken, addInvoice);
+
+router.delete("/delete-user/:id", verifyToken, deleteUser);
+
+router.delete('/api/delete-user/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { userType } = req.body;
+
+    if (userType === 'student') {
+      // Remove student from all mentor schedules
+      await Mentor.updateMany(
+        { 'raspored.ucenikId': userId },
+        { $pull: { 'raspored.$[].ucenici': { ucenikId: userId } } }
+      );
+      
+      // Delete the student
+      await User.findByIdAndDelete(userId);
+    } else if (userType === 'mentor') {
+      await Mentor.findByIdAndDelete(userId);
+    }
+
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Delete user error:', error);
+    res.status(500).json({ message: 'Error deleting user' });
+  }
+});
 
 module.exports = router;

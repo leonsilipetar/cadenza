@@ -1,70 +1,51 @@
-import { useState } from "react";
-import { Routes, Route, Link } from 'react-router-dom';
-import '../../App.css';
-import axios from 'axios';
-import Profil from "../Profile";
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import Admin from "./Admin";
-import RacuniAdmin from "./RacuniAdmin";
-import Classroom from "./Classroom";
-axios.defaults.withCredentials = true;
+import '../../App.css';
 
-const NavigacijaAdmin = ({ user, otvoreno}) => {
-  const [activeItem, setActiveItem] = useState(otvoreno);
-
-  const handleItemClick = (item) => {
-    // If the clicked item is the same as the active item, return early
-    if (item === activeItem) {
-      return;
-    }
-
-    setActiveItem(item);
-  };
-    return (
-        <>
-        <header>
+const NavigacijaAdmin = ({ otvoreno }) => {
+  return (
+    <header>
       <nav>
-        <div className={activeItem === 'naslovna' ? 'otvoreno' : ''} onClick={() => handleItemClick('naslovna')}>
+        <div className={otvoreno === 'naslovna' ? 'otvoreno' : ''}>
           <Link className="link" to="/admin">
-          <Icon className="icon" icon="solar:music-notes-broken" />
+            <Icon className="icon" icon="solar:home-2-broken" />
+            <p>Naslovna</p>
           </Link>
-          <p>Naslovna</p>
         </div>
-        <div className={activeItem === 'korisnici' ? 'otvoreno' : ''} onClick={() => handleItemClick('korisnici')}>
+        <div className={otvoreno === 'korisnici' ? 'otvoreno' : ''}>
           <Link className="link" to="/korisnici">
-          <Icon className="icon" icon="solar:users-group-rounded-broken" />
+            <Icon className="icon" icon="solar:users-group-rounded-broken" />
+            <p>Učenici</p>
           </Link>
-          <p>Učenici</p>
         </div>
-        <div className={activeItem === 'mentori' ? 'otvoreno' : ''} onClick={() => handleItemClick('mentori')}>
+        <div className={otvoreno === 'mentori' ? 'otvoreno' : ''}>
           <Link className="link" to="/mentori">
-          <Icon className="icon" icon="solar:users-group-rounded-broken" />
+            <Icon className="icon" icon="solar:user-rounded-broken" />
+            <p>Mentori</p>
           </Link>
-          <p>Mentori</p>
         </div>
-        <div className={activeItem === 'racuni' ? 'otvoreno' : ''} onClick={() => handleItemClick('racuni')}>
+        <div className={otvoreno === 'racuni' ? 'otvoreno' : ''}>
           <Link className="link" to="/racuni-admin">
-          <Icon className="icon" icon="solar:file-check-broken" />
+            <Icon className="icon" icon="solar:bill-list-broken" />
+            <p>Računi</p>
           </Link>
-          <p>Racuni</p>
         </div>
-        <div className={activeItem === 'classrooms' ? 'otvoreno' : ''} onClick={() => handleItemClick('classrooms')}>
+        <div className={otvoreno === 'classrooms' ? 'otvoreno' : ''}>
           <Link className="link" to="/classrooms">
-          <Icon className="icon" icon="solar:code-scan-broken" />
+            <Icon className="icon" icon="solar:buildings-2-broken" />
+            <p>Učionice</p>
           </Link>
-          <p>Učionice</p>
+        </div>
+        <div className={otvoreno === 'delete' ? 'otvoreno' : ''}>
+          <Link className="link" to="/admin/delete">
+            <Icon className="icon" icon="solar:trash-bin-trash-broken" />
+            <p>Brisanje</p>
+          </Link>
         </div>
       </nav>
     </header>
-    <Routes>
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/korisnici" element={<Profil />} />
-        <Route path="/racuni-admin" element={<RacuniAdmin />} />
-        <Route path="/mentori" element={<Profil />} />
-        <Route path="/classrooms" element={<Classroom/>} />
-    </Routes>
-        </>
-    )
-}
+  );
+};
 
 export default NavigacijaAdmin;

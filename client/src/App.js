@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
-import Login from './components/Login';
+import Login from './components/Login.js';
 import Welcome from './components/Welcome';
 import Naslovna from './scenes/naslovna/Naslovna';
 import { authActions } from './store/index.js';
@@ -17,49 +17,56 @@ import Mentori from './scenes/administracija/Mentori.jsx';
 import Classroom from './scenes/administracija/Classroom.jsx';
 import ApiConfig from './components/apiConfig.js';
 import { ToastContainer } from 'react-toastify';
+import CookieConsent from './components/CookieConsent';
+import Delete from './scenes/administracija/Delete';
 axios.defaults.withCredentials = true;
 function App() {
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+
   useEffect(() => {
-    const cookieExists = document.cookie.includes('yourCookieNameHere');
-    if (cookieExists) {
-      dispatch(authActions.login());
-      if (location.pathname === '/') {
-        navigate('/user');
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get(`${ApiConfig.baseUrl}/api/user`);
+
+        if (response.data?.user) {
+          dispatch(authActions.login());
+        } else {
+          handleLogout();
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+        handleLogout();
       }
-    }
-  }, [dispatch, location.pathname, navigate]);
+    };
+
+    checkAuth();
+  }, []);
+
   useEffect(() => {
-    if (!isLoggedIn && location.pathname !== '/' && location.pathname !== '/login') {
-      navigate('/');
-    }
-    if (isLoggedIn && location.pathname === '/') {
-      navigate('/user');
+    if (!isLoggedIn) {
+      if (location.pathname !== '/' && location.pathname !== '/login') {
+        navigate('/', { replace: true });
+      }
+    } else if (location.pathname === '/') {
+      navigate('/user', { replace: true });
     }
   }, [isLoggedIn, location.pathname, navigate]);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      axios.post(`${ApiConfig.baseUrl}/api/refresh`, {}, { withCredentials: true })
-        .then((response) => {
-          // Handle the new access token here if needed
-        })
-        .catch((error) => {
-          console.error("Failed to refresh token", error);
-          dispatch(authActions.logout());
-          navigate('/');
-        });
-    }, 50 * 1000); // 50 seconds
-    return () => clearInterval(interval); // Clear interval on component unmount
-  }, [dispatch, navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    delete axios.defaults.headers.common['Authorization'];
+    dispatch(authActions.logout());
+  };
+
   return (
     <>
       <Routes>
         <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/user" />} />
-        <Route path="/" element={isLoggedIn ? <Navigate to="/user" /> : <Welcome />} />
-        {/* Protected Routes */}
+        <Route path="/" element={!isLoggedIn ? <Welcome /> : <Navigate to="/user" />} />
         {isLoggedIn && (
           <>
             <Route path="/user/*" element={<Naslovna />} />
@@ -67,16 +74,17 @@ function App() {
             <Route path="/chat/*" element={<Chat />} />
             <Route path="/racuni/*" element={<Racuni />} />
             <Route path="/raspored/*" element={<Raspored />} />
-            <Route path="/admin/*" element={<Admin />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/delete" element={<Delete />} />
             <Route path="/korisnici/*" element={<Korisnici />} />
             <Route path="/mentori/*" element={<Mentori />} />
             <Route path="/racuni-admin/*" element={<RacuniAdmin />} />
             <Route path="/classrooms/*" element={<Classroom />} />
           </>
         )}
-        {/* Catch-all route - exclude recipes from the redirect */}
       </Routes>
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer />
+      <CookieConsent />
     </>
   );
 }

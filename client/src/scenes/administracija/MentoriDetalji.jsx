@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ApiConfig  from '../../components/apiConfig.js';
-import { toast } from 'react-toastify';
-import Notification from '../../components/Notifikacija';
+import ApiConfig from '../../components/apiConfig.js';
+import { Icon } from '@iconify/react';
+import { notifikacija } from '../../components/Notifikacija';
 
 axios.defaults.withCredentials = true;
 
@@ -26,6 +26,7 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
     },
     napomene: '',
     students: [],
+    school: '',
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -33,14 +34,14 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [allStudents, setAllStudents] = useState([]);
-  const [studentsToRemove, setStudentsToRemove] = useState([]);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [schools, setSchools] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
 
   const getDetaljiKorisnika = async (korisnikId) => {
     try {
-      // Assuming userId is the ID of the selected user
       const res = await axios.get(`${ApiConfig.baseUrl}/api/korisnik/${korisnikId}`, {
         withCredentials: true,
       });
@@ -49,12 +50,9 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
       return detaljiKorisnika;
     } catch (err) {
       console.error(err);
-      throw err; // Propagate the error to the caller
+      throw err;
     }
   };
-
-
-
 
   const handleChange = (e) => {
     setInputs((prev) => ({
@@ -74,99 +72,83 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
     }
   };
 
-
-
   const fetchAllStudents = async () => {
     try {
       const res = await axios.get(`${ApiConfig.baseUrl}/api/all-students`, {
         withCredentials: true,
       });
 
-      const students = res.data.students; // Assuming the response has a 'students' property
+      const students = res.data.students;
       setAllStudents(students);
     } catch (error) {
       console.error('Error fetching students:', error);
     }
   };
 
-  const handleStudentInputChange = (e) => {
-    setStudentInput(e.target.value);
+  const handleSearch = async (e) => {
+    const query = e.target.value || '';
+    setStudentInput(query);
 
-    const filteredStudents = allStudents.filter(
-      (student) =>
-        student.ime.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        student.prezime.toLowerCase().includes(e.target.value.toLowerCase())
-    );
+    if (query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
 
-    // Check if the filtered students are not already in mentor's students list
-    const nonExistingStudents = filteredStudents.filter(
-      (student) => !inputs.students || !inputs.students.some((s) => s.ucenikId === student._id)
-    );
+    try {
+      const res = await axios.post(`${ApiConfig.baseUrl}/api/users`, { query });
 
-    setFilteredStudents(nonExistingStudents);
-  };
+      if (res.data) {
+        const students = Array.isArray(res.data) ? res.data : res.data.results || [];
+        const mappedResults = students.filter(student => student && student.isStudent)
+          .map(student => ({
+            ...student,
+            isAssigned: inputs.students?.some(s => s.ucenikId === student._id)
+          }));
 
-  const addSelectedStudent = (student) => {
-    setSelectedStudents((prevSelectedStudents) => {
-      // Check if the student already exists in the selected students
-      if (!prevSelectedStudents.some((s) => s.ucenikId === student._id)) {
-        return [...prevSelectedStudents, student];
-      } else {
-        // If the student already exists, return the previous state
-        return prevSelectedStudents;
+        setSearchResults(mappedResults);
       }
-    });
-
-    setInputs((prevInputs) => {
-      const updatedStudents = prevInputs.students || [];
-      // Check if the student already exists in the students array
-      if (!updatedStudents.some((s) => s.ucenikId === student._id)) {
-        return {
-          ...prevInputs,
-          students: [...updatedStudents, { ucenikId: student._id, ime: student.ime, prezime: student.prezime }],
-        };
-      } else {
-        // If the student already exists, return the previous state
-        return prevInputs;
-      }
-    });
-
-    setStudentInput('');
-    setFilteredStudents([]);
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+    }
   };
 
+  const handleAddStudent = async (studentId) => {
+    const studentToAdd = searchResults.find(s => s._id === studentId);
 
+    if (studentToAdd) {
+      setInputs(prev => ({
+        ...prev,
+        students: [...(prev.students || []), {
+          ucenikId: studentToAdd._id,
+          ime: studentToAdd.ime,
+          prezime: studentToAdd.prezime
+        }]
+      }));
 
-
-
-  const removeSelectedStudent = (studentId) => {
-    const updatedSelectedStudents = selectedStudents.filter((student) => student._id !== studentId);
-    setSelectedStudents(updatedSelectedStudents);
-
-    setStudentsToRemove((prevStudentsToRemove) => [...prevStudentsToRemove, { ucenikId: studentId }]);
-
-    setInputs((prevInputs) => {
-      const nonNullStudents = prevInputs.students.filter((student) => student !== null);
-      const updatedStudents = nonNullStudents.filter((student) => student.ucenikId !== studentId);
-      return {
-        ...prevInputs,
-        students: updatedStudents,
-      };
-    });
+      setStudentInput('');
+      setSearchResults([]);
+      notifikacija('Učenik uspješno dodan', 'success');
+    }
   };
 
-
-
+  const handleRemoveStudent = (studentId) => {
+    setInputs((prev) => ({
+      ...prev,
+      students: prev.students.filter(s => s.ucenikId !== studentId) // Remove only the student with the matching id
+    }));
+  
+    notifikacija('Učenik uspješno uklonjen', 'success');
+  };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
 
-    // Include the logic to send the data to the backend
     const result = await urediKorisnika({
       ...inputs,
-      studentsToRemove,
-      students: selectedStudents, // Include the selectedStudents array in the data
+      students: inputs.students, // Only send updated students
     });
 
     if (result) {
@@ -175,16 +157,10 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
       console.log('User update failed.');
     }
 
-    // Reset the studentsToRemove state
-    setStudentsToRemove([]);
-
     setTimeout(() => {
       setIsSaving(false);
     }, 1000);
   };
-
-
-
 
   const handlePasswordReset = async () => {
     try {
@@ -231,231 +207,203 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
         },
         napomene: data.napomene,
         students: data.students,
+        school: data.school,
       });
     });
     fetchAllStudents();
   }, [korisnikId]);
 
-  return(
+  useEffect(() => {
+    const fetchSchools = async () => {
+      try {
+        const res = await axios.get(`${ApiConfig.baseUrl}/api/schools`);
+        setSchools(res.data);
+      } catch (error) {
+        console.error('Error fetching schools:', error);
+      }
+    };
+
+    fetchSchools();
+  }, []);
+
+  return (
     <div className="popup">
       <form onSubmit={handleSubmit}>
-        <div className="div">
-          <label htmlFor="kor-Korime">Korisničko ime:</label>
+        <div className="div div-clmn">
+          <label>Ime:</label>
           <input
             className="input-login-signup"
-            value={inputs.korisnickoIme}
-            onChange={handleChange}
-            type="text"
-            name="korisnickoIme"
-            id="kor-Korime"
-            placeholder="korisničko ime"
-          />
-          <label htmlFor="kor-email">Email:</label>
-          <input
-            className="input-login-signup"
-            value={inputs.email}
-            onChange={handleChange}
-            type="email"
-            name="email"
-            id="kor-email"
-            placeholder="e-mail adresa"
-          />
-          <label htmlFor="kor-oib">OIB:</label>
-          <input
-          className="input-login-signup"
-          value={inputs.oib}
-          onChange={(e) => setInputs({ ...inputs, oib: e.target.value })}
-          type="text"
-          name="oib"
-          id="kor-oib"
-          placeholder="OIB"
-          maxLength={11}
-          pattern="\d{11}"
-          required
-          />
-        </div>
-
-
-        <div className="div">
-              <label htmlFor="kor-ime">Ime:</label>
-          <input
-            className="input-login-signup"
-            value={inputs.ime}
-            onChange={handleChange}
             type="text"
             name="ime"
-            id="kor-ime"
-            placeholder="ime"
+            value={inputs.ime}
+            onChange={handleChange}
+            placeholder="Ime"
           />
-      <label htmlFor="kor-prezime">Prezime:</label>
+        </div>
+
+        <div className="div div-clmn">
+          <label>Prezime:</label>
           <input
             className="input-login-signup"
-            value={inputs.prezime}
-            onChange={handleChange}
             type="text"
             name="prezime"
-            id="kor-prezime"
-            placeholder="prezime"
+            value={inputs.prezime}
+            onChange={handleChange}
+            placeholder="Prezime"
           />
-          <label htmlFor="kor-datum-rodjenja">Datum rođenja:</label>
-            <input
-              className="input-login-signup"
-              value={inputs.datumRodjenja}
-              onChange={(e) => setInputs({ ...inputs, datumRodjenja: e.target.value })}
-              type="date"
-              name="datumRodjenja"
-              id="kor-datum-rodjenja"
-              placeholder="datum rođenja"
-            />
-<label htmlFor="kor-brojMobitela">Broj mobitela:</label>
+        </div>
+
+        <div className="div div-clmn">
+          <label>Email:</label>
           <input
             className="input-login-signup"
-            value={inputs.brojMobitela}
+            type="email"
+            name="email"
+            value={inputs.email}
             onChange={handleChange}
+            placeholder="Email"
+          />
+        </div>
+
+        <div className="div div-clmn">
+          <label>Broj mobitela:</label>
+          <input
+            className="input-login-signup"
             type="text"
             name="brojMobitela"
-            id="kor-brojMobitela"
-            placeholder="broj mobitela"
-          />
-      </div>
-
-<div className="div">
-<label htmlFor="kor-program">Program:</label>
-          <input
-            className="input-login-signup"
-            value={inputs.program}
+            value={inputs.brojMobitela}
             onChange={handleChange}
-            type="text"
-            name="program"
-            id="kor-program"
-            placeholder="program"
+            placeholder="Broj mobitela"
           />
-          </div>
-          <div className="div div-clmn">
-          <label htmlFor="kor-mentor">Učenici:</label>
-          <input
-            className="input-login-signup"
-            type="text"
-            name="ucenici"
-            id="kor-mrntor"
-            placeholder="Dodaj učenike"
-            onChange={handleStudentInputChange}
-            value={studentInput}
-          />
-          <div className="autocomplete-suggestions">
-            {filteredStudents.map((student) => (
-              <>
-              <div
-                key={student.id}
-                className="gumb btn action-btn spremtBtn"
-                onClick={() => addSelectedStudent(student)}
-              >
-                {student.ime} {student.prezime}
-              </div>
-              </>
-            ))}
-          </div>
-          <div className="selected-students ">
-            {selectedStudents.map((student) => (
-              <>
-              <div key={student._id} className="div-radio selected-student action-btn">
-                {student.ime} {student.prezime}
-                <button className='gumb action-btn btn abDelete' onClick={() => removeSelectedStudent(student._id)}>Poništi odabir</button>
-              </div>
-              </>
-            ))}
-          </div>
-          <div className='div div-clmn'>
-  Dodani učenici:
-  {inputs.students?.map((student) => (
-    student ? (
-      <div key={student.ucenikId} className="selected-student action-btn">
-        {student.ime} {student.prezime}
-      </div>
-    ) : null
-  ))}
-</div>
-
-
-
         </div>
 
-
-          <div className='div'>
-          <label htmlFor="kor-ulica">Ulica:</label>
+        <div className="div div-clmn">
+          <label>OIB:</label>
           <input
             className="input-login-signup"
-            onChange={(e) => setInputs({ ...inputs, adresa: { ...inputs.adresa, ulica: e.target.value } })}
             type="text"
-            name="ulica"
-            id="kor-ulica"
-            placeholder="ulica"
+            name="oib"
+            value={inputs.oib}
+            onChange={handleChange}
+            placeholder="OIB"
+          />
+        </div>
+
+        <div className="div div-clmn">
+          <label>Datum rođenja:</label>
+          <input
+            className="input-login-signup"
+            type="date"
+            name="datumRodjenja"
+            value={inputs.datumRodjenja}
+            onChange={handleChange}
+            placeholder="Datum rođenja"
+          />
+        </div>
+
+        <div className="div div-clmn">
+          <label>Adresa:</label>
+          <input
+            className="input-login-signup"
+            type="text"
+            name="adresa.ulica"
             value={inputs.adresa.ulica}
+            onChange={handleChange}
+            placeholder="Ulica"
           />
-      <label htmlFor="kor-kucni-broj">Kućni broj:</label>
           <input
             className="input-login-signup"
-            onChange={(e) => setInputs({ ...inputs, adresa: { ...inputs.adresa, kucniBroj: e.target.value } })}
             type="text"
-            name="kucniBroj"
-            id="kor-kucni-broj"
-            placeholder="kućni broj"
+            name="adresa.kucniBroj"
             value={inputs.adresa.kucniBroj}
+            onChange={handleChange}
+            placeholder="Kućni broj"
           />
-      <label htmlFor="kor-mjesto">Mjesto:</label>
           <input
             className="input-login-signup"
-            onChange={(e) => setInputs({ ...inputs, adresa: { ...inputs.adresa, mjesto: e.target.value } })}
             type="text"
-            name="mjesto"
-            id="kor-mjesto"
-            placeholder="mjesto"
+            name="adresa.mjesto"
             value={inputs.adresa.mjesto}
+            onChange={handleChange}
+            placeholder="Mjesto"
           />
-          </div>
+        </div>
 
+        {/* Students Section */}
+        <div className="div div-clmn">
+          <label>Učenici:</label>
+          <input
+            className="input-login-signup"
+            type="text"
+            value={studentInput}
+            onChange={handleSearch}
+            placeholder="Pretraži učenike"
+          />
 
-          <div className="div-radio">
-          <div
-            className={`radio-item ${inputs.isAdmin ? 'checked' : ''}`}
-            onClick={() => setInputs({ ...inputs, isAdmin: !inputs.isAdmin })}
-          >
-            <input
-              type="radio"
-              id="isAdmin"
-              checked={inputs.isAdmin}
-              onChange={() => setInputs({ ...inputs, isAdmin: !inputs.isAdmin })}
-              style={{ display: 'none' }}
-            />
-            {inputs.isAdmin ? 'Administrator' : 'Nije administrator'}
+          {searchResults.length > 0 && (
+            <div className="tablica">
+              <div className="tr naziv">
+                <div className="th">Rezultati pretrage</div>
+                <div className="th"></div>
+              </div>
+              {searchResults.map((student) => (
+                <div key={student._id} className="tr redak">
+                  <div className="th">{student.ime} {student.prezime}</div>
+                  <div className="th">
+                    {student.isAssigned ? (
+                      <button
+                        className="gumb action-btn abDelete"
+                        type="button"
+                        onClick={() => handleRemoveStudent(student._id)}
+                      >
+                        <Icon icon="solar:trash-bin-trash-broken" />
+                      </button>
+                    ) : (
+                      <button
+                        className="action-btn abEdit"
+                        onClick={() => handleAddStudent(student._id)}
+                        type="button"
+                      >
+                        <Icon icon="solar:add-circle-broken" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Added students */}
+          <div className="tablica">
+            <div className="tr naziv">
+              <div className="th">Dodani učenici</div>
+              <div className="th"></div>
+            </div>
+            {inputs.students?.map((student) => (
+  student && (
+    <div key={student.ucenikId} className="tr redak">
+      <div className="th">{student.ime} {student.prezime}</div>
+      <div className="th">
+        <button
+          className="action-btn abDelete"
+          onClick={() => handleRemoveStudent(student.ucenikId)}
+          type="button"
+        >
+          <Icon icon="solar:trash-bin-trash-broken" />
+        </button>
+      </div>
+    </div>
+  )
+))}
           </div>
         </div>
 
-          <div className="div">
-          <label htmlFor="kor-napomene">Napomene:</label>
-            <textarea
-              className="input-login-signup"
-              value={inputs.napomene}
-              onChange={(e) => setInputs({ ...inputs, napomene: e.target.value })}
-              name="napomene"
-              id="kor-napomene"
-              placeholder="Unesite napomene o korisniku "
-              maxLength={5000}
-            />
-            </div>
-
-
-          <div className='div-radio'>
-          <button
-            className="gumb action-btn zatvoriBtn"
-            onClick={() => onCancel()}
-          >
+        {/* Submit and password reset buttons */}
+        <div className="div">
+          <button className="gumb action-btn zatvoriBtn" onClick={() => onCancel()}>
             Zatvori
           </button>
-          <button
-            className="gumb action-btn spremiBtn"
-            type="submit"
-          >
+          <button className="gumb action-btn spremiBtn" type="submit">
             {isSaving ? 'Spremanje...' : 'Spremi promjene'}
           </button>
           {!showResetConfirm ? (
@@ -485,18 +433,10 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
               </button>
             </>
           )}
-
-          </div>
+        </div>
       </form>
-      {notification && (
-        <Notification
-          message={notification.message}
-          notification={notification}
-        />
-      )}
     </div>
-  )
-
+  );
 };
 
-export default MentorDetalji ;
+export default MentorDetalji;

@@ -36,6 +36,8 @@ const Login = () => {
 
   const [passwordFocused, setPasswordFocused] = useState(false);
 
+  const [rememberMe, setRememberMe] = useState(false);
+
 
 
   const handleChange = (e) => {
@@ -68,57 +70,53 @@ const Login = () => {
 
     try {
 
-      // Clear any existing auth data before login
-
-      localStorage.clear();
-
-      document.cookie.split(";").forEach((c) => {
-
-        document.cookie = c
-
-          .replace(/^ +/, "")
-
-          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-
-      });
-
-
-
       const res = await axios.post(`${ApiConfig.baseUrl}/api/login`, {
 
         email: inputs.email,
 
-        password: inputs.password,
-
-      }, {
-
-        withCredentials: true,
-
-        headers: {
-
-          'Content-Type': 'application/json',
-
-        }
+        password: inputs.password
 
       });
 
 
 
-      if (res.data && res.data.token) {
+      console.log('Login response:', res.data); // Debug log
+
+
+
+      if (res.data?.token) {
+
+        // Store token
 
         localStorage.setItem('token', res.data.token);
 
-        localStorage.setItem('tokenExpiry', res.data.tokenExpiry);
 
-        localStorage.setItem('user', JSON.stringify(res.data.user));
 
-        
+        // Store user data
+
+        if (res.data.user) {
+
+          localStorage.setItem('user', JSON.stringify(res.data.user));
+
+        }
+
+
+
+        // Set axios default header
+
+        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+
+
 
         dispatch(authActions.login());
 
-        
+        navigate('/user');
 
-        navigate('/user', { replace: true });
+      } else {
+
+        console.error('No token in response:', res.data);
+
+        setErrorM('Login failed - no token received');
 
       }
 
@@ -228,6 +226,26 @@ const Login = () => {
 
             </button>
 
+            <div className="form-group">
+
+              <label>
+
+                <input
+
+                  type="checkbox"
+
+                  checked={rememberMe}
+
+                  onChange={(e) => setRememberMe(e.target.checked)}
+
+                />
+
+                Zapamti me
+
+              </label>
+
+            </div>
+
             <button className="gumb gumb-login-signup" type="submit">
 
               Prijavi se
@@ -238,13 +256,13 @@ const Login = () => {
 
           <div className='div linkMAI'>
 
-            <a 
+            <a
 
-              className='acc' 
+              className='acc'
 
-              href="https://www.musicartincubator.com" 
+              href="https://www.musicartincubator.com"
 
-              target="_blank" 
+              target="_blank"
 
               rel="noopener noreferrer"
 
@@ -268,7 +286,7 @@ const Login = () => {
 
 
 
-export default Login; 
+export default Login;
 
 
 

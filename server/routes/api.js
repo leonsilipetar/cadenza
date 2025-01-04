@@ -65,4 +65,67 @@ router.post('/reset-password', async (req, res) => {
     console.error('Password reset error:', error);
     res.status(500).json({ message: 'Greška pri resetiranju lozinke.' });
   }
+});
+
+// Add or update this route
+router.post('/remove-student-from-mentor', async (req, res) => {
+  try {
+    const { mentorId, studentId } = req.body;
+
+    // Update mentor document
+    await Mentor.findByIdAndUpdate(mentorId, {
+      $pull: { students: { ucenikId: studentId } }
+    });
+
+    // Update student document
+    await User.findByIdAndUpdate(studentId, {
+      $unset: { mentor: "" }
+    });
+
+    res.status(200).json({ message: 'Student removed successfully' });
+  } catch (error) {
+    console.error('Error removing student:', error);
+    res.status(500).json({ message: 'Error removing student' });
+  }
+});
+
+// Update or add this route
+router.post('/users', async (req, res) => {
+  try {
+    const { query } = req.body;
+    
+    // Escape special regex characters and create case-insensitive regex
+    const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const searchRegex = new RegExp(safeQuery, 'i');
+
+    // Search in both collections
+    const [students, mentors] = await Promise.all([
+      User.find({
+        isStudent: true,
+        $or: [
+          { ime: { $regex: searchRegex } },
+          { prezime: { $regex: searchRegex } }
+        ]
+      }).select('_id ime prezime isStudent'),
+      
+      Mentor.find({
+        $or: [
+          { ime: { $regex: searchRegex } },
+          { prezime: { $regex: searchRegex } }
+        ]
+      }).select('_id ime prezime isMentor')
+    ]);
+
+    // Combine and send results
+    res.json({
+      results: [...students, ...mentors]
+    });
+
+  } catch (error) {
+    console.error('Error searching users and mentors:', error);
+    res.status(500).json({ 
+      message: 'Error searching users',
+      error: error.message 
+    });
+  }
 }); 

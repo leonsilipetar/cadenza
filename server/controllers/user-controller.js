@@ -6,6 +6,10 @@ const mongoose = require('mongoose');
 const asyncWrapper = require("../middleware/asyncWrapper.js");
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const Raspored = require('../model/Raspored');
+const RasporedTeorija = require('../model/RasporedTeorija');
+const Invoice = require('../model/Invoice');
+const Chat = require('../model/Chat');
 
 const signup = asyncWrapper(async (req, res, next) => {
   const {
@@ -42,8 +46,15 @@ const signup = asyncWrapper(async (req, res, next) => {
 
   console.log('password: ', randomPassword);
 
+  // Add password strength validation
+  if (!isStrongPassword(randomPassword)) {
+    return res.status(400).json({ 
+      message: "Password must contain uppercase, lowercase, number, special char" 
+    });
+  }
+
   try {
-    const hashPassword = bcrypt.hashSync(randomPassword, 8);
+    const hashPassword = await bcrypt.hash(randomPassword, 12);
 
     const user = new User({
       korisnickoIme,
@@ -280,11 +291,10 @@ const updatePassword = asyncWrapper(async (req, res) => {
   }
 });
 
-const login = async (req, res, next) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Check both User and Mentor collections
     let existingUser = await User.findOne({ email }) || await Mentor.findOne({ email });
 
     if (!existingUser) {
@@ -296,17 +306,19 @@ const login = async (req, res, next) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h"
-    });
+    const token = jwt.sign(
+      { id: existingUser._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
 
-    const tokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
-
+    // Set cookie token
     res.cookie('token', token, {
-      expires: tokenExpiry,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 24 * 60 * 60 * 1000
     });
 
     return res.status(200).json({
@@ -318,8 +330,7 @@ const login = async (req, res, next) => {
         isMentor: existingUser.isMentor,
         isStudent: existingUser.isStudent
       },
-      token,
-      tokenExpiry
+      token // Also send token in response
     });
   } catch (err) {
     console.error("Login error:", err);
@@ -329,63 +340,30 @@ const login = async (req, res, next) => {
 
 const verifyToken = (req, res, next) => {
   try {
-    // First check for cookie
-    const cookies = req.cookies;
-    let token = cookies.token;
-
-    // If no cookie token, check Authorization header
-    if (!token) {
-      const authHeader = req.headers['authorization'];
-      if (authHeader && authHeader.startsWith('Bearer ')) {
-        token = authHeader.split(' ')[1];
-      }
-    }
+    // Check both cookie and Authorization header
+    const token = req.cookies.token || 
+      (req.headers.authorization && req.headers.authorization.split(' ')[1]);
 
     if (!token) {
-      // For recipe routes, continue without token
-      if (req.path.startsWith('/recepti')) {
-        return next();
-      }
       return res.status(401).json({ message: "No token found" });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
-        // For recipe routes, continue even with invalid token
-        if (req.path.startsWith('/recepti')) {
-          return next();
-        }
-        return res.status(401).json({ message: "Invalid token" });
+        return res.status(401).json({ message: "Token expired or invalid" });
       }
       req.id = decoded.id;
       next();
     });
   } catch (err) {
-    console.error('Token verification error:', err);
-    return res.status(401).json({ message: "Token verification failed" });
+    return res.status(401).json({ message: "Authentication failed" });
   }
 };
 
-const logout = async (req, res, next) => {
+const logout = async (req, res) => {
   try {
-    // Clear the token cookie
-    res.clearCookie('token', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      path: '/',
-      domain: process.env.NODE_ENV === 'production' ? '.cadenza.com.hr' : 'localhost'
-    });
-
-    // Clear any other cookies you might have set
-    res.clearCookie('yourCookieNameHere', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      path: '/',
-      domain: process.env.NODE_ENV === 'production' ? '.cadenza.com.hr' : 'localhost'
-    });
-
+    // Clear localStorage on client side
+    // Server just sends success response
     return res.status(200).json({ message: "Successfully logged out" });
   } catch (err) {
     console.error("Logout error:", err);
@@ -394,54 +372,58 @@ const logout = async (req, res, next) => {
 };
 
 const refreshToken = async (req, res) => {
-  const cookies = req.cookies;
-  const prevToken = cookies.token;
-
-  jwt.verify(prevToken, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ message: "Authentication failed" });
+  try {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader?.startsWith('Bearer ')) {
+      return res.status(401).json({ message: "No token found" });
     }
 
-    const newToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    const oldToken = authHeader.split(' ')[1];
+    
+    jwt.verify(oldToken, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Token expired" });
+      }
 
-    res.cookie(`${process.env.COOKIE_NAME}`, newToken, {
-      path: '/',
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== 'development',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      const newToken = jwt.sign(
+        { id: decoded.id },
+        process.env.JWT_SECRET,
+        { expiresIn: "24h" }
+      );
+
+      res.json({ token: newToken });
     });
-
-    return res.status(200).json({ message: "Token refreshed successfully" });
-  });
+  } catch (error) {
+    res.status(401).json({ message: "Token refresh failed" });
+  }
 };
 
 
 
   async function getUser(req, res, next) {
     const userId = req.id;
-    let user;
-
     try {
-        // Try to find the user in the User collection
-        user = await User.findById(userId, "-password");
-
-        // If not found in User collection, try to find in Mentor collection
-        if (!user) {
-            user = await Mentor.findById(userId, "-password");
+      // Changed variable name to avoid redeclaration
+      const foundUser = await User.findById(userId, "-password");
+      
+      if (!foundUser) {
+        const foundMentor = await Mentor.findById(userId, "-password");
+        if (!foundMentor) {
+          return res.status(404).json({ message: "User or Mentor not found" });
         }
+        return res.status(200).json({ user: foundMentor });
+      }
+      
+      return res.status(200).json({ user: foundUser });
     } catch (err) {
-        return res.status(500).json({ message: "Internal Server Error" });
+      console.error('Error fetching user:', err);
+      return res.status(500).json({ message: "Internal Server Error" });
     }
-
-    if (!user) {
-        return res.status(404).json({ message: "User or Mentor not found" });
-    }
-
-    return res.status(200).json({ user });
-};
+  };
 const getAllStudents = async (req, res, next) => {
   try {
-    const students = await User.find({}, 'ime prezime'); // Adjust the fields as needed
+    // Update fields to include korisnickoIme and oib
+    const students = await User.find({}, 'korisnickoIme oib');
     res.json({ students });
   } catch (err) {
     console.error(err);
@@ -581,13 +563,14 @@ const updateDetaljiKorisnika = async (req, res, next) => {
 const getUserInvoices = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const user = await User.findById(userId).populate('racuni');
+    // Changed variable name here as well
+    const foundUser = await User.findById(userId).populate('racuni');
 
-    if (!user) {
+    if (!foundUser) {
       return res.status(404).send('User not found');
     }
 
-    res.json(user.racuni);
+    res.json(foundUser.racuni);
   } catch (error) {
     console.error('Error fetching user invoices:', error);
     res.status(500).send('Error fetching invoices');
@@ -608,3 +591,99 @@ exports.getDetaljiKorisnika = getDetaljiKorisnika;
 exports.updateDetaljiKorisnika = updateDetaljiKorisnika;
 exports.getAllStudents = getAllStudents;
 exports.searchUsersAndMentors = searchUsersAndMentors;
+exports.getUserInvoices = getUserInvoices;
+
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  const { userType } = req.body;
+
+  try {
+    // Start a session for transaction
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      // Find and delete the user
+      const Model = userType === 'student' ? User : Mentor;
+      const user = await Model.findById(id);
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // If deleting a student
+      if (userType === 'student') {
+        // Remove student from mentor's list
+        if (user.mentor) {
+          await Mentor.updateMany(
+            { _id: user.mentor },
+            { $pull: { students: user._id } }
+          );
+        }
+
+        // Delete student's schedule
+        await Raspored.deleteMany({ ucenikId: user._id });
+
+        // Delete related invoices
+        await Invoice.deleteMany({ userId: user._id });
+
+        // Delete related chat messages
+        await Chat.deleteMany({ 
+          $or: [
+            { senderId: user._id },
+            { recipientId: user._id }
+          ]
+        });
+      }
+
+      // If deleting a mentor
+      if (userType === 'mentor') {
+        // Update all students who had this mentor
+        await User.updateMany(
+          { mentor: user._id },
+          { $unset: { mentor: "" } }
+        );
+
+        // Delete mentor's schedule
+        await RasporedTeorija.deleteMany({ mentorId: user._id });
+      }
+
+      // Finally delete the user
+      await Model.findByIdAndDelete(id);
+
+      // Commit the transaction
+      await session.commitTransaction();
+      session.endSession();
+
+      res.status(200).json({ message: 'User successfully deleted' });
+    } catch (error) {
+      // If anything fails, abort the transaction
+      await session.abortTransaction();
+      session.endSession();
+      throw error;
+    }
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ 
+      message: 'Error deleting user',
+      error: error.message 
+    });
+  }
+};
+
+module.exports = {
+  signup,
+  updatePassword,
+  login,
+  verifyToken,
+  getUser,
+  refreshToken,
+  logout,
+  getKorisnici,
+  getDetaljiKorisnika,
+  updateDetaljiKorisnika,
+  getAllStudents,
+  searchUsersAndMentors,
+  getUserInvoices,
+  deleteUser
+};
