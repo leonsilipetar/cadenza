@@ -98,7 +98,6 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
     }
   };
 
-
   const urediKorisnika = async () => {
     try {
       const res = await axios.put(`${ApiConfig.baseUrl}/api/update-korisnik/${korisnikId}`, inputs);
@@ -280,20 +279,14 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
             placeholder="program"
           />
           <label htmlFor="kor-mentor">Mentor:</label>
-          <select
+          <input
             className="input-login-signup"
-            value={inputs.mentor}
-            onChange={handleChange}
+            value={mentors.map(mentor => mentor.korisnickoIme).join(', ')}
+            disabled
+            type="text"
             name="mentor"
             id="kor-mentor"
-          >
-            <option value="">Odaberi mentora</option>
-            {mentors.map((mentor) => (
-              <option key={mentor._id} value={mentor._id}>
-                {mentor.korisnickoIme}
-              </option>
-            ))}
-          </select>
+          />
           <label htmlFor="kor-skola">Škola:</label>
           <select
             className="input-login-signup"
@@ -348,8 +341,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           <div className="checkbox-group">
             <div
               className={`checkbox-item ${inputs.pohadjaTeoriju ? 'checked' : ''}`}
-              onClick={() => setInputs((prev) => ({ ...prev, pohadjaTeoriju: !prev.pohadjaTeoriju }))}
-            >
+              onClick={() => setInputs((prev) => ({ ...prev, pohadjaTeoriju: !prev.pohadjaTeoriju }))}>
               <input
                 type="checkbox"
                 id="pohadjaTeoriju"
