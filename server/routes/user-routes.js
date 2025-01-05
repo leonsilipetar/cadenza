@@ -36,6 +36,13 @@ const {
 const { generateInvoice, addInvoice, downloadInvoice } = require('../controllers/invoice-controller'); // Import invoice controller
 const { getAllPrograms, getProgramById, createProgram, updateProgram, deleteProgram } = require('../controllers/program-controller.js');
 const recipeRoutes = require('./recipe-routes');
+const {
+  createPost,
+  getPosts,
+  getMyPosts,
+  updatePost,
+  deletePost
+} = require('../controllers/post-controller');
 
 const router = express.Router();
 
@@ -130,5 +137,12 @@ router.delete('/api/delete-user/:id', async (req, res) => {
     res.status(500).json({ message: 'Error deleting user' });
   }
 });
+
+// Post-related routes
+router.post('/posts', verifyToken, createPost);
+router.get('/posts', verifyToken, getPosts);
+router.get('/my-posts', verifyToken, getMyPosts);
+router.put('/posts/:id', verifyToken, updatePost);
+router.delete('/posts/:id', verifyToken, deletePost);
 
 module.exports = router;

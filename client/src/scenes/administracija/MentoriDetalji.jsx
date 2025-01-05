@@ -39,6 +39,7 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
   const [notification, setNotification] = useState(null);
   const [schools, setSchools] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
+  const [studentToRemove, setStudentToRemove] = useState(null);
 
   const getDetaljiKorisnika = async (korisnikId) => {
     try {
@@ -137,10 +138,10 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
       ...prev,
       students: prev.students.filter(s => s.ucenikId !== studentId) // Remove only the student with the matching id
     }));
-  
+
     notifikacija('Učenik uspješno uklonjen', 'success');
   };
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -229,31 +230,18 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
   return (
     <div className="popup">
       <form onSubmit={handleSubmit}>
-        <div className="div div-clmn">
-          <label>Ime:</label>
+        <div className="div">
+
+        <label>Korisničko ime:</label>
           <input
             className="input-login-signup"
             type="text"
-            name="ime"
-            value={inputs.ime}
+            name="korisnickoIme"
+            value={inputs.korisnickoIme}
             onChange={handleChange}
-            placeholder="Ime"
+            placeholder="Korisničko ime"
           />
-        </div>
 
-        <div className="div div-clmn">
-          <label>Prezime:</label>
-          <input
-            className="input-login-signup"
-            type="text"
-            name="prezime"
-            value={inputs.prezime}
-            onChange={handleChange}
-            placeholder="Prezime"
-          />
-        </div>
-
-        <div className="div div-clmn">
           <label>Email:</label>
           <input
             className="input-login-signup"
@@ -263,21 +251,7 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
             onChange={handleChange}
             placeholder="Email"
           />
-        </div>
 
-        <div className="div div-clmn">
-          <label>Broj mobitela:</label>
-          <input
-            className="input-login-signup"
-            type="text"
-            name="brojMobitela"
-            value={inputs.brojMobitela}
-            onChange={handleChange}
-            placeholder="Broj mobitela"
-          />
-        </div>
-
-        <div className="div div-clmn">
           <label>OIB:</label>
           <input
             className="input-login-signup"
@@ -287,9 +261,38 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
             onChange={handleChange}
             placeholder="OIB"
           />
+
         </div>
 
-        <div className="div div-clmn">
+        <div className="div">
+        <label>Ime:</label>
+          <input
+            className="input-login-signup"
+            type="text"
+            name="ime"
+            value={inputs.ime}
+            onChange={handleChange}
+            placeholder="Ime"
+          />
+
+          <label>Prezime:</label>
+          <input
+            className="input-login-signup"
+            type="text"
+            name="prezime"
+            value={inputs.prezime}
+            onChange={handleChange}
+            placeholder="Prezime"
+          />
+          <label>Broj mobitela:</label>
+          <input
+            className="input-login-signup"
+            type="text"
+            name="brojMobitela"
+            value={inputs.brojMobitela}
+            onChange={handleChange}
+            placeholder="Broj mobitela"
+          />
           <label>Datum rođenja:</label>
           <input
             className="input-login-signup"
@@ -301,7 +304,7 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
           />
         </div>
 
-        <div className="div div-clmn">
+        <div className="div">
           <label>Adresa:</label>
           <input
             className="input-login-signup"
@@ -329,6 +332,37 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
           />
         </div>
 
+        {/* Add admin toggle */}
+        <div className="div-radio">
+          <div
+            className={`radio-item ${inputs.isAdmin ? 'checked' : ''}`}
+            onClick={() => setInputs(prev => ({ ...prev, isAdmin: !prev.isAdmin }))}
+          >
+            <input
+              type="radio"
+              id="isAdmin"
+              checked={inputs.isAdmin}
+              onChange={() => setInputs(prev => ({ ...prev, isAdmin: !prev.isAdmin }))}
+              style={{ display: 'none' }}
+            />
+            {inputs.isAdmin ? 'Administrator' : 'Nije administrator'}
+          </div>
+        </div>
+
+        {/* Add napomene textarea */}
+        <div className="div">
+          <label htmlFor="kor-napomene">Napomene:</label>
+          <textarea
+            className="input-login-signup"
+            value={inputs.napomene}
+            onChange={(e) => setInputs(prev => ({ ...prev, napomene: e.target.value }))}
+            name="napomene"
+            id="kor-napomene"
+            placeholder="Unesite napomene o korisniku"
+            maxLength={5000}
+          />
+        </div>
+
         {/* Students Section */}
         <div className="div div-clmn">
           <label>Učenici:</label>
@@ -351,13 +385,34 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
                   <div className="th">{student.ime} {student.prezime}</div>
                   <div className="th">
                     {student.isAssigned ? (
-                      <button
-                        className="gumb action-btn abDelete"
-                        type="button"
-                        onClick={() => handleRemoveStudent(student._id)}
-                      >
-                        <Icon icon="solar:trash-bin-trash-broken" />
-                      </button>
+                      <>
+                        {studentToRemove?.ucenikId === student._id ? (
+                          <>
+                            <button
+                              className="gumb action-btn abDelete"
+                              type="button"
+                              onClick={() => handleRemoveStudent(student._id)}
+                            >
+                              Ukloni
+                            </button>
+                            <button
+                              className="gumb action-btn abEdit"
+                              type="button"
+                              onClick={() => setStudentToRemove(null)}
+                            >
+                              Odustani
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            className="gumb action-btn abDelete"
+                            type="button"
+                            onClick={() => setStudentToRemove({ ucenikId: student._id })}
+                          >
+                            <Icon icon="solar:trash-bin-trash-broken" />
+                          </button>
+                        )}
+                      </>
                     ) : (
                       <button
                         className="action-btn abEdit"
@@ -384,13 +439,32 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
     <div key={student.ucenikId} className="tr redak">
       <div className="th">{student.ime} {student.prezime}</div>
       <div className="th">
-        <button
-          className="action-btn abDelete"
-          onClick={() => handleRemoveStudent(student.ucenikId)}
-          type="button"
-        >
-          <Icon icon="solar:trash-bin-trash-broken" />
-        </button>
+        {studentToRemove?.ucenikId === student.ucenikId ? (
+          <>
+            <button
+              className="gumb action-btn abDelete"
+              type="button"
+              onClick={() => handleRemoveStudent(student.ucenikId)}
+            >
+              Ukloni
+            </button>
+            <button
+              className="gumb action-btn abEdit"
+              type="button"
+              onClick={() => setStudentToRemove(null)}
+            >
+              Odustani
+            </button>
+          </>
+        ) : (
+          <button
+            className="action-btn abDelete"
+            onClick={() => setStudentToRemove(student)}
+            type="button"
+          >
+            <Icon icon="solar:trash-bin-trash-broken" />
+          </button>
+        )}
       </div>
     </div>
   )
@@ -399,11 +473,18 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
         </div>
 
         {/* Submit and password reset buttons */}
-        <div className="div">
-          <button className="gumb action-btn zatvoriBtn" onClick={() => onCancel()}>
+        <div className="div-radio">
+          <button
+            className="gumb action-btn zatvoriBtn"
+            onClick={() => onCancel()}
+            type="button"
+          >
             Zatvori
           </button>
-          <button className="gumb action-btn spremiBtn" type="submit">
+          <button
+            className="gumb action-btn spremiBtn"
+            type="submit"
+          >
             {isSaving ? 'Spremanje...' : 'Spremi promjene'}
           </button>
           {!showResetConfirm ? (

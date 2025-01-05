@@ -12,7 +12,7 @@ axios.defaults.withCredentials = true;
 
 const Navigacija = ({ user, otvoreno}) => {
   const [activeItem, setActiveItem] = useState(otvoreno);
-  
+
 
   const handleItemClick = (item) => {
     // If the clicked item is the same as the active item, return early
@@ -22,7 +22,7 @@ const Navigacija = ({ user, otvoreno}) => {
 
     setActiveItem(item);
   };
-  
+
     return (
         <>
         <header>
@@ -32,6 +32,7 @@ const Navigacija = ({ user, otvoreno}) => {
           <Icon className="icon" icon="solar:music-notes-broken" />
           </Link>
         </div>
+{/*
         <div className={activeItem === 'chat' ? 'otvoreno' : ''} onClick={() => handleItemClick('chat')}>
           <Link className="link" to="/chat">
           <Icon className="icon" icon="solar:chat-dots-broken" />
@@ -42,6 +43,7 @@ const Navigacija = ({ user, otvoreno}) => {
           <Icon className="icon" icon="solar:file-check-broken" />
           </Link>
         </div>
+        */}
         <div className={activeItem === 'raspored' ? 'otvoreno' : ''} onClick={() => handleItemClick('raspored')}>
           <Link className="link" to="/raspored">
           <Icon className="icon" icon="solar:calendar-broken" />
@@ -53,7 +55,7 @@ const Navigacija = ({ user, otvoreno}) => {
           </Link>
         </div>
       </nav>
-      
+
     </header>
     <Routes>
         <Route path="/user" element={<Naslovna />} />

@@ -48,8 +48,8 @@ const signup = asyncWrapper(async (req, res, next) => {
 
   // Add password strength validation
   if (!isStrongPassword(randomPassword)) {
-    return res.status(400).json({ 
-      message: "Password must contain uppercase, lowercase, number, special char" 
+    return res.status(400).json({
+      message: "Password must contain uppercase, lowercase, number, special char"
     });
   }
 
@@ -338,23 +338,28 @@ const login = async (req, res) => {
   }
 };
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
   try {
     // Check both cookie and Authorization header
-    const token = req.cookies.token || 
+    const token = req.cookies.token ||
       (req.headers.authorization && req.headers.authorization.split(' ')[1]);
 
     if (!token) {
       return res.status(401).json({ message: "No token found" });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-        return res.status(401).json({ message: "Token expired or invalid" });
-      }
-      req.id = decoded.id;
-      next();
-    });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Find the user and attach to request
+    const user = await User.findById(decoded.id) || await Mentor.findById(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    // Attach user to request object
+    req.user = user;
+    next();
   } catch (err) {
     return res.status(401).json({ message: "Authentication failed" });
   }
@@ -379,7 +384,7 @@ const refreshToken = async (req, res) => {
     }
 
     const oldToken = authHeader.split(' ')[1];
-    
+
     jwt.verify(oldToken, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         return res.status(401).json({ message: "Token expired" });
@@ -401,11 +406,13 @@ const refreshToken = async (req, res) => {
 
 
   async function getUser(req, res, next) {
-    const userId = req.id;
     try {
+      // Get user ID from req.user instead of req.id
+      const userId = req.user._id;
+
       // Changed variable name to avoid redeclaration
       const foundUser = await User.findById(userId, "-password");
-      
+
       if (!foundUser) {
         const foundMentor = await Mentor.findById(userId, "-password");
         if (!foundMentor) {
@@ -413,7 +420,7 @@ const refreshToken = async (req, res) => {
         }
         return res.status(200).json({ user: foundMentor });
       }
-      
+
       return res.status(200).json({ user: foundUser });
     } catch (err) {
       console.error('Error fetching user:', err);
@@ -628,7 +635,7 @@ const deleteUser = async (req, res) => {
         await Invoice.deleteMany({ userId: user._id });
 
         // Delete related chat messages
-        await Chat.deleteMany({ 
+        await Chat.deleteMany({
           $or: [
             { senderId: user._id },
             { recipientId: user._id }
@@ -664,9 +671,9 @@ const deleteUser = async (req, res) => {
     }
   } catch (error) {
     console.error('Error deleting user:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Error deleting user',
-      error: error.message 
+      error: error.message
     });
   }
 };
