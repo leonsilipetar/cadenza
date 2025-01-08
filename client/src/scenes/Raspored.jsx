@@ -111,32 +111,35 @@ const Raspored = () => {
     sendRequest().then((data) => {
       setUser(data.user);
       if (data.user.isStudent) {
-        sendRequestStudentRaspored(data.user._id);
+        sendRequestStudentRaspored();
       }
     });
     sendRequestTeorija();
   }, []);
 
   useEffect(() => {
+    console.log('User updated:', user);
     if (user && user.isMentor) {
-      sendRequestStudentsRaspored().then((data) => setStudentsRaspored(data.schedule));
+      sendRequestStudentsRaspored().then((data) => {
+        setStudentsRaspored(data.schedule);
+      });
       sendRequestTeorija();
     }
   }, [user, sendRequestStudentsRaspored]);
-  
+
 
   return (
     <>
       <Navigacija user={user} otvoreno="raspored" />
       <NavTop user={user} naslov="Raspored" />
-      
+
       {dodajRasporedTeorija && (
         <DodajTermin
           dodajRasporedTeorija={dodajRasporedTeorija}
           onCancel={() => setDodajRasporedTeorija(false)}
         />
       )}
-      
+
       {dodajRasporedStudent && (
         <DodajTermin
           dodajRasporedTeorija={dodajRasporedStudent}
@@ -144,7 +147,7 @@ const Raspored = () => {
           studentID={selectedStudent._id}
         />
       )}
-      
+
       <div className="main">
         {user && user.isMentor && (
           <>
@@ -178,8 +181,9 @@ const Raspored = () => {
                   />
                 ))}
               </div>
-            ) : (<>
-              <div className='div-radio bc-none'>
+            ) : (
+              <>
+                <div className='div-radio bc-none'>
                   <div>
                     <p>Raspored učenika: {selectedStudent && selectedStudent.ime} {selectedStudent && selectedStudent.prezime}</p>
                   </div>
@@ -192,57 +196,58 @@ const Raspored = () => {
                     </div>
                   )}
                 </div>
-              <div className="raspored">
-                {studentsRaspored ? (
-                  ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
-                    <RasporedDan
-                      key={day}
-                      day={day}
-                      teorija={studentsRaspored[day]}
-                      user={user}
-                      student={selectedStudent}
-                      setSchedule={setStudentsRaspored}
-                      setNotification={setNotification}
-                      isTeorija={false}
-                    />
-                  ))
-                ) : (
-                  <p>Nema dostupnog rasporeda</p>
-                )}
-              </div></>
+                <div className="raspored">
+                  {studentsRaspored ? (
+                    ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
+                      <RasporedDan
+                        key={day}
+                        day={day}
+                        teorija={studentsRaspored[day]}
+                        user={user}
+                        student={selectedStudent}
+                        setSchedule={setStudentsRaspored}
+                        setNotification={setNotification}
+                        isTeorija={false}
+                      />
+                    ))
+                  ) : (
+                    <p>Nema dostupnog rasporeda</p>
+                  )}
+                </div>
+              </>
             )}
           </>
         )}
-        {user && user.isStudent && (
-  <>
-    <div className='div-radio bc-none'>
-      <div>
-        <p>Raspored učenika</p>
-      </div>
-    </div>
-    <div className="raspored">
-      {studentsRaspored ? (
-        ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
-          <RasporedDan
-            key={day}
-            day={day}
-            teorija={studentsRaspored[day]}
-            user={user}
-            student={user} // You can pass user as student since it's the logged-in student
-            setSchedule={setStudentsRaspored}
-            setNotification={setNotification}
-            isTeorija={false}
-          />
-        ))
-      ) : (
-        <div>
-          <p>Nema dostupnog rasporeda</p>
-        </div>
-      )}
-    </div>
-  </>
-)}
 
+        {user && user.isStudent && (
+          <>
+            <div className='div-radio bc-none'>
+              <div>
+                <p>Raspored učenika</p>
+              </div>
+            </div>
+            <div className="raspored">
+              {studentsRaspored ? (
+                ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].map((day) => (
+                  <RasporedDan
+                    key={day}
+                    day={day}
+                    teorija={studentsRaspored[day]}
+                    user={user}
+                    student={user}
+                    setSchedule={setStudentsRaspored}
+                    setNotification={setNotification}
+                    isTeorija={false}
+                  />
+                ))
+              ) : (
+                <div>
+                  <p>Nema dostupnog rasporeda</p>
+                </div>
+              )}
+            </div>
+          </>
+        )}
 
         {/* Teorija Schedule Display */}
         <div className='div-radio bc-none'>

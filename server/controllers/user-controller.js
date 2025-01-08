@@ -584,22 +584,6 @@ const getUserInvoices = async (req, res) => {
   }
 };
 
-exports.getUserInvoices =  getUserInvoices ;
-
-exports.signup = signup;
-exports.updatePassword = updatePassword;
-exports.login = login;
-exports.verifyToken = verifyToken;
-exports.getUser = getUser;
-exports.refreshToken = refreshToken;
-exports.logout = logout;
-exports.getKorisnici = getKorisnici;
-exports.getDetaljiKorisnika = getDetaljiKorisnika;
-exports.updateDetaljiKorisnika = updateDetaljiKorisnika;
-exports.getAllStudents = getAllStudents;
-exports.searchUsersAndMentors = searchUsersAndMentors;
-exports.getUserInvoices = getUserInvoices;
-
 const deleteUser = async (req, res) => {
   const { id } = req.params;
   const { userType } = req.body;
