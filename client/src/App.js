@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
@@ -20,8 +20,10 @@ import { ToastContainer } from 'react-toastify';
 import CookieConsent from './components/CookieConsent';
 import Delete from './scenes/administracija/Delete';
 import Obavijesti from './scenes/Obavijesti';
+import { Icon } from '@iconify/react';
 axios.defaults.withCredentials = true;
 function App() {
+  const [notifications, setNotifications] = useState([]);
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -34,6 +36,8 @@ function App() {
 
         if (response.data?.user) {
           dispatch(authActions.login());
+          const notificationsResponse = await axios.get(`${ApiConfig.baseUrl}/api/notifications`, { withCredentials: true });
+          setNotifications(notificationsResponse.data);
         } else {
           handleLogout();
         }
@@ -63,6 +67,8 @@ function App() {
     dispatch(authActions.logout());
   };
 
+  const unreadCount = notifications.filter(notification => notification.unread).length;
+
   return (
     <>
       <Routes>
@@ -81,7 +87,7 @@ function App() {
             <Route path="/mentori/*" element={<Mentori />} />
             <Route path="/racuni-admin/*" element={<RacuniAdmin />} />
             <Route path="/classrooms/*" element={<Classroom />} />
-            <Route path="/obavijesti" element={<Obavijesti />} />
+            <Route path="/obavijesti" element={<Obavijesti notifications={notifications} />} />
           </>
         )}
       </Routes>

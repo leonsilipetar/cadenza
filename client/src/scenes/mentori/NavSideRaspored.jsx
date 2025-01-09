@@ -1,6 +1,7 @@
 import React from 'react';
 
 const NavSideRaspored = ({ students, onStudentClick, onCombinedScheduleClick, biljeske }) => {
+  console.log("students from NavRaspored: ", students)
   return (
     <div className="raspored-lista">
       {students?.length === 0 ? (

@@ -93,6 +93,16 @@ scroll-behavior: auto !important;
 --zelena: 132, 169, 140;
 --radius: 0.5rem;
 }
+.dot{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #f15145;
+    z-index: 12;
+}
 @font-face {
 font-family: 'fOstalo';
 src: url('fonts/HedvigLettersSans-Regular.ttf') format('truetype');

@@ -25,9 +25,14 @@ const Raspored = () => {
   const [combinedSchedule, setCombinedSchedule] = useState({});
   const [showCombinedSchedule, setShowCombinedSchedule] = useState(false);
 
-  const sendRequestStudentRaspored = async (studentId) => {
+  const sendRequestStudentRaspored = async () => {
+    if (!user || !user._id) {
+      console.error('User is not defined or does not have an _id');
+      return; // Exit if user is not defined
+    }
+
     try {
-      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenik/${studentId}`, { withCredentials: true });
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenik/${user._id}`, { withCredentials: true });
       const data = res.data;
       setStudentsRaspored(data.schedule);
       setSelectedStudent(data.student);
@@ -36,10 +41,29 @@ const Raspored = () => {
     }
   };
 
-  const handleStudentClick = (studentId) => {
+  const onStudentClick = async (studentId) => {
     setSelectedStudentId(studentId);
-    sendRequestStudentRaspored(studentId);
     setShowCombinedSchedule(false);
+    
+    // Fetch the student's schedule using the studentId
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenik/${studentId}`, { withCredentials: true });
+      console.log('Student Schedule Response:', res.data); // Log the response
+      const data = res.data;
+
+      // Check if data has the expected properties
+      if (data && data.schedule) {
+        setStudentsRaspored(data.schedule);
+        setSelectedStudent(data.student);
+      } else {
+        console.error('Unexpected data structure:', data);
+        // Handle the case where the schedule is not available
+        setStudentsRaspored([]); // Reset or set to a default value
+        setSelectedStudent(null); // Reset or set to a default value
+      }
+    } catch (err) {
+      console.error('Error fetching student schedule:', err);
+    }
   };
 
   const sendRequest = async () => {
@@ -65,6 +89,7 @@ const Raspored = () => {
       }, {});
       setTeorijaID(data.teorija[0]._id);
       setTeorija(teorijaObj);
+      console.log('Teorija data:', data);
     } catch (err) {
       console.error('Error fetching teorija data:', err);
     }
@@ -98,14 +123,27 @@ const Raspored = () => {
   };
 
   useEffect(() => {
-    sendRequest().then((data) => {
-      setUser(data.user);
-      if (data.user.isStudent) {
-        sendRequestStudentRaspored();
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(`${ApiConfig.baseUrl}/api/user`, { withCredentials: true });
+        setUser(res.data.user);
+        if (res.data.user.isStudent) {
+          sendRequestStudentRaspored(); // Fetch student schedule if user is a student
+        }
+        sendRequestTeorija(); // Fetch teorija data
+      } catch (err) {
+        console.error('Error fetching user data:', err);
       }
-    });
-    sendRequestTeorija();
+    };
+
+    fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (user && user.isStudent) {
+      sendRequestStudentRaspored(); // Call the function only if user is defined
+    }
+  }, [user]); // Dependency on user
 
   useEffect(() => {
     console.log('User updated:', user);
@@ -148,7 +186,7 @@ const Raspored = () => {
               <NavSideRaspored
                 id={user._id}
                 students={user.students}
-                onStudentClick={handleStudentClick}
+                onStudentClick={onStudentClick}
                 onCombinedScheduleClick={handleCombinedScheduleClick}
               />
             )}

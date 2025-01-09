@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const Mentor = require('../model/Mentor');
 const User = require('../model/User');
 const Raspored = require('../model/Raspored'); // Make sure to import your Mentor model
+const Notification = require('../model/Notification');
 
 // Controller for mentor signup
 const signupMentor = async (req, res, next) => {
@@ -292,7 +293,7 @@ const sendPasswordEmail = async (email, password) => {
       }
     };
 
-    const getStudentRaspored = async (req, res, next) => {
+    const getStudentRaspored = async (req, res) => {
       const studentId = req.params.id;
 
       try {
@@ -316,15 +317,12 @@ const sendPasswordEmail = async (email, password) => {
         if (!studentSchedule) {
           studentSchedule = new Raspored({ ucenikId: studentId });
           await studentSchedule.save();
-
-          // Update the user record with the new schedule ID
-          student.rasporedId = studentSchedule._id;
-          await student.save();
         }
 
         res.json({ student, schedule: studentSchedule });
       } catch (err) {
-        next(err);
+        console.error('Error fetching student schedule:', err);
+        res.status(500).json({ message: 'Internal Server Error' });
       }
     };
     const addScheduleToStudent = async (req, res, next) => {
@@ -442,7 +440,28 @@ const sendPasswordEmail = async (email, password) => {
       }
     };
 
+// Function to create a notification
+const createNotification = async (userId, mentorId, message) => {
+  const notification = new Notification({
+    userId,
+    mentorId,
+    message,
+    date: new Date(),
+    unread: true, // Set as unread by default
+  });
 
+  await notification.save();
+};
+
+// Example usage in the update schedule function
+const updateSchedule = async (req, res) => {
+  // ... existing code to update the schedule
+
+  // Create a notification for the student
+  await createNotification(studentId, mentorId, `Mentor ${mentorName} has updated your schedule to ${newTime}.`);
+
+  res.status(200).json({ message: 'Schedule updated successfully' });
+};
 
 // Export the controller
 module.exports = {
