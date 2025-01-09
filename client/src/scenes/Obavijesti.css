@@ -1,0 +1,20 @@
+.obavijesti-container {
+  padding: 20px;
+}
+
+.notifications-list {
+  margin-top: 20px;
+}
+
+.notification-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.notification-date {
+  font-size: 0.8em;
+  color: #888;
+} 

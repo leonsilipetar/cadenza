@@ -171,55 +171,50 @@ const sendPasswordEmail = async (email, password) => {
     };
 
     const updateDetaljiMentora = async (req, res, next) => {
-      try {
-        const mentorId = req.params.mentorId;
-        const updateData = req.body;
+  try {
+    const mentorId = req.params.mentorId;
+    const updateData = req.body;
 
-        if (!mongoose.Types.ObjectId.isValid(mentorId)) {
-          return res.status(400).json({ message: 'Invalid mentor ID' });
-        }
+    if (!mongoose.Types.ObjectId.isValid(mentorId)) {
+      return res.status(400).json({ message: 'Invalid mentor ID' });
+    }
 
-        const detaljiMentora = await Mentor.findById(mentorId);
+    const detaljiMentora = await Mentor.findById(mentorId);
 
-        if (!detaljiMentora) {
-          return res.status(404).json({ message: 'Mentor not found' });
-        }
+    if (!detaljiMentora) {
+      return res.status(404).json({ message: 'Mentor not found' });
+    }
 
-        // Directly remove students
-        if (updateData.studentsToRemove && Array.isArray(updateData.studentsToRemove)) {
-          const studentsToRemove = updateData.studentsToRemove;
-          // Remove the students from the mentor's students array
-          detaljiMentora.students = detaljiMentora.students.filter(student => !studentsToRemove.includes(student._id.toString()));
-          delete updateData.studentsToRemove; // remove this from the update data
-        }
+    // If students field is not null or undefined and is an array
+    if (updateData.students && Array.isArray(updateData.students)) {
+      // Use $each and $elemMatch to add new students to the mentor's students array
+      await Mentor.updateOne(
+        { _id: mentorId, students: { $not: { $elemMatch: { $in: updateData.students } } } },
+        { $addToSet: { students: { $each: updateData.students } } }
+      );
 
-        // Update students if any are provided
-        if (updateData.students && Array.isArray(updateData.students)) {
-          // Directly replace or add new students to the mentor
-          detaljiMentora.students = updateData.students;
-          delete updateData.students; // remove this from the update data
-        }
+      // Remove the students field from updateData to prevent overwriting the students array
+      delete updateData.students;
+    }
 
-        // Update other mentor fields with the values from the request body
-        Object.assign(detaljiMentora, updateData);
+    // Update other mentor fields with the values from the request body
+    Object.assign(detaljiMentora, updateData);
 
-        // Save the updated mentor
-        await detaljiMentora.save();
+    // Save the updated mentor
+    await detaljiMentora.save();
 
-        res.json({ message: 'Mentor updated successfully', mentor: detaljiMentora });
-      } catch (err) {
-        next(err);
-      }
-    };
-
+    res.json({ message: 'Mentor updated successfully', mentor: detaljiMentora });
+  } catch (err) {
+    next(err);
+  }
+};
 
 
 
 
 
     const getMentorStudents = async (req, res, next) => {
-      const mentorId = req.id;
-      console.log(" getMentorsStudents mentorId: ", mentorId);
+      const mentorId = req.params.id;
 
       try {
         // Validate the mentor ID
@@ -243,41 +238,63 @@ const sendPasswordEmail = async (email, password) => {
         next(err);
       }
     };
-    const getStudentsRaspored = async (req, res, next) => {
+    const getStudentsRaspored = async (req, res) => {
+      const mentorId = req.params.id;
+
       try {
-        const students = await User.find({ isStudent: true });
+        // Find the mentor and populate their students
+        const mentor = await Mentor.findById(mentorId).populate('students.ucenikId');
 
-        // Log the students for debugging purposes
-        console.log("Fetched students:", students);
+        if (!mentor) {
+          return res.status(404).json({ message: 'Mentor not found' });
+        }
 
-        const schedules = await Promise.all(
-          students.map(async (student) => {
-            console.log(`Fetching schedule for student with ID: ${student._id}`);
+        // Get all student IDs
+        const studentIds = mentor.students.map(s => s.ucenikId._id);
 
-            // Fetch the schedule for the student
-            const schedule = await Raspored.findOne({ ucenikId: student._id });
+        // Fetch all schedules for these students
+        const schedules = await Raspored.find({
+          ucenikId: { $in: studentIds }
+        });
 
-            if (!schedule) {
-              console.log(`No schedule found for student with ID: ${student._id}`);
+        // Combine schedules
+        const combinedSchedule = {
+          pon: [], uto: [], sri: [], cet: [], pet: [], sub: []
+        };
+
+        schedules.forEach(schedule => {
+          // Find the corresponding student in the mentor's students
+          const student = mentor.students.find(s => s.ucenikId._id.toString() === schedule.ucenikId.toString());
+          const studentName = student ? `${student.ucenikId.ime} ${student.ucenikId.prezime}` : 'Unknown Student';
+
+          ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].forEach(day => {
+            if (schedule[day] && schedule[day].length > 0) {
+              const slotsWithStudent = schedule[day].map(slot => ({
+                ...slot.toObject(),
+                studentName: studentName // Use the name from the students array
+              }));
+              combinedSchedule[day].push(...slotsWithStudent);
             }
+          });
+        });
 
-            return {
-              ucenikId: student,
-              schedule: schedule || null,
-            };
-          })
-        );
-
-        res.json({ students, schedules });
-      } catch (err) {
-        console.error("Error fetching students' schedules:", err);
-        next(err);
+        res.json({
+          students: mentor.students.map(s => ({
+            ucenikId: s.ucenikId._id,
+            ime: s.ucenikId.ime,
+            prezime: s.ucenikId.prezime
+          })),
+          schedule: combinedSchedule
+        });
+      } catch (error) {
+        console.error('Error fetching students schedules:', error);
+        res.status(500).json({ message: 'Error fetching schedules' });
       }
     };
 
-
     const getStudentRaspored = async (req, res, next) => {
       const studentId = req.params.id;
+
       try {
         // Validate the student ID
         if (!mongoose.Types.ObjectId.isValid(studentId)) {

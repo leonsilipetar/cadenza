@@ -43,6 +43,7 @@ const {
   updatePost,
   deletePost
 } = require('../controllers/post-controller');
+const { getNotifications } = require('../controllers/notification-controller.js');
 
 const router = express.Router();
 
@@ -124,7 +125,7 @@ router.delete('/api/delete-user/:id', async (req, res) => {
         { 'raspored.ucenikId': userId },
         { $pull: { 'raspored.$[].ucenici': { ucenikId: userId } } }
       );
-      
+
       // Delete the student
       await User.findByIdAndDelete(userId);
     } else if (userType === 'mentor') {
@@ -144,5 +145,8 @@ router.get('/posts', verifyToken, getPosts);
 router.get('/my-posts', verifyToken, getMyPosts);
 router.put('/posts/:id', verifyToken, updatePost);
 router.delete('/posts/:id', verifyToken, deletePost);
+
+// Add this route to fetch notifications
+router.get('/notifications', verifyToken, getNotifications);
 
 module.exports = router;

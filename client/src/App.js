@@ -19,6 +19,7 @@ import ApiConfig from './components/apiConfig.js';
 import { ToastContainer } from 'react-toastify';
 import CookieConsent from './components/CookieConsent';
 import Delete from './scenes/administracija/Delete';
+import Obavijesti from './scenes/Obavijesti';
 axios.defaults.withCredentials = true;
 function App() {
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -80,6 +81,7 @@ function App() {
             <Route path="/mentori/*" element={<Mentori />} />
             <Route path="/racuni-admin/*" element={<RacuniAdmin />} />
             <Route path="/classrooms/*" element={<Classroom />} />
+            <Route path="/obavijesti" element={<Obavijesti />} />
           </>
         )}
       </Routes>

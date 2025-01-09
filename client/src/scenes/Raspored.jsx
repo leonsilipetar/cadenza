@@ -85,23 +85,13 @@ const Raspored = () => {
 
   const handleCombinedScheduleClick = async () => {
     try {
-      const res = await sendRequestStudentsRaspored();
-      const { schedules, students } = res;
-      const combined = schedules.reduce((acc, studentSchedule) => {
-        ['pon', 'uto', 'sri', 'cet', 'pet', 'sub'].forEach(day => {
-          if (!acc[day]) acc[day] = [];
-          acc[day] = acc[day].concat(
-            (studentSchedule[day] || []).map(term => ({
-              ...term,
-              studentId: studentSchedule.ucenikId,
-              studentName: `${students.find(s => s._id === studentSchedule.ucenikId)?.ime} ${students.find(s => s._id === studentSchedule.ucenikId)?.prezime}`
-            }))
-          );
-        });
-        return acc;
-      }, {});
-      setCombinedSchedule(combined);
-      setShowCombinedSchedule(true);
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/rasporedUcenici/${user._id}`, { withCredentials: true });
+      if (res.data && res.data.schedule) {
+        setCombinedSchedule(res.data.schedule);
+        setShowCombinedSchedule(true);
+      } else {
+        console.log('No schedule data in response');
+      }
     } catch (err) {
       console.error('Error fetching combined schedules:', err);
     }

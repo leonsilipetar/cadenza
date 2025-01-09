@@ -9,7 +9,8 @@ const NavSideRaspored = ({ students, onStudentClick, onCombinedScheduleClick, bi
         </div>
       ) : (
         <div className="rl-items">
-          <div className="rl moj-raspored">
+          <div className="rl moj-raspored" onClick={onCombinedScheduleClick}>
+           {biljeske ? "Bilješke" : "Moj raspored"}
           </div>
           {students?.map((student) => (
             <div
