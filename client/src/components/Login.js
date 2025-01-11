@@ -110,15 +110,41 @@ const Login = ({ isEmbedded = false }) => {
 
     e.preventDefault();
 
-    const data = await sendRequest();
+    try {
+
+      const res = await axios.post(`${ApiConfig.baseUrl}/api/login`, {
+
+        email: inputs.email,
+
+        password: inputs.password,
+
+      });
 
 
 
-    if (data) {
+      if (res.data) {
 
-      dispatch(authActions.login());
+        // Store token in localStorage and cookies
 
-      history('/user');
+        localStorage.setItem('auth_token', res.data.token); // Store in localStorage
+
+        document.cookie = `token=${res.data.token}; path=/;`; // Store in cookies
+
+
+
+        dispatch(authActions.login(res.data.token)); // Dispatch login action
+
+        history('/user'); // Navigate to user page
+
+      } else {
+
+        console.error('No token received');
+
+      }
+
+    } catch (error) {
+
+      console.error('Login request failed:', error);
 
     }
 

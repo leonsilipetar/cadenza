@@ -74,8 +74,19 @@ function App() {
     return () => clearInterval(interval);
   }, [isLoggedIn, dispatch]);
 
+  const getToken = () => {
+    let token = localStorage.getItem('auth_token');
+    if (!token) {
+      const match = document.cookie.match(/(^|;)\s*token=([^;]+)/);
+      if (match) {
+        token = match[2];
+      }
+    }
+    return token;
+  };
+
   useEffect(() => {
-    const token = localStorage.getItem('auth_token');
+    const token = getToken();
     if (token) {
       dispatch(authActions.login(token));
     }
@@ -100,7 +111,7 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('auth_token');
-    delete axios.defaults.headers.common['Authorization'];
+    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     dispatch(authActions.logout());
   };
 
