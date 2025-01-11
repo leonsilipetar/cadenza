@@ -172,43 +172,36 @@ const sendPasswordEmail = async (email, password) => {
     };
 
     const updateDetaljiMentora = async (req, res, next) => {
-  try {
-    const mentorId = req.params.mentorId;
-    const updateData = req.body;
+      try {
+        const mentorId = req.params.mentorId;
+        const updateData = req.body; // Assuming the update data is sent in the request body
 
-    if (!mongoose.Types.ObjectId.isValid(mentorId)) {
-      return res.status(400).json({ message: 'Invalid mentor ID' });
-    }
+        if (!mongoose.Types.ObjectId.isValid(mentorId)) {
+          return res.status(400).json({ message: 'Invalid mentor ID' });
+        }
 
-    const detaljiMentora = await Mentor.findById(mentorId);
+        const mentor = await Mentor.findById(mentorId);
 
-    if (!detaljiMentora) {
-      return res.status(404).json({ message: 'Mentor not found' });
-    }
+        if (!mentor) {
+          return res.status(404).json({ message: 'Mentor not found' });
+        }
 
-    // If students field is not null or undefined and is an array
-    if (updateData.students && Array.isArray(updateData.students)) {
-      // Use $each and $elemMatch to add new students to the mentor's students array
-      await Mentor.updateOne(
-        { _id: mentorId, students: { $not: { $elemMatch: { $in: updateData.students } } } },
-        { $addToSet: { students: { $each: updateData.students } } }
-      );
+        // Directly update the mentor's students array with the new data
+        if (updateData.students) {
+          mentor.students = updateData.students; // Replace the entire students array
+        }
 
-      // Remove the students field from updateData to prevent overwriting the students array
-      delete updateData.students;
-    }
+        // Update other mentor fields with the values from the request body
+        Object.assign(mentor, updateData);
 
-    // Update other mentor fields with the values from the request body
-    Object.assign(detaljiMentora, updateData);
+        // Save the updated mentor
+        await mentor.save();
 
-    // Save the updated mentor
-    await detaljiMentora.save();
-
-    res.json({ message: 'Mentor updated successfully', mentor: detaljiMentora });
-  } catch (err) {
-    next(err);
-  }
-};
+        res.json({ message: 'Mentor updated successfully', mentor });
+      } catch (err) {
+        next(err);
+      }
+    };
 
 
 

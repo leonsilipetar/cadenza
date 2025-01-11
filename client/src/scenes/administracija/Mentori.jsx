@@ -3,8 +3,6 @@ import axios from 'axios';
 import { Icon } from '@iconify/react';
 import NavigacijaAdmin from './NavigacijaAdmin';
 import NavTopAdministracija from './NavtopAdministracija';
-import DodajKorisnika from './DodajKorisnika';
-import KorisnikDetalji from './KorisnikDetalji';
 import DodajMentora from './DodajMentora';
 import MentorDetalji from './MentoriDetalji';
 import ApiConfig from '../../components/apiConfig';

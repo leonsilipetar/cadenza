@@ -149,7 +149,7 @@ const MentorDetalji = ({ korisnikId, onCancel }) => {
 
     const result = await urediKorisnika({
       ...inputs,
-      students: inputs.students, // Only send updated students
+      students: inputs.students, // Send the complete updated students array
     });
 
     if (result) {
