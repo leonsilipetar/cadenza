@@ -90,7 +90,6 @@ app.use('/api', (req, res, next) => {
 
 }, router);
 
-app.use('/api/recepti', recipeRoutes);
 
 
 

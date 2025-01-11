@@ -11,4 +11,4 @@ export const refreshToken = async () => {
     console.error('Error refreshing token:', error);
     return null;
   }
-}; 
+};
