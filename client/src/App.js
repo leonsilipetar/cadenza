@@ -21,6 +21,7 @@ import CookieConsent from './components/CookieConsent';
 import Delete from './scenes/administracija/Delete';
 import Obavijesti from './scenes/Obavijesti';
 import { Icon } from '@iconify/react';
+import { refreshToken } from './utils/auth';
 axios.defaults.withCredentials = true;
 function App() {
   const [notifications, setNotifications] = useState([]);
@@ -60,19 +61,53 @@ function App() {
     }
   }, [isLoggedIn, location.pathname, navigate]);
 
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (isLoggedIn) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          dispatch(authActions.login(newToken));
+        }
+      }
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [isLoggedIn, dispatch]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      dispatch(authActions.login(token));
+    }
+  }, []);
+
+  const handleLogin = async (email, password) => {
+    try {
+      const response = await axios.post(`${ApiConfig.baseUrl}/api/login`, { email, password });
+      if (response.status === 200) {
+        const token = response.data.token;
+        if (token) {
+          localStorage.setItem('auth_token', token);
+          dispatch(authActions.login(token));
+        } else {
+          console.error('Token is undefined');
+        }
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
     delete axios.defaults.headers.common['Authorization'];
     dispatch(authActions.logout());
   };
 
-  const unreadCount = notifications.filter(notification => notification.unread).length;
-
   return (
     <>
       <Routes>
-        <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/user" />} />
+        <Route path="/login" element={!isLoggedIn ? <Login handleLogin={handleLogin} /> : <Navigate to="/user" />} />
         <Route path="/" element={!isLoggedIn ? <Welcome /> : <Navigate to="/user" />} />
         {isLoggedIn && (
           <>

@@ -43,13 +43,13 @@ const login = async (req, res) => {
       { expiresIn: "24h" }
     );
 
-    // Set cookie token
+    // Set cookie token with appropriate options
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'None',
       path: '/',
-      maxAge: 24 * 60 * 60 * 1000
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
     });
 
     return res.status(200).json({
@@ -60,7 +60,8 @@ const login = async (req, res) => {
         isAdmin: existingUser.isAdmin,
         isMentor: existingUser.isMentor,
         isStudent: existingUser.isStudent
-      }
+      },
+      token // Ensure this is included in the response
     });
   } catch (err) {
     console.error("Login error:", err);
@@ -190,8 +191,8 @@ const deleteUser = async (req, res) => {
         if (user.mentor) {
           await Mentor.updateMany(
             { _id: user.mentor },
-            { 
-              $pull: { 
+            {
+              $pull: {
                 students: user._id,
                 'raspored.$[].ucenici': { ucenikId: user._id }
               }
@@ -201,7 +202,7 @@ const deleteUser = async (req, res) => {
 
         // Delete student's schedule
         await Raspored.deleteMany({ ucenikId: user._id });
-        
+
         // Delete related invoices
         await Invoice.deleteMany({ userId: user._id });
       }
@@ -232,9 +233,9 @@ const deleteUser = async (req, res) => {
     }
   } catch (error) {
     console.error('Error deleting user:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Error deleting user',
-      error: error.message 
+      error: error.message
     });
   }
 };

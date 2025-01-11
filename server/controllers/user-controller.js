@@ -340,24 +340,19 @@ const login = async (req, res) => {
 
 const verifyToken = async (req, res, next) => {
   try {
-    // Check both cookie and Authorization header
-    const token = req.cookies.token ||
-      (req.headers.authorization && req.headers.authorization.split(' ')[1]);
+    const token = req.cookies.token || (req.headers.authorization && req.headers.authorization.split(' ')[1]);
 
     if (!token) {
       return res.status(401).json({ message: "No token found" });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Find the user and attach to request
     const user = await User.findById(decoded.id) || await Mentor.findById(decoded.id);
 
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }
 
-    // Attach user to request object
     req.user = user;
     next();
   } catch (err) {

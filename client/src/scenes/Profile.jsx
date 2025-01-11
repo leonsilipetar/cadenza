@@ -96,65 +96,79 @@ const Profil = () => {
 
     fetchData();
   }, []);
-// Funkcija za dobijanje naziva škole
-const getSchoolName = (schoolId) => {
-  if (!schoolId || !schools.length) return 'Unknown School'; // Osiguraj da su škole učitane
-  const school = schools.find((school) => school._id === schoolId);
-  return school ? school.name : 'Unknown School';
-};
 
-// Funkcija za dobijanje imena mentora
-const getMentorName = (mentorId) => {
-  if (!mentorId || !mentors.length) return 'Unknown Mentor'; // Osiguraj da su mentori učitani
-  const mentor = mentors.find((mentor) => mentor._id === mentorId);
-  return mentor ? mentor.korisnickoIme : 'Unknown Mentor';
-};
+  const handleLogin = async (email, password) => {
+    try {
+      const response = await axios.post(`${ApiConfig.baseUrl}/api/login`, { email, password });
+      if (response.status === 200) {
+        const { token } = response.data; // Get the token from the response
+        console.log('Token received:', token); // Log the token
+        localStorage.setItem('auth_token', token); // Store the token in localStorage
+        dispatch(authActions.login(token)); // Dispatch the login action with the token
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
 
-return (
-  <>
-    <Navigacija user={user} otvoreno={otvoreno} />
-    <NavTop user={user} naslov={'Profil'} />
-    <div className="main">
-      <div className="karticaZadatka sbtwn">
-        {/* Toggle button za temu */}
-        <div className={`btn ${isHovered ? 'hovered' : ''}`}>
-          <button className="gumb-novo gumb-nav" onClick={toggleTheme}>
-            <i id="tema" className="uil uil-swatchbook">
-              {theme === 'dark' ? 'Svijetla tema' : 'Tamna tema'}
-            </i>
-          </button>
+  // Funkcija za dobijanje naziva škole
+  const getSchoolName = (schoolId) => {
+    if (!schoolId || !schools.length) return 'Unknown School'; // Osiguraj da su škole učitane
+    const school = schools.find((school) => school._id === schoolId);
+    return school ? school.name : 'Unknown School';
+  };
+
+  // Funkcija za dobijanje imena mentora
+  const getMentorName = (mentorId) => {
+    if (!mentorId || !mentors.length) return 'Unknown Mentor'; // Osiguraj da su mentori učitani
+    const mentor = mentors.find((mentor) => mentor._id === mentorId);
+    return mentor ? mentor.korisnickoIme : 'Unknown Mentor';
+  };
+
+  return (
+    <>
+      <Navigacija user={user} otvoreno={otvoreno} />
+      <NavTop user={user} naslov={'Profil'} />
+      <div className="main">
+        <div className="karticaZadatka sbtwn">
+          {/* Toggle button za temu */}
+          <div className={`btn ${isHovered ? 'hovered' : ''}`}>
+            <button className="gumb-novo gumb-nav" onClick={toggleTheme}>
+              <i id="tema" className="uil uil-swatchbook">
+                {theme === 'dark' ? 'Svijetla tema' : 'Tamna tema'}
+              </i>
+            </button>
+          </div>
+
+          {/* Logout dugme */}
+          <div className={`action-btn btn abDelete ${isHovered ? 'hovered' : ''}`}>
+            <Link className="link" to="/login" onClick={handleLogout}>
+              <Icon icon="solar:logout-2-broken" /> Odjavi se
+            </Link>
+          </div>
         </div>
 
-        {/* Logout dugme */}
-        <div className={`action-btn btn abDelete ${isHovered ? 'hovered' : ''}`}>
-          <Link className="link" to="/login" onClick={handleLogout}>
-            <Icon icon="solar:logout-2-broken" /> Odjavi se
-          </Link>
+        {/* Prikaz korisničkih informacija */}
+        <div className="karticaZadatka">
+          <div className="profilDiv">
+            {user && schools.length > 0 && mentors.length > 0 && user.isStudent && (
+              <UserInfoComponent
+                user={user}
+                schoolName={getSchoolName(user.school)} // Koristi `user.school` umesto `user.schoolId`
+                mentorName={getMentorName(user.mentors[0])} // Koristi prvi ID mentora
+              />
+            )}
+            {user && schools.length > 0 && mentors.length > 0 && user.isMentor &&(
+              <UserInfoComponent
+                user={user}
+                schoolName={getSchoolName(user.school)} // Koristi `user.school` umesto `user.schoolId`
+              />
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Prikaz korisničkih informacija */}
-      <div className="karticaZadatka">
-        <div className="profilDiv">
-          {user && schools.length > 0 && mentors.length > 0 && user.isStudent && (
-            <UserInfoComponent
-              user={user}
-              schoolName={getSchoolName(user.school)} // Koristi `user.school` umesto `user.schoolId`
-              mentorName={getMentorName(user.mentors[0])} // Koristi prvi ID mentora
-            />
-          )}
-          {user && schools.length > 0 && mentors.length > 0 && user.isMentor &&(
-            <UserInfoComponent
-              user={user}
-              schoolName={getSchoolName(user.school)} // Koristi `user.school` umesto `user.schoolId`
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  </>
-);
-
+    </>
+  );
 };
 
 export default Profil;
