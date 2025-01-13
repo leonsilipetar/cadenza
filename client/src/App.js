@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { authActions } from './store/index.js';
 import { getToken } from './utils/tokenUtils';
@@ -20,27 +20,30 @@ import { refreshToken } from './utils/auth';
 
 const App = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  useEffect(() => {
+  const checkTokenAndFetchUser = async () => {
     const token = getToken();
     if (token) {
-      dispatch(authActions.login(token));
-    } else {
-      // If no token, fetch user data to get the token
-      const fetchUserData = async () => {
+      // Optionally, check if the token is expired
+      const tokenPayload = JSON.parse(atob(token.split('.')[1])); // Decode the token
+      const isExpired = tokenPayload.exp * 1000 < Date.now(); // Check expiration
+
+      if (!isExpired) {
+        // Fetch user data if the token is valid
         try {
           const response = await axios.get(`${ApiConfig.baseUrl}/api/user`, { withCredentials: true });
-          const userToken = response.data.token; // Assuming the token is returned here
-          if (userToken) {
-            localStorage.setItem('auth_token', userToken); // Store token in local storage
-            dispatch(authActions.login(userToken)); // Dispatch login action
-          }
+          dispatch(authActions.login(token)); // Log in with the token
+          navigate('/user'); // Redirect to the user page
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
-      };
-      fetchUserData();
+      }
     }
+  };
+
+  useEffect(() => {
+    checkTokenAndFetchUser(); // Check token and fetch user on app load
 
     // Set an interval to refresh the token every 2 minutes
     const intervalId = setInterval(async () => {
@@ -52,7 +55,7 @@ const App = () => {
 
     // Clear the interval on component unmount
     return () => clearInterval(intervalId);
-  }, [dispatch]);
+  }, [dispatch, navigate]);
 
   return (
     <>
