@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { authActions } from './store/index.js';
 import { getToken } from './utils/tokenUtils';
@@ -17,10 +17,12 @@ import Korisnici from './scenes/administracija/Korisnici.jsx';
 import RacuniAdmin from './scenes/administracija/RacuniAdmin.jsx';
 import Mentori from './scenes/administracija/Mentori.jsx';
 import { refreshToken } from './utils/auth';
+import Delete from './scenes/administracija/Delete.jsx';
 
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isLoggedIn = !!getToken(); // Check if the user is logged in based on the token
 
   const checkTokenAndFetchUser = async () => {
     const token = getToken();
@@ -73,20 +75,28 @@ const App = () => {
   return (
     <>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Welcome />} />
-        <Route path="/user/*" element={<Naslovna />} />
-        <Route path="/profil/*" element={<Profil />} />
-        <Route path="/chat/*" element={<Chat />} />
-        <Route path="/racuni/*" element={<Racuni />} />
-        <Route path="/raspored/*" element={<Raspored />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/korisnici/*" element={<Korisnici />} />
-        <Route path="/mentori/*" element={<Mentori />} />
-        <Route path="/racuni-admin/*" element={<RacuniAdmin />} />
+        <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/user" />} />
+        <Route path="/" element={isLoggedIn ? <Navigate to="/user" /> : <Welcome />} />
+        {/* Protected Routes */}
+        {isLoggedIn && (
+          <>
+            <Route path="/user/*" element={<Naslovna />} />
+            <Route path="/profil/*" element={<Profil />} />
+            <Route path="/chat/*" element={<Chat />} />
+            <Route path="/racuni/*" element={<Racuni />} />
+            <Route path="/raspored/*" element={<Raspored />} />
+            <Route path="/admin/*" element={<Admin />} />
+            <Route path="/korisnici/*" element={<Korisnici />} />
+            <Route path="/mentori/*" element={<Mentori />} />
+            <Route path="/racuni-admin/*" element={<RacuniAdmin />} />
+            <Route path="/classrooms/*" element={<Classroom />} />
+            <Route path="/admin/delete" element={<Delete/>} />
+          </>
+        )}
       </Routes>
     </>
   );
 };
 
 export default App;
+
