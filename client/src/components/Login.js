@@ -26,14 +26,6 @@ const Login = ({ isEmbedded = false }) => {
 
 
 
-  function handleErrorM() {
-
-    seterrorM('Netočni podaci!');
-
-  }
-
-
-
   const [inputs, setInputs] = useState({
 
     email: '',
@@ -47,6 +39,14 @@ const Login = ({ isEmbedded = false }) => {
   const [emailFocused, setEmailFocused] = useState(false);
 
   const [passwordFocused, setPasswordFocused] = useState(false);
+
+
+
+  const handleErrorM = () => {
+
+    seterrorM('Netočni podaci!');
+
+  };
 
 
 
@@ -84,21 +84,13 @@ const Login = ({ isEmbedded = false }) => {
 
         return res.data;
 
-      } else {
-
-        handleErrorM();
-
-        return null;
-
       }
 
-    } catch (err) {
-
-      console.error(err);
+    } catch (error) {
 
       handleErrorM();
 
-      return null;
+      console.error('Login error:', error);
 
     }
 
@@ -110,41 +102,17 @@ const Login = ({ isEmbedded = false }) => {
 
     e.preventDefault();
 
-    try {
+    const data = await sendRequest();
 
-      const res = await axios.post(`${ApiConfig.baseUrl}/api/login`, {
+    if (data) {
 
-        email: inputs.email,
+      const { token } = data;
 
-        password: inputs.password,
+      localStorage.setItem('auth_token', token);
 
-      });
+      dispatch(authActions.login(token));
 
-
-
-      if (res.data) {
-
-        // Store token in localStorage and cookies
-
-        localStorage.setItem('auth_token', res.data.token); // Store in localStorage
-
-        document.cookie = `token=${res.data.token}; path=/;`; // Store in cookies
-
-
-
-        dispatch(authActions.login(res.data.token)); // Dispatch login action
-
-        history('/user'); // Navigate to user page
-
-      } else {
-
-        console.error('No token received');
-
-      }
-
-    } catch (error) {
-
-      console.error('Login request failed:', error);
+      history('/user');
 
     }
 
@@ -168,7 +136,7 @@ const Login = ({ isEmbedded = false }) => {
 
         <input
 
-          className={`input-login-signup errorM ${emailFocused ? 'focused' : ''}`}
+          className={`input-login-signup ${errorM ? 'error' : ''}`}
 
           value={inputs.email}
 
@@ -192,7 +160,7 @@ const Login = ({ isEmbedded = false }) => {
 
         <input
 
-          className={`input-login-signup errorM ${passwordFocused ? 'focused' : ''}`}
+          className={`input-login-signup ${errorM ? 'error' : ''}`}
 
           value={inputs.password}
 
@@ -238,6 +206,8 @@ const Login = ({ isEmbedded = false }) => {
 
       </form>
 
+      {errorM && <div className="error-message">{errorM}</div>}
+
     </div>
 
   ) : (
@@ -272,7 +242,7 @@ const Login = ({ isEmbedded = false }) => {
 
             <input
 
-              className={`input-login-signup errorM ${emailFocused ? 'focused' : ''}`}
+              className={`input-login-signup ${emailFocused ? 'focused' : ''}`}
 
               value={inputs.email}
 
@@ -296,7 +266,7 @@ const Login = ({ isEmbedded = false }) => {
 
             <input
 
-              className={`input-login-signup errorM ${passwordFocused ? 'focused' : ''}`}
+              className={`input-login-signup ${passwordFocused ? 'focused' : ''}`}
 
               value={inputs.password}
 

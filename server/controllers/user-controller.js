@@ -374,14 +374,17 @@ const logout = async (req, res) => {
 const refreshToken = async (req, res) => {
   try {
     const authHeader = req.headers['authorization'];
+    console.log('Auth Header:', authHeader);
     if (!authHeader?.startsWith('Bearer ')) {
       return res.status(401).json({ message: "No token found" });
     }
 
     const oldToken = authHeader.split(' ')[1];
+    console.log('Old Token:', oldToken);
 
     jwt.verify(oldToken, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
+        console.error('Token verification error:', err);
         return res.status(401).json({ message: "Token expired" });
       }
 
@@ -391,9 +394,11 @@ const refreshToken = async (req, res) => {
         { expiresIn: "24h" }
       );
 
+      console.log('New Token:', newToken);
       res.json({ token: newToken });
     });
   } catch (error) {
+    console.error('Token refresh error:', error);
     res.status(401).json({ message: "Token refresh failed" });
   }
 };
@@ -402,10 +407,7 @@ const refreshToken = async (req, res) => {
 
   async function getUser(req, res, next) {
     try {
-      // Get user ID from req.user instead of req.id
       const userId = req.user._id;
-
-      // Changed variable name to avoid redeclaration
       const foundUser = await User.findById(userId, "-password");
 
       if (!foundUser) {
@@ -413,10 +415,10 @@ const refreshToken = async (req, res) => {
         if (!foundMentor) {
           return res.status(404).json({ message: "User or Mentor not found" });
         }
-        return res.status(200).json({ user: foundMentor });
+        return res.status(200).json({ user: foundMentor, token: req.cookies.token });
       }
 
-      return res.status(200).json({ user: foundUser });
+      return res.status(200).json({ user: foundUser, token: req.cookies.token });
     } catch (err) {
       console.error('Error fetching user:', err);
       return res.status(500).json({ message: "Internal Server Error" });

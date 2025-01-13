@@ -63,35 +63,35 @@ transition-duration: 0.01ms !important;
 scroll-behavior: auto !important;
 }
 }
-:root{
---isticanje: var(--narancasta);
---isticanje2: 204, 204, 204;
---isticanje3: 48, 57, 131;
---isticanje-svijetlo: rgba(var(--isticanje), 0.425);
---pozadina-svijetlo: 255, 255, 255;
---pozadina-tamno: 17, 17, 17;
---iznad: rgb(var(--svijetlo-iznad));
---iznad-objava: rgb(var(--isticanje));
---tekst: rgb(var(--svijetlo-tekst));
---tamno-iznad: 66, 68, 66;
---tamno-iznad-nav: 76, 79, 76;
---svijetlo-iznad: 255,255,255;
---svijetlo-iznad-nav: 255,255,255;
---tamno-tekst: 218, 214, 214;
---svijetlo-tekst: 15, 15, 15;
---visinaKartice: 250px;
---boxShadow: var(--sjena-svijetlo);
---sjena-tamno-navtop: 0px 0px 40px 1px rgba(0, 0, 0, 0.6);
---sjena-tamno: 0px 0px 10px 1px rgba(0, 0, 0, 0.13);
---sjena-svijetlo: 0px 0px 20px 1px rgba(63, 63, 63, 0.13);
-/* boje isticanja:*/
---ljubicasta: 150, 103, 224;
---crvena: 255, 104, 107;
---zuta: 254, 219, 114;
---siva: 97, 102, 107;
---narancasta: 252, 163, 17;
---zelena: 132, 169, 140;
---radius: 0.5rem;
+:root {
+    --isticanje: 255, 165, 0; /* Bright orange */
+    --isticanje2: 220, 220, 220; /* Light gray for better contrast */
+    --isticanje3: 50, 60, 140; /* Darker blue for better contrast */
+    --isticanje-svijetlo: rgba(var(--isticanje), 0.5); /* Slightly transparent */
+    --pozadina-svijetlo: 255, 255, 255; /* White */
+    --pozadina-tamno: 30, 30, 30; /* Darker background for better contrast */
+    --iznad: rgb(240, 240, 240); /* Light gray for above elements */
+    --iznad-objava: rgb(var(--isticanje)); /* Keep the same */
+    --tekst: rgb(30, 30, 30); /* Dark text for better readability */
+    --tamno-iznad: 80, 80, 80; /* Dark gray for above elements */
+    --tamno-iznad-nav: 90, 90, 90; /* Darker gray for navigation */
+    --svijetlo-iznad: 255, 255, 255; /* White */
+    --svijetlo-iznad-nav: 255, 255, 255; /* White */
+    --tamno-tekst: 230, 230, 230; /* Light gray text for dark mode */
+    --svijetlo-tekst: 15, 15, 15; /* Dark text */
+    --visinaKartice: 250px; /* Card height */
+    --boxShadow: var(--sjena-svijetlo); /* Light shadow */
+    --sjena-tamno-navtop: 0px 0px 40px 1px rgba(0, 0, 0, 0.8); /* Darker shadow for nav */
+    --sjena-tamno: 0px 0px 15px 1px rgba(0, 0, 0, 0.2); /* Darker shadow */
+    --sjena-svijetlo: 0px 0px 20px 1px rgba(63, 63, 63, 0.15); /* Light shadow */
+    /* boje isticanja: */
+    --ljubicasta: 150, 103, 224; /* Purple */
+    --crvena: 255, 104, 107; /* Red */
+    --zuta: 254, 219, 114; /* Yellow */
+    --siva: 97, 102, 107; /* Gray */
+    --narancasta: 252, 163, 17; /* Orange */
+    --zelena: 132, 169, 140; /* Green */
+    --radius: 0.5rem; /* Border radius */
 }
 .dot{
     position: absolute;
