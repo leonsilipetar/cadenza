@@ -34,16 +34,29 @@ const App = () => {
         try {
           const response = await axios.get(`${ApiConfig.baseUrl}/api/user`, { withCredentials: true });
           dispatch(authActions.login(token)); // Log in with the token
-          navigate('/user'); // Redirect to the user page
+          return true; // User is authenticated
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
       }
     }
+    return false; // User is not authenticated
   };
 
   useEffect(() => {
-    checkTokenAndFetchUser(); // Check token and fetch user on app load
+    const handleRedirects = async () => {
+      const isAuthenticated = await checkTokenAndFetchUser();
+
+      // Redirect logic based on authentication status
+      const currentPath = window.location.pathname;
+      if (isAuthenticated && (currentPath === '/login' || currentPath === '/')) {
+        navigate('/user'); // Redirect to /user if authenticated
+      } else if (!isAuthenticated && currentPath !== '/login') {
+        navigate('/login'); // Redirect to /login if not authenticated
+      }
+    };
+
+    handleRedirects();
 
     // Set an interval to refresh the token every 2 minutes
     const intervalId = setInterval(async () => {
