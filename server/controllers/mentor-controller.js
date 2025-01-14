@@ -108,7 +108,7 @@ const sendPasswordEmail = async (email, password) => {
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd;">
       <!-- Header section with logo -->
       <div style="text-align: center;">
-        <img src="https://mai-cadenza.onrender.com/Logo12.png" alt="MAI - Cadenza Logo" style="max-width: 150px;" />
+        <img src="https://cadenza.com.hr/Logo12.png" alt="MAI - Cadenza Logo" style="max-width: 150px;" />
         <h1 style="color: rgb(252, 163, 17); font-size: 24px;">Dobrodošli u MAI - Cadenza!</h1>
       </div>
 
@@ -124,7 +124,7 @@ const sendPasswordEmail = async (email, password) => {
 
       <!-- Call to action button -->
       <div style="text-align: center; margin: 30px 0;">
-        <a href="https://mai-cadenza.onrender.com/login" style="
+        <a href="https://cadenza.com.hr/login" style="
           background-color: rgb(252, 163, 17);
           color: white;
           padding: 10px 20px;
@@ -138,7 +138,7 @@ const sendPasswordEmail = async (email, password) => {
       </div>
 
       <!-- Support and closing -->
-      <p>Molimo vas da čuvate ove informacije i ne dijelite lozinku. Ako imate bilo kakvih pitanja ili nedoumica, slobodno se obratite našem timu za podršku na <a href="mailto:leonosobni@gmail.com">leonosobni@gmail.com</a>.</p>
+        <p>Molimo vas da čuvate ove informacije i ne dijelite lozinku. Ako imate bilo kakvih pitanja ili nedoumica, slobodno se obratite na adresu za podršku: <a href="mailto:app.info.cadenza@gmail.com">app.info.cadenza@gmail.com</a>.</p>
 
       <p>S poštovanjem,<br />MAI - Cadenza</p>
     </div>

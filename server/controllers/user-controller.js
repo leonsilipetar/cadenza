@@ -128,7 +128,7 @@ const sendPasswordEmail = async (email, password) => {
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd;">
       <!-- Header section with logo -->
       <div style="text-align: center;">
-        <img src="https://mai-cadenza.onrender.com/Logo12.png" alt="MAI - Cadenza Logo" style="max-width: 150px;" />
+        <img src="https://cadenza.com.hr/Logo12.png" alt="MAI - Cadenza Logo" style="max-width: 150px;" />
         <h1 style="color: rgb(252, 163, 17); font-size: 24px;">Dobrodošli u MAI - Cadenza!</h1>
       </div>
 
@@ -144,7 +144,7 @@ const sendPasswordEmail = async (email, password) => {
 
       <!-- Call to action button -->
       <div style="text-align: center; margin: 30px 0;">
-        <a href="https://mai-cadenza.onrender.com/login" style="
+        <a href="https://cadenza.com.hr/login" style="
           background-color: rgb(252, 163, 17);
           color: white;
           padding: 10px 20px;
@@ -157,8 +157,8 @@ const sendPasswordEmail = async (email, password) => {
           ">Posjetite našu aplikaciju</a>
       </div>
 
-      <!-- Support and closing -->
-      <p>Molimo vas da čuvate ove informacije i ne dijelite lozinku. Ako imate bilo kakvih pitanja ili nedoumica, slobodno se obratite našem timu za podršku na <a href="mailto:leonosobni@gmail.com">leonosobni@gmail.com</a>.</p>
+       <!-- Support and closing -->
+        <p>Molimo vas da čuvate ove informacije i ne dijelite lozinku. Ako imate bilo kakvih pitanja ili nedoumica, slobodno se obratite na adresu za podršku: <a href="mailto:app.info.cadenza@gmail.com">app.info.cadenza@gmail.com</a>.</p>
 
       <p>S poštovanjem,<br />MAI - Cadenza</p>
     </div>
@@ -238,7 +238,7 @@ const updatePassword = asyncWrapper(async (req, res) => {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd;">
         <!-- Header section with logo -->
         <div style="text-align: center;">
-          <img src="https://mai-cadenza.onrender.com/Logo12.png" alt="MAI - Cadenza Logo" style="max-width: 150px;" />
+          <img src="https://cadenza.com.hr/Logo12.png" alt="MAI - Cadenza Logo" style="max-width: 150px;" />
           <h1 style="color: rgb(252, 163, 17); font-size: 24px;">Nova lozinka za vaš račun</h1>
         </div>
 
@@ -254,7 +254,7 @@ const updatePassword = asyncWrapper(async (req, res) => {
 
         <!-- Call to action button -->
         <div style="text-align: center; margin: 30px 0;">
-          <a href="https://mai-cadenza.onrender.com/login" style="
+          <a href="https://cadenza.com.hr/login" style="
             background-color: rgb(252, 163, 17);
             color: white;
             padding: 10px 20px;
@@ -268,7 +268,7 @@ const updatePassword = asyncWrapper(async (req, res) => {
         </div>
 
         <!-- Support and closing -->
-        <p>Molimo vas da čuvate ove informacije i ne dijelite lozinku. Ako imate bilo kakvih pitanja ili nedoumica, slobodno se obratite našem timu za podršku na <a href="mailto:leonosobni@gmail.com">leonosobni@gmail.com</a>.</p>
+        <p>Molimo vas da čuvate ove informacije i ne dijelite lozinku. Ako imate bilo kakvih pitanja ili nedoumica, slobodno se obratite na adresu za podršku: <a href="mailto:app.info.cadenza@gmail.com">app.info.cadenza@gmail.com</a>.</p>
 
         <p>S poštovanjem,<br />MAI - Cadenza</p>
       </div>
@@ -374,13 +374,11 @@ const logout = async (req, res) => {
 const refreshToken = async (req, res) => {
   try {
     const authHeader = req.headers['authorization'];
-    console.log('Auth Header:', authHeader);
     if (!authHeader?.startsWith('Bearer ')) {
       return res.status(401).json({ message: "No token found" });
     }
 
     const oldToken = authHeader.split(' ')[1];
-    console.log('Old Token:', oldToken);
 
     jwt.verify(oldToken, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
@@ -394,7 +392,6 @@ const refreshToken = async (req, res) => {
         { expiresIn: "24h" }
       );
 
-      console.log('New Token:', newToken);
       res.json({ token: newToken });
     });
   } catch (error) {
