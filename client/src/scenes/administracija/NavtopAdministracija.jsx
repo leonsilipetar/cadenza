@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import '../../App.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store";
@@ -8,19 +8,27 @@ import ApiConfig from "../../components/apiConfig.js";
 const NavTopAdministracija = ({user, naslov}) => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
   const sendLogoutRequest = async () => {
-    axios.defaults.withCredentials = true
-  const res = await axios.post(`${ApiConfig.baseUrl}/api/logout`, null, {
-    withCredentials: true
-  })
-  if(res.status === 200) {
-    return res;
+    try {
+      const res = await axios.post(`${ApiConfig.baseUrl}/api/logout`, null, { withCredentials: true });
+      if (res.status === 200) {
+        // Clear cookies and localStorage
+        localStorage.removeItem('auth_token');
+        localStorage.setItem('isLoggedIn', 'false');
+        return res;
+      }
+      throw new Error('Unable to logout. Try again');
+    } catch (err) {
+      console.error('Error during logout:', err);
+    }
+  };
+  const handleLogout = () => {
+    sendLogoutRequest().then(() => {
+      dispatch(authActions.logout());
+      navigate('/login'); // Redirect to login after logout
+    });
   }
-  return new Error("Unable to logout. Try again");
- }
- const handleLogout = () => {
-  sendLogoutRequest().then(()=>dispatch(authActions.logout()))
- }
 
  const [theme, setTheme] = useState(
       localStorage.getItem('theme') || 'light'

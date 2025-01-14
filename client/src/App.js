@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { authActions } from './store/index.js';
 import { getToken } from './utils/tokenUtils';
@@ -49,15 +49,22 @@ const App = () => {
   };
 
   useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
     const handleRedirects = async () => {
       const isAuthenticated = await checkTokenAndFetchUser();
 
       // Redirect logic based on authentication status
-      const currentPath = window.location.pathname;
-      if (isAuthenticated && (currentPath === '/login' || currentPath === '/')) {
-        navigate('/user'); // Redirect to /user if authenticated
-      } else if (!isAuthenticated) {
-        navigate('/login'); // Redirect to /login if not authenticated
+      if (isAuthenticated) {
+        // User is authenticated, allow access to all routes
+        if (window.location.pathname === '/login' || window.location.pathname === '/') {
+          navigate('/user'); // Redirect to /user if authenticated
+        }
+      } else {
+        // User is not authenticated, restrict access
+        if (isLoggedIn) {
+          navigate('/login'); // Redirect to /login if not authenticated
+        }
       }
     };
 

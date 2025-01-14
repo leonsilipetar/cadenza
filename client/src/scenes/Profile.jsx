@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { authActions } from '../store/index';
 import { Icon } from '@iconify/react';
@@ -12,6 +12,7 @@ import UserInfoComponent from '../components/UserInfo';
 axios.defaults.withCredentials = true;
 
 const Profil = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [schools, setSchools] = useState([]);
   const [mentors, setMentors] = useState([]);
@@ -56,6 +57,9 @@ const Profil = () => {
     try {
       const res = await axios.post(`${ApiConfig.baseUrl}/api/logout`, null, { withCredentials: true });
       if (res.status === 200) {
+        // Clear cookies and localStorage
+        localStorage.removeItem('auth_token');
+        localStorage.setItem('isLoggedIn', 'false');
         return res;
       }
       throw new Error('Unable to logout. Try again');
@@ -68,7 +72,7 @@ const Profil = () => {
     try {
       await sendLogoutRequest();
       dispatch(authActions.logout());
-      localStorage.removeItem('isLoggedIn');
+      navigate('/login'); // Redirect to login after logout
     } catch (error) {
       console.error('Logout failed:', error.message);
     }
