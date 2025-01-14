@@ -16,8 +16,10 @@ import Admin from './scenes/administracija/Admin.jsx';
 import Korisnici from './scenes/administracija/Korisnici.jsx';
 import RacuniAdmin from './scenes/administracija/RacuniAdmin.jsx';
 import Mentori from './scenes/administracija/Mentori.jsx';
+import Classrooms from './scenes/administracija/Classroom.jsx';
 import { refreshToken } from './utils/auth';
 import Delete from './scenes/administracija/Delete.jsx';
+import Obavijesti from './scenes/Obavijesti.jsx';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -89,8 +91,9 @@ const App = () => {
             <Route path="/korisnici/*" element={<Korisnici />} />
             <Route path="/mentori/*" element={<Mentori />} />
             <Route path="/racuni-admin/*" element={<RacuniAdmin />} />
-            <Route path="/classrooms/*" element={<Classroom />} />
+            <Route path="/classrooms/*" element={<Classrooms />} />
             <Route path="/admin/delete" element={<Delete/>} />
+            <Route path='/obavijesti' element={<Obavijesti />} />
           </>
         )}
       </Routes>
