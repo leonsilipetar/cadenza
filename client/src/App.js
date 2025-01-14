@@ -49,10 +49,9 @@ const App = () => {
   };
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-
     const handleRedirects = async () => {
       const isAuthenticated = await checkTokenAndFetchUser();
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
       // Redirect logic based on authentication status
       if (isAuthenticated) {
@@ -63,6 +62,7 @@ const App = () => {
       } else {
         // User is not authenticated, restrict access
         if (isLoggedIn) {
+          localStorage.setItem('isLoggedIn', 'false'); // Ensure this is set to false
           navigate('/login'); // Redirect to /login if not authenticated
         }
       }
