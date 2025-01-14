@@ -94,14 +94,14 @@ const sendPasswordEmail = async (email, password) => {
     secure: false,
     requireTLS: true,
     auth: {
-      user: 'leonosobni@gmail.com', // replace with your Gmail email
-      pass: 'vrsj acql nqyh lnvr', // replace with your Gmail app password
+      user: process.env.EMAIL_USER, // Use environment variable
+      pass: process.env.EMAIL_PASS, // Use environment variable
     },
     secureOptions: 'TLSv1_2',
   });
 
   const mailOptions = {
-    from: 'leonosobni@gmail.com', // replace with your Gmail email
+    from: process.env.EMAIL_USER, // Use environment variable
     to: email,
     subject: 'Dobrodošli u MAI - Cadenza platformu - Detalji vašeg računa',
     html: `

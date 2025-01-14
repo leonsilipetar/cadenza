@@ -114,14 +114,14 @@ const sendPasswordEmail = async (email, password) => {
     secure: false,
     requireTLS: true,
     auth: {
-      user: 'leonosobni@gmail.com', // replace with your Gmail email
-      pass: 'vrsj acql nqyh lnvr', // replace with your Gmail app password
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
     secureOptions: 'TLSv1_2',
   });
 
   const mailOptions = {
-    from: 'leonosobni@gmail.com', // replace with your Gmail email
+    from: process.env.EMAIL_USER,
     to: email,
     subject: 'Dobrodošli u MAI - Cadenza platformu - Detalji vašeg računa',
     html: `
@@ -224,14 +224,14 @@ const updatePassword = asyncWrapper(async (req, res) => {
       secure: false,
       requireTLS: true,
       auth: {
-        user: 'leonosobni@gmail.com',
-        pass: 'vrsj acql nqyh lnvr',
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
       secureOptions: 'TLSv1_2',
     });
 
     const mailOptions = {
-      from: 'leonosobni@gmail.com',
+      from: process.env.EMAIL_USER,
       to: email,
       subject: 'Nova lozinka - Music Art Incubator',
       html: `

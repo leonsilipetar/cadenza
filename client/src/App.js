@@ -24,24 +24,25 @@ import Obavijesti from './scenes/Obavijesti.jsx';
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isLoggedIn = !!getToken(); // Check if the user is logged in based on the token
 
   const checkTokenAndFetchUser = async () => {
-    const token = getToken();
-    if (token) {
-      // Optionally, check if the token is expired
-      const tokenPayload = JSON.parse(atob(token.split('.')[1])); // Decode the token
-      const isExpired = tokenPayload.exp * 1000 < Date.now(); // Check expiration
+    const token = getToken(); // Get token from localStorage or cookies
+    if (!token) {
+      return false; // No token found
+    }
 
-      if (!isExpired) {
-        // Fetch user data if the token is valid
-        try {
-          const response = await axios.get(`${ApiConfig.baseUrl}/api/user`, { withCredentials: true });
-          dispatch(authActions.login(token)); // Log in with the token
-          return true; // User is authenticated
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        }
+    // Optionally, check if the token is expired
+    const tokenPayload = JSON.parse(atob(token.split('.')[1])); // Decode the token
+    const isExpired = tokenPayload.exp * 1000 < Date.now(); // Check expiration
+
+    if (!isExpired) {
+      // Fetch user data if the token is valid
+      try {
+        const response = await axios.get(`${ApiConfig.baseUrl}/api/user`, { withCredentials: true });
+        dispatch(authActions.login(token)); // Log in with the token
+        return true; // User is authenticated
+      } catch (error) {
+        console.error('Error fetching user data:', error);
       }
     }
     return false; // User is not authenticated
@@ -55,7 +56,7 @@ const App = () => {
       const currentPath = window.location.pathname;
       if (isAuthenticated && (currentPath === '/login' || currentPath === '/')) {
         navigate('/user'); // Redirect to /user if authenticated
-      } else if (!isAuthenticated && currentPath !== '/login') {
+      } else if (!isAuthenticated) {
         navigate('/login'); // Redirect to /login if not authenticated
       }
     };
@@ -75,29 +76,23 @@ const App = () => {
   }, [dispatch, navigate]);
 
   return (
-    <>
-      <Routes>
-        <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/user" />} />
-        <Route path="/" element={isLoggedIn ? <Navigate to="/user" /> : <Welcome />} />
-        {/* Protected Routes */}
-        {isLoggedIn && (
-          <>
-            <Route path="/user/*" element={<Naslovna />} />
-            <Route path="/profil/*" element={<Profil />} />
-            <Route path="/chat/*" element={<Chat />} />
-            <Route path="/racuni/*" element={<Racuni />} />
-            <Route path="/raspored/*" element={<Raspored />} />
-            <Route path="/admin/*" element={<Admin />} />
-            <Route path="/korisnici/*" element={<Korisnici />} />
-            <Route path="/mentori/*" element={<Mentori />} />
-            <Route path="/racuni-admin/*" element={<RacuniAdmin />} />
-            <Route path="/classrooms/*" element={<Classrooms />} />
-            <Route path="/admin/delete" element={<Delete/>} />
-            <Route path='/obavijesti' element={<Obavijesti />} />
-          </>
-        )}
-      </Routes>
-    </>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Welcome />} />
+      {/* Protected Routes */}
+      <Route path="/user/*" element={<Naslovna />} />
+      <Route path="/profil/*" element={<Profil />} />
+      <Route path="/chat/*" element={<Chat />} />
+      <Route path="/racuni/*" element={<Racuni />} />
+      <Route path="/raspored/*" element={<Raspored />} />
+      <Route path="/admin/*" element={<Admin />} />
+      <Route path="/korisnici/*" element={<Korisnici />} />
+      <Route path="/mentori/*" element={<Mentori />} />
+      <Route path="/racuni-admin/*" element={<RacuniAdmin />} />
+      <Route path="/classrooms/*" element={<Classrooms />} />
+      <Route path="/delete/*" element={<Delete />} />
+      <Route path="/obavijesti/*" element={<Obavijesti />} />
+    </Routes>
   );
 };
 
