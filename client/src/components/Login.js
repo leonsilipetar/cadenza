@@ -242,7 +242,7 @@ const Login = ({ isEmbedded = false }) => {
 
             <input
 
-              className={`input-login-signup ${emailFocused ? 'focused' : ''}`}
+              className={`input-login-signup errorM ${emailFocused ? 'focused' : ''}`}
 
               value={inputs.email}
 
@@ -266,7 +266,7 @@ const Login = ({ isEmbedded = false }) => {
 
             <input
 
-              className={`input-login-signup ${passwordFocused ? 'focused' : ''}`}
+              className={`input-login-signup errorM ${passwordFocused ? 'focused' : ''}`}
 
               value={inputs.password}
 
@@ -421,5 +421,3 @@ const Login = ({ isEmbedded = false }) => {
 
 
 export default Login;
-
-
