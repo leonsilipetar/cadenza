@@ -51,32 +51,30 @@ const Profil = () => {
       console.error('Error fetching mentors:', err);
     }
   };
-
-  // Function to handle logout
   const sendLogoutRequest = async () => {
     try {
       const res = await axios.post(`${ApiConfig.baseUrl}/api/logout`, null, { withCredentials: true });
       if (res.status === 200) {
-        // Clear cookies and localStorage
-        localStorage.removeItem('auth_token');
-        localStorage.setItem('isLoggedIn', 'false');
-        return res;
+        return res; // Successful logout
       }
       throw new Error('Unable to logout. Try again');
     } catch (err) {
-      console.error('Error during logout:', err);
+      console.error('Error during logout:', err.message || err);
+      throw err; // Re-throw to allow further handling
     }
   };
-
+  
   const handleLogout = async () => {
     try {
-      await sendLogoutRequest();
-      dispatch(authActions.logout());
-      navigate('/login'); // Redirect to login after logout
+      await sendLogoutRequest(); // Ensure backend logout is successful
+      dispatch(authActions.logout()); // Clear Redux state
+      navigate('/login'); // Redirect to login
     } catch (error) {
       console.error('Logout failed:', error.message);
+      alert('Logout failed. Please try again.');
     }
   };
+  
 
   // Toggle theme state
   const toggleTheme = () => {

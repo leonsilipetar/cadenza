@@ -362,14 +362,21 @@ const verifyToken = async (req, res, next) => {
 
 const logout = async (req, res) => {
   try {
-    // Clear localStorage on client side
-    // Server just sends success response
+    // Clear the authentication cookie
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      path: '/',
+    });
+
     return res.status(200).json({ message: "Successfully logged out" });
   } catch (err) {
     console.error("Logout error:", err);
     return res.status(500).json({ message: "Error during logout" });
   }
 };
+
 
 const refreshToken = async (req, res) => {
   try {
