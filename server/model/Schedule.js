@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/dbConfig');
 
-const Notification = sequelize.define('Notification', {
+const Schedule = sequelize.define('Schedule', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -14,14 +14,12 @@ const Notification = sequelize.define('Notification', {
       key: 'id',
     },
   },
-  message: DataTypes.STRING,
-  date: DataTypes.DATE,
-  unread: DataTypes.BOOLEAN,
+  // Schedule fields...
 });
 
 // Define relationships
-Notification.associate = (models) => {
-  Notification.belongsTo(models.User, { foreignKey: 'userId' });
+Schedule.associate = (models) => {
+  Schedule.belongsTo(models.User, { foreignKey: 'userId' });
 };
 
-module.exports = Notification;
+module.exports = Schedule; 

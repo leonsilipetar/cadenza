@@ -1,11 +1,25 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/dbConfig');
 
-const Schema = mongoose.Schema;
+const Classroom = sequelize.define('Classroom', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  schoolId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Schools',
+      key: 'id',
+    },
+  },
+  // Other classroom fields...
+});
 
-const classroomSchema = new Schema({
-  name: { type: String, required: true },
-  description: String,
-  school: { type: Schema.Types.ObjectId, ref: 'School', required: true }, // Reference to School
-}, { timestamps: true });
+// Define relationships
+Classroom.associate = (models) => {
+  Classroom.belongsTo(models.School, { foreignKey: 'schoolId' });
+};
 
-module.exports = mongoose.model('Classroom', classroomSchema);
+module.exports = Classroom;

@@ -1,54 +1,78 @@
 // controllers/classroom-controller.js
 
-const Classroom = require('../model/Classroom'); // Import the Classroom model
+const Classroom = require('../model/Classroom');
+const asyncWrapper = require('../middleware/asyncWrapper');
 
 // Create a new classroom
-exports.createClassroom = async (req, res) => {
+const createClassroom = asyncWrapper(async (req, res) => {
+  const { name, schoolId } = req.body;
+
   try {
-    const classroom = new Classroom(req.body);
-    await classroom.save();
-    res.status(201).json(classroom);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    const newClassroom = await Classroom.create({
+      name,
+      schoolId,
+    });
+
+    res.status(201).json(newClassroom);
+  } catch (error) {
+    console.error('Error creating classroom:', error);
+    res.status(500).json({ message: 'Error creating classroom' });
   }
-};
+});
 
 // Get all classrooms
-exports.getAllClassrooms = async (req, res) => {
+const getAllClassrooms = asyncWrapper(async (req, res) => {
   try {
-    const classrooms = await Classroom.find();
+    const classrooms = await Classroom.findAll();
     res.json(classrooms);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error('Error fetching classrooms:', error);
+    res.status(500).json({ message: 'Error fetching classrooms' });
   }
-};
-exports.getClassrooms = async (req, res) => {
-    const { schoolId } = req.query;
-    try {
-      const query = schoolId ? { school: schoolId } : {};
-      const classrooms = await Classroom.find(query).populate('school');
-      res.status(200).json(classrooms);
-    } catch (err) {
-      res.status(500).json({ message: 'Server error', error: err });
-    }
-  };
+});
 
 // Update a classroom
-exports.updateClassroom = async (req, res) => {
+const updateClassroom = asyncWrapper(async (req, res) => {
+  const { id } = req.params;
+  const updateData = req.body;
+
   try {
-    const classroom = await Classroom.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(classroom);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    const classroom = await Classroom.findByPk(id);
+    if (!classroom) {
+      return res.status(404).json({ message: 'Classroom not found' });
+    }
+
+    Object.assign(classroom, updateData);
+    await classroom.save();
+
+    res.json({ message: 'Classroom updated successfully', classroom });
+  } catch (error) {
+    console.error('Error updating classroom:', error);
+    res.status(500).json({ message: 'Error updating classroom' });
   }
-};
+});
 
 // Delete a classroom
-exports.deleteClassroom = async (req, res) => {
+const deleteClassroom = asyncWrapper(async (req, res) => {
+  const { id } = req.params;
+
   try {
-    await Classroom.findByIdAndDelete(req.params.id);
-    res.status(204).end();
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const classroom = await Classroom.findByPk(id);
+    if (!classroom) {
+      return res.status(404).json({ message: 'Classroom not found' });
+    }
+
+    await Classroom.destroy({ where: { id } });
+    res.status(200).json({ message: 'Classroom successfully deleted' });
+  } catch (error) {
+    console.error('Error deleting classroom:', error);
+    res.status(500).json({ message: 'Error deleting classroom' });
   }
+});
+
+module.exports = {
+  createClassroom,
+  getAllClassrooms,
+  updateClassroom,
+  deleteClassroom,
 };

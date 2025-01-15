@@ -1,7 +1,9 @@
 const bcrypt = require('bcrypt');
-const User = require('../models/User');
-const Mentor = require('../models/Mentor');
+const User = require('../model/User');
+const Mentor = require('../model/Mentor');
 const nodemailer = require('nodemailer');
+const { Op } = require('sequelize');
+const router = require('express').Router();
 
 // Configure email transporter using existing settings
 const transporter = nodemailer.createTransport({
@@ -21,7 +23,7 @@ router.post('/reset-password', async (req, res) => {
     
     // Find user/mentor
     const Model = userType === 'student' ? User : Mentor;
-    const user = await Model.findById(userId);
+    const user = await Model.findByPk(userId);
     
     if (!user) {
       return res.status(404).json({ message: 'Korisnik nije pronađen.' });
@@ -73,14 +75,16 @@ router.post('/remove-student-from-mentor', async (req, res) => {
     const { mentorId, studentId } = req.body;
 
     // Update mentor document
-    await Mentor.findByIdAndUpdate(mentorId, {
-      $pull: { students: { ucenikId: studentId } }
-    });
+    await Mentor.update(
+      { students: sequelize.fn('array_remove', sequelize.col('students'), studentId) },
+      { where: { id: mentorId } }
+    );
 
     // Update student document
-    await User.findByIdAndUpdate(studentId, {
-      $unset: { mentor: "" }
-    });
+    await User.update(
+      { mentor: null },
+      { where: { id: studentId } }
+    );
 
     res.status(200).json({ message: 'Student removed successfully' });
   } catch (error) {
@@ -100,20 +104,26 @@ router.post('/users', async (req, res) => {
 
     // Search in both collections
     const [students, mentors] = await Promise.all([
-      User.find({
-        isStudent: true,
-        $or: [
-          { ime: { $regex: searchRegex } },
-          { prezime: { $regex: searchRegex } }
-        ]
-      }).select('_id ime prezime isStudent'),
+      User.findAll({
+        where: {
+          isStudent: true,
+          [Op.or]: [
+            { ime: { [Op.like]: `%${safeQuery}%` } },
+            { prezime: { [Op.like]: `%${safeQuery}%` } }
+          ]
+        },
+        attributes: ['id', 'ime', 'prezime', 'isStudent']
+      }),
       
-      Mentor.find({
-        $or: [
-          { ime: { $regex: searchRegex } },
-          { prezime: { $regex: searchRegex } }
-        ]
-      }).select('_id ime prezime isMentor')
+      Mentor.findAll({
+        where: {
+          [Op.or]: [
+            { ime: { [Op.like]: `%${safeQuery}%` } },
+            { prezime: { [Op.like]: `%${safeQuery}%` } }
+          ]
+        },
+        attributes: ['id', 'ime', 'prezime', 'isMentor']
+      })
     ]);
 
     // Combine and send results
@@ -128,4 +138,6 @@ router.post('/users', async (req, res) => {
       error: error.message 
     });
   }
-}); 
+});
+
+module.exports = router; 

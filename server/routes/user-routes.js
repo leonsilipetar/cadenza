@@ -48,10 +48,9 @@ const { getNotifications } = require('../controllers/notification-controller.js'
 const router = express.Router();
 
 // User-related routes
-router.post("/signup", verifyToken, signup);
-router.put("/update-korisnik/:userId", verifyToken, updateDetaljiKorisnika);
+router.post("/signup", signup);
 router.post("/login", login);
-router.get("/user", verifyToken, getUser);
+router.get("/user", getUser);
 router.get("/korisnici", verifyToken, getKorisnici);
 router.get("/profil", verifyToken, getUser);
 router.get("/korisnik/:userId", verifyToken, getDetaljiKorisnika);

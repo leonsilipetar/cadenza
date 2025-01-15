@@ -1,108 +1,85 @@
-const fs = require('fs');
-const path = require('path');
-const handlebars = require('handlebars');
-const pdf = require('pdf-creator-node');
-const InvoiceModel = require('../model/Invoice.js');
-const User = require('../model/User.js');
-const Program = require('../model/Program');
-const PDFDocument = require('pdfkit');
+const Invoice = require('../model/Invoice');
+const asyncWrapper = require('../middleware/asyncWrapper');
 
-const addInvoice = async (req, res) => {
-    try {
-      const { studentIds, ...invoiceData } = req.body;
-  
-      // Create and save the invoice
-      const newInvoice = new Invoice({ ...invoiceData, studentIds });
-      await newInvoice.save();
-  
-      // Update student documents with the new invoice ID
-      await User.updateMany(
-        { _id: { $in: studentIds } },
-        { $push: { racuni: newInvoice._id } }
-      );
-  
-      res.status(201).json(newInvoice);
-    } catch (error) {
-      res.status(500).send('Error adding invoice');
-    }
-  };
-
-  const getUserInvoices = async (req, res) => {
-    const { userId } = req.params;
-    try {
-        const invoices = await InvoiceModel.find({ userId });
-        return res.json(invoices);
-    } catch (error) {
-        return res.status(500).json({ error: 'Error fetching invoices' });
-    }
-};
-
-
-
-const generateInvoice = async (req, res) => {
-  const { month } = req.body; // Mesec iz zahteva
+// Create a new invoice
+const createInvoice = asyncWrapper(async (req, res) => {
+  const { userId, amount, description } = req.body;
 
   try {
-    // Pronađi sve korisnike koji su studenti
-    const students = await User.find({ isStudent: true });
+    const newInvoice = await Invoice.create({
+      userId,
+      amount,
+      description,
+      date: new Date(),
+    });
 
-    const invoices = [];
-    for (const student of students) {
-      const amount = 60;
-      const details = `Račun za mesec ${month}`;
-      const invoicePath = `./invoices/${student._id}_invoice_${month}.pdf`; // Putanja za PDF
+    res.status(201).json(newInvoice);
+  } catch (error) {
+    console.error('Error creating invoice:', error);
+    res.status(500).json({ message: 'Error creating invoice' });
+  }
+});
 
-      // Generiši PDF
-      const doc = new PDFDocument();
-      const writeStream = fs.createWriteStream(invoicePath);
-      doc.pipe(writeStream);
-      doc.fontSize(25).text('Invoice', { align: 'center' });
-      doc.text(`User ID: ${student._id}`);
-      doc.text(`Amount: ${amount}`);
-      doc.text(`Details: ${details}`);
-      doc.end();
+// Get all invoices for a user
+const getUserInvoices = asyncWrapper(async (req, res) => {
+  const userId = req.user.id; // Assuming user ID is stored in req.user
 
-      // Sačekaj da se PDF završi
-      await new Promise((resolve) => writeStream.on('finish', resolve));
+  try {
+    const invoices = await Invoice.findAll({
+      where: { userId },
+      order: [['date', 'DESC']],
+    });
 
-      // Sačuvaj račun u bazu podataka
-      const invoice = new InvoiceModel({
-        userId: student._id,
-        amount,
-        details,
-        pdfPath: invoicePath,
-      });
-      await invoice.save();
-      invoices.push(invoice);
+    res.json(invoices);
+  } catch (error) {
+    console.error('Error fetching invoices:', error);
+    res.status(500).json({ message: 'Error fetching invoices' });
+  }
+});
+
+// Update an invoice
+const updateInvoice = asyncWrapper(async (req, res) => {
+  const { id } = req.params;
+  const updateData = req.body;
+
+  try {
+    const invoice = await Invoice.findByPk(id);
+    if (!invoice) {
+      return res.status(404).json({ message: 'Invoice not found' });
     }
 
-    return res.status(201).json(invoices);
+    Object.assign(invoice, updateData);
+    await invoice.save();
+
+    res.json({ message: 'Invoice updated successfully', invoice });
   } catch (error) {
-    return res.status(500).json({ error: 'Greška pri generisanju računa.' });
+    console.error('Error updating invoice:', error);
+    res.status(500).json({ message: 'Error updating invoice' });
   }
-};
+});
 
-
-const downloadInvoice = async (req, res) => {
+// Delete an invoice
+const deleteInvoice = asyncWrapper(async (req, res) => {
   const { id } = req.params;
 
   try {
-      // Pretpostavimo da generiramo PDF na zahtjev
-      const pdfPath = path.resolve(`./invoices/${id}.pdf`); // Privremena pohrana PDF-a
+    const invoice = await Invoice.findByPk(id);
+    if (!invoice) {
+      return res.status(404).json({ message: 'Invoice not found' });
+    }
 
-      if (!fs.existsSync(pdfPath)) {
-          // Generiraj PDF ako ne postoji
-          await generateInvoice(id); // Funkcija koja generira PDF na osnovu `id`
-      }
-
-      res.download(pdfPath, 'racun.pdf');
+    await Invoice.destroy({ where: { id } });
+    res.status(200).json({ message: 'Invoice successfully deleted' });
   } catch (error) {
-      console.error('Error downloading invoice:', error);
-      res.status(500).send('Error downloading invoice');
+    console.error('Error deleting invoice:', error);
+    res.status(500).json({ message: 'Error deleting invoice' });
   }
-};
+});
 
-exports.downloadInvoice = downloadInvoice ;
-exports.generateInvoice =  generateInvoice ;
-exports.addInvoice = addInvoice ;
+module.exports = {
+  createInvoice,
+  getUserInvoices,
+  updateInvoice,
+  deleteInvoice,
+};
 

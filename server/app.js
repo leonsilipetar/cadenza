@@ -1,3 +1,13 @@
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
+const app = express();
+
+// CORS configuration
 app.use(cors({
   origin: true,
   credentials: true,
@@ -12,7 +22,7 @@ app.use(session({
   name: '__Host-sid',
   cookie: {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     maxAge: 1000 * 60 * 60 * 24
   },
@@ -27,5 +37,13 @@ app.use(rateLimit({
   max: 100 // limit each IP to 100 requests per windowMs
 }));
 
-app.use(mongoSanitize());
+// Error handling middleware (optional)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+// Other middleware and routes can be added here
+
+module.exports = app;
   

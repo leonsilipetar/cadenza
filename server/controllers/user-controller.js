@@ -2,9 +2,7 @@ const User = require('../model/User.js');
 const Mentor = require('../model/Mentor.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
 const asyncWrapper = require("../middleware/asyncWrapper.js");
-const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const Raspored = require('../model/Raspored');
 const RasporedTeorija = require('../model/RasporedTeorija');
@@ -15,7 +13,7 @@ const signup = asyncWrapper(async (req, res, next) => {
   const {
     korisnickoIme,
     email,
-    program, // Pretpostavljam da ovdje dolazi ID programa
+    program,
     isAdmin,
     isMentor,
     isStudent,
@@ -34,19 +32,17 @@ const signup = asyncWrapper(async (req, res, next) => {
     school,
   } = req.body;
 
-  const existingUser = await User.findOne({ email: email.trim().toLowerCase() });
+  const existingUser = await User.findOne({ where: { email: email.trim().toLowerCase() } });
   if (existingUser) {
     return res.status(400).json({ message: 'Korisnik već postoji!!' });
   }
 
-  // Generate a random password
   const passwordLength = 8;
   const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   const randomPassword = Array.from({ length: passwordLength }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
 
   console.log('password: ', randomPassword);
 
-  // Add password strength validation
   if (!isStrongPassword(randomPassword)) {
     return res.status(400).json({
       message: "Password must contain uppercase, lowercase, number, special char"
@@ -56,7 +52,7 @@ const signup = asyncWrapper(async (req, res, next) => {
   try {
     const hashPassword = await bcrypt.hash(randomPassword, 12);
 
-    const user = new User({
+    const user = await User.create({
       korisnickoIme,
       email,
       isAdmin,
@@ -78,21 +74,16 @@ const signup = asyncWrapper(async (req, res, next) => {
       school,
     });
 
-    await user.save();
-
     // Poveži učenika s programom
     if (program) {
-      const programObj = await Program.findById(program);
+      const programObj = await Program.findByPk(program);
       if (programObj) {
-        programObj.students.push(user._id);
-        await programObj.save();
-
-        user.programIds.push(program); // Dodaj program ID korisniku
-        await user.save(); // Spremi izmjene korisnika
+        await programObj.addStudent(user.id); // Assuming a many-to-many relationship
+        user.programIds.push(program);
+        await user.save();
       }
     }
 
-    // Send the random password to the user's email
     await sendPasswordEmail(email, randomPassword);
 
     return res.status(201).json({
@@ -103,9 +94,6 @@ const signup = asyncWrapper(async (req, res, next) => {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-
-
-
 
 const sendPasswordEmail = async (email, password) => {
   const transporter = nodemailer.createTransport({
@@ -179,7 +167,6 @@ const sendPasswordEmail = async (email, password) => {
     console.error('Error sending email:', error);
   }
 };
-
 
 const updatePassword = asyncWrapper(async (req, res) => {
   const { userId, userType, email } = req.body;
@@ -400,27 +387,26 @@ const refreshToken = async (req, res) => {
   }
 };
 
+async function getUser(req, res, next) {
+  try {
+    const userId = req.user._id;
+    const foundUser = await User.findById(userId, "-password");
 
-
-  async function getUser(req, res, next) {
-    try {
-      const userId = req.user._id;
-      const foundUser = await User.findById(userId, "-password");
-
-      if (!foundUser) {
-        const foundMentor = await Mentor.findById(userId, "-password");
-        if (!foundMentor) {
-          return res.status(404).json({ message: "User or Mentor not found" });
-        }
-        return res.status(200).json({ user: foundMentor, token: req.cookies.token });
+    if (!foundUser) {
+      const foundMentor = await Mentor.findById(userId, "-password");
+      if (!foundMentor) {
+        return res.status(404).json({ message: "User or Mentor not found" });
       }
-
-      return res.status(200).json({ user: foundUser, token: req.cookies.token });
-    } catch (err) {
-      console.error('Error fetching user:', err);
-      return res.status(500).json({ message: "Internal Server Error" });
+      return res.status(200).json({ user: foundMentor, token: req.cookies.token });
     }
-  };
+
+    return res.status(200).json({ user: foundUser, token: req.cookies.token });
+  } catch (err) {
+    console.error('Error fetching user:', err);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 const getAllStudents = async (req, res, next) => {
   try {
     // Update fields to include korisnickoIme and oib
@@ -431,8 +417,6 @@ const getAllStudents = async (req, res, next) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
-
-// Assuming you have your User and Mentor models properly defined and imported
 
 const searchUsersAndMentors = async (req, res) => {
   try {
@@ -492,8 +476,6 @@ const searchUsersAndMentors = async (req, res) => {
   }
 };
 
-
-
 const getKorisnici = async (req, res, next) => {
   try {
     // Select only specific fields (ime, prezime, program) from the database
@@ -533,8 +515,6 @@ const getDetaljiKorisnika = async (req, res, next) => {
   }
 };
 
-
-
 const updateDetaljiKorisnika = async (req, res, next) => {
   try {
     const userId = req.params.userId;
@@ -561,6 +541,7 @@ const updateDetaljiKorisnika = async (req, res, next) => {
     next(err);
   }
 };
+
 const getUserInvoices = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -583,70 +564,34 @@ const deleteUser = async (req, res) => {
   const { userType } = req.body;
 
   try {
-    // Start a session for transaction
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    const Model = userType === 'student' ? User : Mentor;
+    const user = await Model.findByPk(id);
 
-    try {
-      // Find and delete the user
-      const Model = userType === 'student' ? User : Mentor;
-      const user = await Model.findById(id);
-
-      if (!user) {
-        throw new Error('User not found');
-      }
-
-      // If deleting a student
-      if (userType === 'student') {
-        // Remove student from mentor's list
-        if (user.mentor) {
-          await Mentor.updateMany(
-            { _id: user.mentor },
-            { $pull: { students: user._id } }
-          );
-        }
-
-        // Delete student's schedule
-        await Raspored.deleteMany({ ucenikId: user._id });
-
-        // Delete related invoices
-        await Invoice.deleteMany({ userId: user._id });
-
-        // Delete related chat messages
-        await Chat.deleteMany({
-          $or: [
-            { senderId: user._id },
-            { recipientId: user._id }
-          ]
-        });
-      }
-
-      // If deleting a mentor
-      if (userType === 'mentor') {
-        // Update all students who had this mentor
-        await User.updateMany(
-          { mentor: user._id },
-          { $unset: { mentor: "" } }
-        );
-
-        // Delete mentor's schedule
-        await RasporedTeorija.deleteMany({ mentorId: user._id });
-      }
-
-      // Finally delete the user
-      await Model.findByIdAndDelete(id);
-
-      // Commit the transaction
-      await session.commitTransaction();
-      session.endSession();
-
-      res.status(200).json({ message: 'User successfully deleted' });
-    } catch (error) {
-      // If anything fails, abort the transaction
-      await session.abortTransaction();
-      session.endSession();
-      throw error;
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
+
+    if (userType === 'student') {
+      if (user.mentor) {
+        await Mentor.update(
+          { students: sequelize.fn('array_remove', sequelize.col('students'), user.id) },
+          { where: { id: user.mentor } }
+        );
+      }
+
+      await Raspored.destroy({ where: { ucenikId: user.id } });
+      await Invoice.destroy({ where: { userId: user.id } });
+      await Chat.destroy({ where: { [Op.or]: [{ senderId: user.id }, { recipientId: user.id }] } });
+    }
+
+    if (userType === 'mentor') {
+      await User.update({ mentor: null }, { where: { mentor: user.id } });
+      await RasporedTeorija.destroy({ where: { mentorId: user.id } });
+    }
+
+    await Model.destroy({ where: { id } });
+
+    res.status(200).json({ message: 'User successfully deleted' });
   } catch (error) {
     console.error('Error deleting user:', error);
     res.status(500).json({

@@ -1,66 +1,42 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/dbConfig');
 
-const Schema = mongoose.Schema;
-
-const scheduleSchema = new Schema({
+const Raspored = sequelize.define('Raspored', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
   ucenikId: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Users', // Assuming Users is the table for students
+      key: 'id',
+    },
   },
   mentorId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Mentor',
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Mentors', // Assuming Mentors is the table for mentors
+      key: 'id',
+    },
   },
-    pon: {
-      type: [{
-        dvorana: String,
-        vrijeme: String,
-        mentor: String, 
-      }],
-      default: [],
-    },
-    uto: {
-      type: [{
-        dvorana: String,
-        vrijeme: String,
-        mentor: String, 
-      }],
-      default: [],
-    },
-    sri: {
-      type: [{
-        dvorana: String,
-        vrijeme: String,
-        mentor: String, 
-      }],
-      default: [],
-    },
-    cet: {
-      type: [{
-        dvorana: String,
-        vrijeme: String,
-        mentor: String, 
-      }],
-      default: [],
-    },
-    pet: {
-      type: [{
-        dvorana: String,
-        vrijeme: String,
-        mentor: String, 
-      }],
-      default: [],
-    },
-    sub: {
-        type: [{
-          dvorana: String,
-          vrijeme: String,
-          mentor: String, 
-        }],
-        default: [],
-      },
+  dan: {
+    type: DataTypes.STRING, // e.g., 'pon', 'uto', etc.
   },
-  { timestamps: true }
-  );
+  vrijeme: {
+    type: DataTypes.STRING, // e.g., '10:00 AM'
+  },
+  predmet: {
+    type: DataTypes.STRING, // Subject or topic
+  },
+  // Add other fields as necessary
+});
 
-module.exports = mongoose.model('Raspored', scheduleSchema);
+// Define relationships if needed
+Raspored.associate = (models) => {
+  Raspored.belongsTo(models.User, { foreignKey: 'ucenikId' });
+  Raspored.belongsTo(models.Mentor, { foreignKey: 'mentorId' });
+};
+
+module.exports = Raspored;

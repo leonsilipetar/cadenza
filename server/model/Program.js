@@ -1,14 +1,28 @@
 // models/program.js
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/dbConfig');
 
-const programSchema = new Schema({
-  naziv: { type: String, required: true },
-  cijena: { type: Number, required: true }, // Osnovna cijena
-  tip: { type: String, enum: ['grupno', 'individualno1', 'individualno2'], required: true }, // Vrsta tečaja
-  skola: { type: Schema.Types.ObjectId, ref: 'School', required: true },
-  mentori: [{ type: Schema.Types.ObjectId, ref: 'Mentor' }], // Povezivanje s mentorima
-  students: [{ type: Schema.Types.ObjectId, ref: 'User' }] // Povezivanje s učenicima
-}, { timestamps: true });
+const Program = sequelize.define('Program', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  // Add other fields as necessary
+});
 
-module.exports = mongoose.model('Program', programSchema);
+// Define relationships if needed
+Program.associate = (models) => {
+  Program.hasMany(models.User, { foreignKey: 'programId' }); // Assuming Users have a programId
+  Program.hasMany(models.Mentor, { foreignKey: 'programId' }); // Assuming Mentors have a programId
+};
+
+module.exports = Program;

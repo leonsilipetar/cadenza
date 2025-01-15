@@ -1,42 +1,27 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/dbConfig');
 
-const postSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-    trim: true
+const Post = sequelize.define('Post', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
   },
-  content: {
-    type: String,
-    required: true
+  title: DataTypes.STRING,
+  content: DataTypes.TEXT,
+  visibility: DataTypes.STRING,
+  mentorId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Mentors',
+      key: 'id',
+    },
   },
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Mentor',
-    required: true
-  },
-  visibility: {
-    type: String,
-    enum: ['admin', 'mentor', 'public'],
-    default: 'public'
-  },
-  school: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'School',
-    required: true
-  },
-  showAllSchools: {
-    type: Boolean,
-    default: false
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  }
 });
 
-module.exports = mongoose.model('Post', postSchema); 
+// Define relationships
+Post.associate = (models) => {
+  Post.belongsTo(models.Mentor, { foreignKey: 'mentorId' });
+};
+
+module.exports = Post;

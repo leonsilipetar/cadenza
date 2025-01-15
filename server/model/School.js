@@ -1,13 +1,27 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/dbConfig');
 
-const Schema = mongoose.Schema;
-
-const schoolSchema = new Schema({
-  name: { type: String, required: true },
-  address: {
-    street: String,
-    location: String
+const School = sequelize.define('School', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
   },
-}, { timestamps: true });
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  address: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  // Add other fields as necessary
+});
 
-module.exports = mongoose.model('School', schoolSchema);
+// Define relationships if needed
+School.associate = (models) => {
+  School.hasMany(models.User, { foreignKey: 'schoolId' }); // Assuming Users have a schoolId
+  School.hasMany(models.Mentor, { foreignKey: 'schoolId' }); // Assuming Mentors have a schoolId
+};
+
+module.exports = School;

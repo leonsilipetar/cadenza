@@ -1,103 +1,77 @@
-const RasporedTeorija = require('../model/RasporedTeorija');
+const Teorija = require('../model/Teorija');
+const asyncWrapper = require('../middleware/asyncWrapper');
 
-const updateTeorija = async (req, res) => {
-    try {
-        const { raspored } = req.body;
+// Create a new theory
+const createTeorija = asyncWrapper(async (req, res) => {
+  const { title, description, programId } = req.body;
 
-        // Assuming you have a logged-in user and their ID is stored in req.userId
-        const userId = req.userId;
+  try {
+    const newTeorija = await Teorija.create({
+      title,
+      description,
+      programId,
+    });
 
-        // Find the existing RasporedTeorija for the logged-in user
-        let rasporedTeorija = await RasporedTeorija.findOne({ userId });
+    res.status(201).json(newTeorija);
+  } catch (error) {
+    console.error('Error creating theory:', error);
+    res.status(500).json({ message: 'Error creating theory' });
+  }
+});
 
-        if (!rasporedTeorija) {
-            // If the RasporedTeorija doesn't exist, create a new one
-            rasporedTeorija = new RasporedTeorija({ userId });
-        }
+// Get all theories
+const getTeorija = asyncWrapper(async (req, res) => {
+  try {
+    const teorijaList = await Teorija.findAll();
+    res.json(teorijaList);
+  } catch (error) {
+    console.error('Error fetching theories:', error);
+    res.status(500).json({ message: 'Error fetching theories' });
+  }
+});
 
-        // Iterate over each day in raspored and update the schedule
-        raspored.forEach((item) => {
-            const { day, dvorana, vrijeme, mentor } = item;
+// Update a theory
+const updateTeorija = asyncWrapper(async (req, res) => {
+  const { id } = req.params;
+  const updateData = req.body;
 
-            // Check if the day already has an array, if not, initialize it
-            if (!rasporedTeorija[day]) {
-                rasporedTeorija[day] = [];
-            }
-
-            // Add the new term to the array for the specific day
-            rasporedTeorija[day].push({
-                dvorana: dvorana || '',
-                vrijeme: vrijeme || '', // Assuming you want to store hours as a number
-                mentor: mentor || '',
-            });
-        });
-
-        // Save the updated RasporedTeorija
-        await rasporedTeorija.save();
-
-        res.status(200).json({ message: 'Raspored teorija updated successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error', error: error.message });
+  try {
+    const teorija = await Teorija.findByPk(id);
+    if (!teorija) {
+      return res.status(404).json({ message: 'Theory not found' });
     }
-};
 
+    Object.assign(teorija, updateData);
+    await teorija.save();
 
-const getTeorija = async (req, res) => {
-    try {
-        // Assuming you want to retrieve all Teorija data
-        const teorija = await RasporedTeorija.find();
+    res.json({ message: 'Theory updated successfully', teorija });
+  } catch (error) {
+    console.error('Error updating theory:', error);
+    res.status(500).json({ message: 'Error updating theory' });
+  }
+});
 
-        res.status(200).json({teorija});
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error', error: error.message });
+// Delete a theory
+const deleteTeorija = asyncWrapper(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const teorija = await Teorija.findByPk(id);
+    if (!teorija) {
+      return res.status(404).json({ message: 'Theory not found' });
     }
+
+    await Teorija.destroy({ where: { id } });
+    res.status(200).json({ message: 'Theory successfully deleted' });
+  } catch (error) {
+    console.error('Error deleting theory:', error);
+    res.status(500).json({ message: 'Error deleting theory' });
+  }
+});
+
+module.exports = {
+  createTeorija,
+  getTeorija,
+  updateTeorija,
+  deleteTeorija,
 };
-
-const deleteTermin = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { day, teorijaID } = req.query;
-
-        // Log the values for debugging
-        console.log("id:", id);
-        console.log("day:", day);
-        console.log("teorijaID:", teorijaID);
-
-        // Find the document by teorija ID
-        const rasporedTeorija = await RasporedTeorija.findById(teorijaID);
-
-        if (!rasporedTeorija) {
-            return res.status(404).json({ message: 'RasporedTeorija not found' });
-        }
-
-        // Find the index of the term in the specified day array
-        const termIndex = rasporedTeorija[day].findIndex(term => term._id == id);
-
-        if (termIndex === -1) {
-            return res.status(404).json({ message: 'Termin not found' });
-        }
-
-        // Remove the term from the specified day array
-        rasporedTeorija[day].splice(termIndex, 1);
-
-        // Save the updated document
-        await rasporedTeorija.save();
-
-        res.status(200).json({ message: 'Termin deleted successfully' });
-    } catch (error) {
-        console.error('Error deleting term:', error);
-        res.status(500).json({ message: 'Internal server error', error: error.message });
-    }
-};
-
-
-
-
-
-
-
-
-
-module.exports = { updateTeorija, getTeorija, deleteTermin };

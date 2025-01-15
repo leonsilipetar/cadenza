@@ -1,59 +1,35 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/dbConfig');
 
-const userSchema = new Schema({
-  korisnickoIme: String,
-  password: String,
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  korisnickoIme: DataTypes.STRING,
   email: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
     unique: true,
   },
-  ime: String,
-  prezime: String,
-  isAdmin: { type: Boolean, default: false },
-  isMentor: { type: Boolean, default: false },
-  isStudent: { type: Boolean, default: false },
-  oib: { type: String, required: true, unique: true },
-  brojMobitela: String,
-  datumRodjenja: Date,
-  adresa: {
-    ulica: String,
-    kucniBroj: String,
-    mjesto: String,
-  },
-  pohadjaTeoriju: Boolean,
-  programIds: [{ type: Schema.Types.ObjectId, ref: 'Program' }], // Reference na programe
-  napomene: { type: [String], default: [] },
-  maloljetniClan: Boolean,
-  roditelj1: {
-    ime: String,
-    prezime: String,
-    brojMobitela: String,
-  },
-  roditelj2: {
-    ime: String,
-    prezime: String,
-    brojMobitela: String,
-  },
-  mentors: [{ 
-    type: Schema.Types.ObjectId,
-    ref: 'Mentor',
-  }],
-  rasporedId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Raspored',
-  },
-  rasporedTeorijaId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Raspored',
-  },
-  school: {
-    type: Schema.Types.ObjectId,
-    ref: 'School',
-    required: true,
-  },
-  racuni: [{ type: Schema.Types.ObjectId, ref: 'Invoice' }]
-}, { timestamps: true });
+  password: DataTypes.STRING,
+  isAdmin: DataTypes.BOOLEAN,
+  isMentor: DataTypes.BOOLEAN,
+  isStudent: DataTypes.BOOLEAN,
+  oib: DataTypes.STRING,
+  ime: DataTypes.STRING,
+  prezime: DataTypes.STRING,
+  brojMobitela: DataTypes.STRING,
+  datumRodjenja: DataTypes.DATE,
+  adresa: DataTypes.STRING,
+});
 
-module.exports = mongoose.model('User', userSchema);
+// Define relationships
+User.associate = (models) => {
+  User.hasMany(models.Mentor, { foreignKey: 'userId' });
+  User.hasMany(models.Schedule, { foreignKey: 'userId' });
+  User.hasMany(models.Invoice, { foreignKey: 'userId' });
+  User.hasMany(models.Notification, { foreignKey: 'userId' });
+};
+
+module.exports = User;

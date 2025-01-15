@@ -1,58 +1,42 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/dbConfig');
 
-const Schema = mongoose.Schema;
-
-const scheduleSchema = new Schema({
-    pon: {
-      type: [{
-        dvorana: String,
-        vrijeme: String,
-        mentor: String, 
-      }],
-      default: [],
-    },
-    uto: {
-      type: [{
-        dvorana: String,
-        vrijeme: String,
-        mentor: String, 
-      }],
-      default: [],
-    },
-    sri: {
-      type: [{
-        dvorana: String,
-        vrijeme: String,
-        mentor: String, 
-      }],
-      default: [],
-    },
-    cet: {
-      type: [{
-        dvorana: String,
-        vrijeme: String,
-        mentor: String, 
-      }],
-      default: [],
-    },
-    pet: {
-      type: [{
-        dvorana: String,
-        vrijeme: String,
-        mentor: String, 
-      }],
-      default: [],
-    },
-    sub: {
-        type: [{
-          dvorana: String,
-          vrijeme: String,
-          mentor: String, 
-        }],
-        default: [],
-      },
+const RasporedTeorija = sequelize.define('RasporedTeorija', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
   },
-  { timestamps: true }
-  );
+  mentorId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Mentors', // Assuming Mentors is the table for mentors
+      key: 'id',
+    },
+  },
+  classroomId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Classrooms', // Assuming Classrooms is the table for classrooms
+      key: 'id',
+    },
+  },
+  day: {
+    type: DataTypes.STRING, // e.g., 'pon', 'uto', etc.
+  },
+  time: {
+    type: DataTypes.STRING, // e.g., '10:00 AM'
+  },
+  subject: {
+    type: DataTypes.STRING, // Subject or topic
+  },
+  // Add other fields as necessary
+});
 
-module.exports = mongoose.model('RasporedTeorija', scheduleSchema);
+// Define relationships if needed
+RasporedTeorija.associate = (models) => {
+  RasporedTeorija.belongsTo(models.Mentor, { foreignKey: 'mentorId' });
+  RasporedTeorija.belongsTo(models.Classroom, { foreignKey: 'classroomId' });
+};
+
+module.exports = RasporedTeorija;

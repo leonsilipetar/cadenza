@@ -1,42 +1,26 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/dbConfig');
 
-const mentorSchema = new Schema({
-  korisnickoIme: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  program: String,
-  isAdmin: { type: Boolean, default: false },
-  isMentor: { type: Boolean, default: true },
-  isStudent: { type: Boolean, default: false },
-  oib: { type: String, required: true, unique: true },
-  ime: { type: String, required: true },
-  prezime: { type: String, required: true },
-  brojMobitela: { type: String },
-  datumRodjenja: { type: Date },
-  adresa: {
-    ulica: { type: String },
-    kucniBroj: { type: String },
-    mjesto: { type: String },
+const Mentor = sequelize.define('Mentor', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
   },
-  napomene: {
-    type: [String],
-    default: [],
+  userId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Users',
+      key: 'id',
+    },
   },
-  password: String,
-  students: [
-    {
-      ucenikId: { type: Schema.Types.ObjectId, ref: 'User' },
-      ime: String,
-      prezime: String,
-    }
-  ],
-  school: {
-    type: Schema.Types.ObjectId,
-    ref: 'School',
-    required: true,
-  },
+  // Other mentor fields...
 });
 
-const Mentor = mongoose.model('Mentor', mentorSchema);
+// Define relationships
+Mentor.associate = (models) => {
+  Mentor.belongsTo(models.User, { foreignKey: 'userId' });
+  Mentor.hasMany(models.Schedule, { foreignKey: 'mentorId' });
+};
 
 module.exports = Mentor;
