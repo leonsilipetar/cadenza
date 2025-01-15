@@ -59,26 +59,7 @@ router.get('/all-students', getAllStudents);
 router.post('/users', searchUsersAndMentors);
 router.get('/users/:userId/invoices', getUserInvoices);
 router.post("/reset-password", verifyToken, updatePassword);
-router.post("/logout", async (req, res) => {
-  try {
-    res.cookie('token', '', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      expires: new Date(0),
-      path: '/'
-    });
-
-    if (req.session) {
-      req.session.destroy();
-    }
-
-    res.status(200).json({ message: 'Logged out successfully' });
-  } catch (error) {
-    console.error('Logout error:', error);
-    res.status(500).json({ message: 'Error during logout' });
-  }
-});
+router.post("/logout", logout);
 // Refresh token route
 router.post('/refresh', refreshToken);
 
