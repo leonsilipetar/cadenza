@@ -292,36 +292,51 @@ const sendPasswordEmail = async (email, password) => {
 
     const getStudentRaspored = async (req, res) => {
       const studentId = req.params.id;
-
+    
       try {
         // Validate the student ID
         if (!mongoose.Types.ObjectId.isValid(studentId)) {
           return res.status(400).json({ message: 'Invalid student ID' });
         }
-
+    
         // Find the student by ID
         const student = await User.findById(studentId);
-
+    
         // Check if the student exists
         if (!student) {
           return res.status(404).json({ message: 'Student not found' });
         }
-
-        // Retrieve the schedule for the student
+    
+        // Retrieve or create the schedule for the student
         let studentSchedule = await Raspored.findOne({ ucenikId: studentId });
-
-        // If the schedule does not exist, create a new one
+    
         if (!studentSchedule) {
+          // Create a new schedule if it doesn't exist
           studentSchedule = new Raspored({ ucenikId: studentId });
           await studentSchedule.save();
+    
+          // Update the student's rasporedId field with the new schedule ID
+          student.rasporedId = studentSchedule._id;
+          await student.save();
+        } else {
+          // Check if the student's rasporedId matches the schedule's ID
+          const studentRasporedId = student.rasporedId?.toString();
+          const scheduleId = studentSchedule._id.toString();
+    
+          if (!student.rasporedId || studentRasporedId !== scheduleId) {
+            // Update the student's rasporedId field if it is outdated
+            student.rasporedId = studentSchedule._id;
+            await student.save();
+          }
         }
-
+    
         res.json({ student, schedule: studentSchedule });
       } catch (err) {
         console.error('Error fetching student schedule:', err);
         res.status(500).json({ message: 'Internal Server Error' });
       }
     };
+    
     const addScheduleToStudent = async (req, res, next) => {
       const userId = req.params.id; // Assuming the user ID is passed in the request parameters
       const { schedules } = req.body; // Assuming the schedules are passed in the request body
@@ -335,6 +350,7 @@ const sendPasswordEmail = async (email, password) => {
 
         // Find the user by ID
         const user = await User.findById(userId);
+        console.log("Student from get raspored:", user);
 
         // Check if the user exists
         if (!user) {
@@ -354,28 +370,10 @@ const sendPasswordEmail = async (email, password) => {
           await existingSchedule.save();
           return res.status(200).json({ message: 'Schedule updated successfully', schedule: existingSchedule });
         }
-
-        // If user doesn't have a schedule, create a new one
-        const newSchedule = new Raspored({
-          ucenikId: userId,
-        });
-
-        // Fill in the new schedule with the provided data
-        for (const { day, dvorana, vrijeme, mentor } of schedules) {
-          newSchedule[day].push({ dvorana, vrijeme, mentor });
-        }
-
-        // Save the new schedule
-        await newSchedule.save();
-
-        // Update the user's rasporedId field with the ID of the newly created schedule
-        user.rasporedId = newSchedule._id;
-
         // Save the updated user
         await user.save();
 
         // Return a success response
-        res.status(201).json({ message: 'Schedule added to user successfully', schedule: newSchedule });
       } catch (err) {
         // Handle errors
         next(err);

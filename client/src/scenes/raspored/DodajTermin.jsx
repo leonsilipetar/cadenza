@@ -6,7 +6,6 @@ import Notification from '../../components/Notifikacija'; // Adjust the path as 
 axios.defaults.withCredentials = true;
 
 const DodajTermin = ({ onCancel, studentID }) => {
-  const [status, setStatus] = useState('');
   const [isDodajMentoraDisabled, setIsDodajMentoraDisabled] = useState(false);
   const [terms, setTerms] = useState([]);
   const [inputs, setInputs] = useState({
