@@ -208,6 +208,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
             name="email"
             id="kor-email"
             placeholder="e-mail adresa"
+            required
           />
           <label htmlFor="kor-oib">OIB:</label>
           <input
@@ -220,7 +221,6 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
             placeholder="OIB"
             maxLength={11}
             pattern="\d{11}"
-            required
           />
         </div>
 

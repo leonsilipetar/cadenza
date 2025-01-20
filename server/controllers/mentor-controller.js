@@ -6,13 +6,14 @@ const Mentor = require('../model/Mentor');
 const User = require('../model/User');
 const Raspored = require('../model/Raspored'); // Make sure to import your Mentor model
 const Notification = require('../model/Notification');
+const Program = require('../model/Program');
 
 // Controller for mentor signup
 const signupMentor = async (req, res, next) => {
   const {
     korisnickoIme,
     email,
-    program, // ID programa koji se dodjeljuje mentoru
+    program,
     isAdmin,
     isMentor,
     isStudent,
@@ -23,6 +24,8 @@ const signupMentor = async (req, res, next) => {
     datumRodjenja,
     adresa,
     napomene,
+    students,
+    school,
   } = req.body;
 
   // Generate a random password
@@ -30,7 +33,6 @@ const signupMentor = async (req, res, next) => {
   const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   const randomPassword = Array.from({ length: passwordLength }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
 
-  console.log('password: ', randomPassword);
   let existingUser;
 
   try {
@@ -60,6 +62,8 @@ const signupMentor = async (req, res, next) => {
     datumRodjenja,
     adresa,
     napomene,
+    school,
+    students,
     password: hashPassword,
   });
 

@@ -18,7 +18,7 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
     isMentor: false,
     isStudent: true,
     oib: '',
-    program: '',
+    /*program: '',*/
     brojMobitela: '',
     datumRodjenja: '',
     adresa: {
@@ -39,7 +39,6 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
       prezime: '',
       brojMobitela: '',
     },
-    mentor: '',
     school: '', // Add school to inputs
   });
 
@@ -130,6 +129,7 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
             name="email"
             id="kor-email"
             placeholder="e-mail adresa"
+            required
           />
           <label htmlFor="kor-oib">OIB:</label>
           <input
@@ -142,7 +142,6 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
             placeholder="OIB"
             maxLength={11}
             pattern="\d{11}"
-            required
           />
         </div>
 
@@ -190,6 +189,7 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
         </div>
 
         <div className="div">
+        {/*
           <label htmlFor="kor-program">Program:</label>
           <input
             className="input-login-signup"
@@ -200,21 +200,7 @@ const DodajKorisnika = ({ onDodajKorisnika, onCancel }) => {
             id="kor-program"
             placeholder="program"
           />
-          <label htmlFor="kor-mentor">Mentor:</label>
-          <select
-            className="input-login-signup"
-            value={inputs.mentor}
-            onChange={handleChange}
-            name="mentor"
-            id="kor-mentor"
-          >
-            <option value="">Odaberi mentora</option>
-            {mentors.map((mentor) => (
-              <option key={mentor._id} value={mentor._id}>
-                {mentor.ime} {mentor.prezime}
-              </option>
-            ))}
-          </select>
+          */}
           <label htmlFor="kor-skola">Škola:</label>
           <select
             className="input-login-signup"

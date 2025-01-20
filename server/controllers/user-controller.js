@@ -10,20 +10,20 @@ const Raspored = require('../model/Raspored');
 const RasporedTeorija = require('../model/RasporedTeorija');
 const Invoice = require('../model/Invoice');
 const Chat = require('../model/Chat');
+const Program = require('../model/Program.js');
 
 const signup = asyncWrapper(async (req, res, next) => {
   const {
     korisnickoIme,
     email,
-    program, // Pretpostavljam da ovdje dolazi ID programa
+    ime,
+    prezime,
     isAdmin,
     isMentor,
     isStudent,
     oib,
-    ime,
-    prezime,
+   // program,
     brojMobitela,
-    mentor,
     datumRodjenja,
     adresa,
     pohadjaTeoriju,
@@ -44,15 +44,6 @@ const signup = asyncWrapper(async (req, res, next) => {
   const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   const randomPassword = Array.from({ length: passwordLength }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
 
-  console.log('password: ', randomPassword);
-
-  // Add password strength validation
-  if (!isStrongPassword(randomPassword)) {
-    return res.status(400).json({
-      message: "Password must contain uppercase, lowercase, number, special char"
-    });
-  }
-
   try {
     const hashPassword = await bcrypt.hash(randomPassword, 12);
 
@@ -65,8 +56,8 @@ const signup = asyncWrapper(async (req, res, next) => {
       oib,
       ime,
       prezime,
+     // program,
       brojMobitela,
-      mentor,
       datumRodjenja,
       adresa,
       pohadjaTeoriju,
@@ -79,7 +70,7 @@ const signup = asyncWrapper(async (req, res, next) => {
     });
 
     await user.save();
-
+/*
     // Poveži učenika s programom
     if (program) {
       const programObj = await Program.findById(program);
@@ -91,7 +82,7 @@ const signup = asyncWrapper(async (req, res, next) => {
         await user.save(); // Spremi izmjene korisnika
       }
     }
-
+*/
     // Send the random password to the user's email
     await sendPasswordEmail(email, randomPassword);
 

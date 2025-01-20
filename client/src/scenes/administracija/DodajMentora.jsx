@@ -7,6 +7,7 @@ axios.defaults.withCredentials = true;
 const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
   const [students, setStudents] = useState([]);
   const [status, setStatus] = useState('');
+ const [schools, setSchools] = useState([]);
   const [isDodajMentoraDisabled, setIsDodajMentoraDisabled] = useState(false);
     const [odabranoDodajKorisnika, setOdabranoDodajKOrisnika] = useState(false);
     const [inputs, setInputs] = useState({
@@ -15,11 +16,10 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
         ime: '',
         prezime: '',
         isAdmin: false,
-        isMentor: false,
+        isMentor: true,
         isStudent: false,
         oib: '',
         program: '',
-        students: [],
         brojMobitela: '',
         datumRodjenja: '',
         adresa: {
@@ -28,6 +28,8 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
           mjesto: '',
         },
         napomene: [],
+        students: [],
+        school: '',
       });
       
     
@@ -66,19 +68,18 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
             }, 3000); 
           }
       };
-     /* useEffect(() => {
-        const fetchMentors = async () => {
-          try {
-            const res = await axios.get(`${ApiConfig.baseUrl}/api/korsnici`); // replace with your mentor endpoint
-            const data = res.data;
-            setStudents(data);
-          } catch (err) {
-            console.error(err);
-          }
-        };
-    
-        fetchMentors();
-      }, []);*/
+     useEffect(() => {
+      const fetchSchools = async () => {
+        try {
+          const res = await axios.get(`${ApiConfig.baseUrl}/api/schools`);
+          setSchools(res.data);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+  
+      fetchSchools();
+      }, []);
 
     return(
       <div className="popup">
@@ -115,7 +116,6 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
         placeholder="OIB"
         maxLength={11}
         pattern="\d{11}"
-        required
         />
         </div>
 
@@ -162,8 +162,26 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
           placeholder="broj mobitela"
         />
     </div>
-
+    <div className="div">
+          <label htmlFor="kor-skola">Škola:</label>
+          <select
+            className="input-login-signup"
+            value={inputs.school}
+            onChange={handleChange}
+            name="school"
+            id="kor-skola"
+          >
+            <option value="">Odaberi školu</option>
+            {schools.map((school) => (
+              <option key={school._id} value={school._id}>
+                {school.name}
+              </option>
+            ))}
+          </select>
+        </div>
+ {/*
 <div className="div">
+ 
 <label htmlFor="kor-program">Program:</label>
         <input
           className="input-login-signup"
@@ -174,6 +192,7 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
           id="kor-program"
           placeholder="program"
         />
+        
 <label htmlFor="kor-mentor">Učenici:</label>
         <input
           className="input-login-signup"
@@ -185,7 +204,7 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
           placeholder="učenici"
         />
 </div>
-        
+        */}
         
         <div className='div'>
         <label htmlFor="kor-ulica">Ulica:</label>
@@ -268,7 +287,6 @@ const DodajMentora = ({ onDodajKorisnika, onCancel }) => {
         {isDodajMentoraDisabled ? 'Spremanje' : 'Dodaj mentora'}
       </button>
         </div>
-        <div className={`div`}><p>{status}</p></div>
       </form>
     </div>
     )

@@ -13,8 +13,8 @@ const userSchema = new Schema({
   prezime: String,
   isAdmin: { type: Boolean, default: false },
   isMentor: { type: Boolean, default: false },
-  isStudent: { type: Boolean, default: false },
-  oib: { type: String, required: true, unique: true },
+  isStudent: { type: Boolean, default: true },
+  oib: { type: String, unique: true },
   brojMobitela: String,
   datumRodjenja: Date,
   adresa: {
@@ -23,7 +23,7 @@ const userSchema = new Schema({
     mjesto: String,
   },
   pohadjaTeoriju: Boolean,
-  programIds: [{ type: Schema.Types.ObjectId, ref: 'Program' }], // Reference na programe
+  program: [{ type: Schema.Types.ObjectId, ref: 'Program' }], // Reference na programe
   napomene: { type: [String], default: [] },
   maloljetniClan: Boolean,
   roditelj1: {
