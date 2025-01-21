@@ -300,16 +300,16 @@ const login = async (req, res) => {
     const token = jwt.sign(
       { id: existingUser._id },
       process.env.JWT_SECRET,
-      { expiresIn: "24h" }
+      { expiresIn: "7d" }
     );
 
-    // Set cookie token
+    // Set cookie token with 7 days expiration
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'none',
       path: '/',
-      maxAge: 24 * 60 * 60 * 1000
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
     return res.status(200).json({
@@ -321,7 +321,7 @@ const login = async (req, res) => {
         isMentor: existingUser.isMentor,
         isStudent: existingUser.isStudent
       },
-      token // Also send token in response
+      token
     });
   } catch (err) {
     console.error("Login error:", err);
@@ -371,30 +371,24 @@ const logout = async (req, res) => {
 
 const refreshToken = async (req, res) => {
   try {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader?.startsWith('Bearer ')) {
-      return res.status(401).json({ message: "No token found" });
-    }
+    const token = jwt.sign(
+      { id: req.userId },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
-    const oldToken = authHeader.split(' ')[1];
-
-    jwt.verify(oldToken, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-        console.error('Token verification error:', err);
-        return res.status(401).json({ message: "Token expired" });
-      }
-
-      const newToken = jwt.sign(
-        { id: decoded.id },
-        process.env.JWT_SECRET,
-        { expiresIn: "24h" }
-      );
-
-      res.json({ token: newToken });
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
-  } catch (error) {
-    console.error('Token refresh error:', error);
-    res.status(401).json({ message: "Token refresh failed" });
+
+    return res.status(200).json({ token });
+  } catch (err) {
+    console.error("Refresh token error:", err);
+    return res.status(500).json({ message: "Could not refresh token" });
   }
 };
 

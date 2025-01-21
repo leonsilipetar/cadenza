@@ -8,6 +8,7 @@ import ApiConfig from '../components/apiConfig.js';
 import Navigacija from './navigacija';
 import NavTop from './nav-top';
 import UserInfoComponent from '../components/UserInfo';
+import { clearPWAUser, isPWA } from '../utils/pwaUtils';
 
 axios.defaults.withCredentials = true;
 
@@ -66,9 +67,12 @@ const Profil = () => {
   
   const handleLogout = async () => {
     try {
-      await sendLogoutRequest(); // Ensure backend logout is successful
-      dispatch(authActions.logout()); // Clear Redux state
-      navigate('/login'); // Redirect to login
+      await sendLogoutRequest();
+      dispatch(authActions.logout());
+      if (isPWA()) {
+        clearPWAUser();
+      }
+      navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error.message);
       alert('Logout failed. Please try again.');
