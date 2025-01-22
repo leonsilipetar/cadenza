@@ -21,6 +21,7 @@ import { refreshToken } from './utils/auth';
 import Delete from './scenes/administracija/Delete.jsx';
 import Obavijesti from './scenes/Obavijesti.jsx';
 import { isPWA, setPWAUser, getPWAUser, clearPWAUser } from './utils/pwaUtils';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -94,21 +95,70 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path="/login" element={<Login />} aria-label="Login page" />
-      <Route path="/" element={<Welcome />} aria-label="Welcome page" />
-      {/* Protected Routes with aria-labels */}
-      <Route path="/user/*" element={<Naslovna />} aria-label="Home page" />
-      <Route path="/profil/*" element={<Profil />} aria-label="Profile page" />
-      <Route path="/chat/*" element={<Chat />} aria-label="Chat page" />
-      <Route path="/racuni/*" element={<Racuni />} aria-label="Invoices page" />
-      <Route path="/raspored/*" element={<Raspored />} aria-label="Schedule page" />
-      <Route path="/admin/*" element={<Admin />} aria-label="Admin page" />
-      <Route path="/korisnici/*" element={<Korisnici />} aria-label="Users page" />
-      <Route path="/mentori/*" element={<Mentori />} aria-label="Mentors page" />
-      <Route path="/racuni-admin/*" element={<RacuniAdmin />} aria-label="Admin invoices page" />
-      <Route path="/classrooms/*" element={<Classrooms />} aria-label="Classrooms page" />
-      <Route path="/delete/*" element={<Delete />} aria-label="Delete page" />
-      <Route path="/obavijesti/*" element={<Obavijesti />} aria-label="Notifications page" />
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Welcome />} />
+
+      {/* Protected Routes */}
+      <Route path="/user/*" element={
+        <ProtectedRoute>
+          <Naslovna />
+        </ProtectedRoute>
+      } />
+      <Route path="/profil/*" element={
+        <ProtectedRoute>
+          <Profil />
+        </ProtectedRoute>
+      } />
+      <Route path="/chat/*" element={
+        <ProtectedRoute>
+          <Chat />
+        </ProtectedRoute>
+      } />
+      <Route path="/racuni/*" element={
+        <ProtectedRoute>
+          <Racuni />
+        </ProtectedRoute>
+      } />
+      <Route path="/raspored/*" element={
+        <ProtectedRoute>
+          <Raspored />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/*" element={
+        <ProtectedRoute>
+          <Admin />
+        </ProtectedRoute>
+      } />
+      <Route path="/korisnici/*" element={
+        <ProtectedRoute>
+          <Korisnici />
+        </ProtectedRoute>
+      } />
+      <Route path="/mentori/*" element={
+        <ProtectedRoute>
+          <Mentori />
+        </ProtectedRoute>
+      } />
+      <Route path="/racuni-admin/*" element={
+        <ProtectedRoute>
+          <RacuniAdmin />
+        </ProtectedRoute>
+      } />
+      <Route path="/classrooms/*" element={
+        <ProtectedRoute>
+          <Classrooms />
+        </ProtectedRoute>
+      } />
+      <Route path="/delete/*" element={
+        <ProtectedRoute>
+          <Delete />
+        </ProtectedRoute>
+      } />
+      <Route path="/obavijesti/*" element={
+        <ProtectedRoute>
+          <Obavijesti />
+        </ProtectedRoute>
+      } />
     </Routes>
   );
 };
