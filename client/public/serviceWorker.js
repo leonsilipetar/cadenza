@@ -2,14 +2,27 @@ const CACHE_NAME = 'cadenza-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/static/js/main.chunk.js',
-  '/static/js/0.chunk.js',
-  '/static/js/bundle.js',
-  './manifest.json',
-  './favicon.ico',
-  './logo192.png',
-  './logo512.png'
+  '/manifest.json',
+  '/favicon.ico',
+  '/logo192.png',
+  '/logo512.png'
 ];
+
+// Dynamically cache JS and CSS files
+const cacheFiles = async (cache) => {
+  try {
+    // Cache initial URLs
+    await cache.addAll(urlsToCache);
+
+    // Find and cache all JS and CSS files from the document
+    const cssFiles = Array.from(document.styleSheets).map(sheet => sheet.href).filter(Boolean);
+    const jsFiles = Array.from(document.scripts).map(script => script.src).filter(Boolean);
+
+    await cache.addAll([...cssFiles, ...jsFiles]);
+  } catch (error) {
+    console.error('Cache files error:', error);
+  }
+};
 
 // Install a service worker
 self.addEventListener('install', event => {
@@ -17,10 +30,10 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        return cacheFiles(cache);
       })
   );
-  self.skipWaiting(); // Ensure the new service worker activates immediately
+  self.skipWaiting();
 });
 
 // Cache and return requests
@@ -38,18 +51,22 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Return the cached response if found
         if (response) {
-          // Fetch new version in background
-          fetch(event.request).then(response => {
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(event.request, response);
-            });
-          });
+          // Return cached response and update cache in background
+          fetch(event.request)
+            .then(networkResponse => {
+              caches.open(CACHE_NAME)
+                .then(cache => {
+                  cache.put(event.request, networkResponse.clone());
+                })
+                .catch(error => console.error('Cache update error:', error));
+            })
+            .catch(error => console.error('Background fetch error:', error));
+
           return response;
         }
 
-        // Otherwise fetch from network
+        // Network request
         return fetch(event.request)
           .then(response => {
             // Check if we received a valid response
@@ -57,13 +74,12 @@ self.addEventListener('fetch', event => {
               return response;
             }
 
-            // Clone the response
             const responseToCache = response.clone();
-
             caches.open(CACHE_NAME)
               .then(cache => {
                 cache.put(event.request, responseToCache);
-              });
+              })
+              .catch(error => console.error('Cache put error:', error));
 
             return response;
           })
@@ -79,7 +95,6 @@ self.addEventListener('fetch', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     Promise.all([
-      // Take control of all clients
       clients.claim(),
       // Remove old caches
       caches.keys().then(cacheNames => {
