@@ -11,8 +11,13 @@ export function register() {
             const newWorker = registration.installing;
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                // New content is available, but won't be used until all tabs are closed
-                console.log('New content is available; please refresh.');
+                // Show notification for new content
+                if ('Notification' in window && Notification.permission === 'granted') {
+                  new Notification('Update Available', {
+                    body: 'New content is available. Please refresh to update.',
+                    icon: '/Logo192.png'
+                  });
+                }
               }
             });
           });
@@ -22,10 +27,12 @@ export function register() {
         });
 
       // Handle updates across tabs/windows
+      let refreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (window.refreshing) return;
-        window.location.reload();
-        window.refreshing = true;
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
       });
     });
   }
