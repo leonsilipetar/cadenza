@@ -5,10 +5,10 @@ const urlsToCache = [
   '/static/js/main.chunk.js',
   '/static/js/0.chunk.js',
   '/static/js/bundle.js',
-  '/manifest.json',
-  '/favicon.ico',
-  '/logo192.png',
-  '/logo512.png'
+  'manifest.json',
+  'favicon.ico',
+  'logo192.png',
+  'logo512.png'
 ];
 
 // Install a service worker
@@ -100,4 +100,4 @@ self.addEventListener('message', event => {
   if (event.data === 'skipWaiting') {
     self.skipWaiting();
   }
-}); 
+});
