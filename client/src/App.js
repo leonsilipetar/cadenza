@@ -44,15 +44,15 @@ const App = () => {
 
     // Token validation and user fetch
     try {
-      const response = await axios.get(`${ApiConfig.baseUrl}/api/user`, { 
-        withCredentials: true 
+      const response = await axios.get(`${ApiConfig.baseUrl}/api/user`, {
+        withCredentials: true
       });
-      
+
       if (isPWA()) {
         // Store user data for PWA
         setPWAUser(response.data.user);
       }
-      
+
       dispatch(authActions.login(token));
       return true;
     } catch (error) {

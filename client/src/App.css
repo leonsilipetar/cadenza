@@ -70,9 +70,9 @@ scroll-behavior: auto !important;
     --isticanje-svijetlo: rgba(var(--isticanje), 0.5); /* Slightly transparent */
     --pozadina-svijetlo: 255, 255, 255; /* White */
     --pozadina-tamno: 20, 20, 20; /* Darker background for better contrast */
-    --iznad: rgb(204, 204, 204); /* Light gray for above elements */
+    --iznad: rgb(255, 255, 255); /* Light gray for above elements */
     --iznad-objava: rgb(var(--isticanje)); /* Keep the same */
-    --tekst: rgb(30, 30, 30); /* Dark text for better readability */
+    --tekst: 30, 30, 30; /* Dark text for better readability */
     --tamno-iznad: 50, 50, 50; /* Dark gray for above elements */
     --tamno-iznad-nav: 90, 90, 90; /* Darker gray for navigation */
     --svijetlo-iznad: 255, 255, 255; /* White */
@@ -129,7 +129,7 @@ color: #141414;
 --iznad-nav: rgb(var(--svijetlo-iznad-nav));
 --isticanje-svijetlo: rgb(var(--isticanje));
 --iznad-objava: rgb(var(--isticanje));
---pozadina: 220, 220, 220;
+--pozadina: 240, 240, 240;
 background-color: rgb(255, 251, 237);
 color-scheme: light;
 }
@@ -402,7 +402,7 @@ padding: 2rem;
 width: 100%;
 display: flex;
 justify-content: space-between;
-background-color: #d9c56372;
+background-color: #ffb13d4b;
 padding: 2rem 1rem;
 flex-wrap: wrap;
 }
@@ -793,7 +793,7 @@ height: 90vh;
 h1{
 font-size: 2rem;
 }
-.input-login-signup{width: 90%;}
+.input-login-signup{width: 95%;}
 .main-login-signup{
 width: 100%;
 display: flex;
@@ -1136,7 +1136,7 @@ align-items: center;
 flex-direction: column;
 }
 .input-login-signup{
-width: 75%;
+width: 95%;
 margin: 2%;
 border-radius: var(--radius);
 padding: var(--radius);
@@ -1145,6 +1145,9 @@ color: rgb(var(--svijetlo-tekst));
 outline: none;
 border: 1px solid rgb(208, 208, 208);
 transition: border 0.1s ease-in-out;
+}
+.glavna-forma .input-login-signup{
+  width: 75%;
 }
 .input-login-signup:focus{
 border: 1px solid rgb(var(--isticanje));
@@ -1614,7 +1617,10 @@ height: 90vh;
 h1{
 font-size: 2rem;
 }
-.input-login-signup{width: 90%;}
+.glavna-forma .input-login-signup{
+  width: 90%;
+}
+.input-login-signup{width: 95%;}
 .main-login-signup{
 width: 100%;
 display: flex;
