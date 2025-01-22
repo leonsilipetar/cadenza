@@ -4,8 +4,8 @@ const urlsToCache = [
   '/index.html',
   '/manifest.json',
   '/favicon.ico',
-  '/logo192.png',
-  '/logo512.png'
+  '/Logo192.png',
+  '/Logo512.png'
 ];
 
 // Dynamically cache JS and CSS files
