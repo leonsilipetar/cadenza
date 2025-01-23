@@ -53,7 +53,8 @@ const userSchema = new Schema({
     ref: 'School',
     required: true,
   },
-  racuni: [{ type: Schema.Types.ObjectId, ref: 'Invoice' }]
+  racuni: [{ type: Schema.Types.ObjectId, ref: 'Invoice' }],
+  fcmTokens: [String]
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

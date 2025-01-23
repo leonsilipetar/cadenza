@@ -12,6 +12,8 @@ import '../App.css';
 
 import ApiConfig from '../components/apiConfig.js';
 
+import { requestNotificationPermission } from '../services/firebaseMessaging';
+
 
 
 const Login = ({ isEmbedded = false }) => {
@@ -102,17 +104,38 @@ const Login = ({ isEmbedded = false }) => {
 
     e.preventDefault();
 
-    const data = await sendRequest();
+    try {
 
-    if (data) {
+      const data = await sendRequest();
 
-      const { token } = data;
+      if (data) {
 
-      localStorage.setItem('auth_token', token);
+        const { token } = data;
 
-      dispatch(authActions.login(token));
+        localStorage.setItem('auth_token', token);
 
-      history('/user');
+        dispatch(authActions.login(token));
+
+        history('/user');
+
+        // Request notification permission after successful login
+        if ('Notification' in window) {
+          try {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+              await requestNotificationPermission();
+            }
+          } catch (error) {
+            console.error('Error requesting notification permission:', error);
+          }
+        }
+      }
+
+    } catch (err) {
+
+      console.error(err);
+
+      handleErrorM();
 
     }
 

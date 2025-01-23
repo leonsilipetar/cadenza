@@ -7,6 +7,7 @@ const User = require('../model/User');
 const Raspored = require('../model/Raspored'); // Make sure to import your Mentor model
 const Notification = require('../model/Notification');
 const Program = require('../model/Program');
+const { sendNotification } = require('../services/notification-service');
 
 // Controller for mentor signup
 const signupMentor = async (req, res, next) => {
@@ -338,8 +339,8 @@ const sendPasswordEmail = async (email, password) => {
     };
     
     const addScheduleToStudent = async (req, res, next) => {
-      const userId = req.params.id; // Assuming the user ID is passed in the request parameters
-      const { schedules } = req.body; // Assuming the schedules are passed in the request body
+      const userId = req.params.id;
+      const { schedules } = req.body;
       console.log("raspored:", schedules)
 
       try {
@@ -363,19 +364,57 @@ const sendPasswordEmail = async (email, password) => {
           if (!existingSchedule) {
             return res.status(404).json({ message: 'Existing schedule not found' });
           }
+          
           // Update the existing schedule with the provided data
           for (const { day, dvorana, vrijeme, mentor } of schedules) {
             existingSchedule[day].push({ dvorana, vrijeme, mentor });
+            
+            // Send notification for each new schedule entry
+            try {
+              // Get mentor details
+              const mentorDoc = await Mentor.findById(mentor);
+              const mentorName = mentorDoc ? `${mentorDoc.ime} ${mentorDoc.prezime}` : 'Mentor';
+              
+              // Format day name in Croatian
+              const dayNames = {
+                pon: 'ponedjeljak',
+                uto: 'utorak',
+                sri: 'srijeda',
+                cet: 'četvrtak',
+                pet: 'petak',
+                sub: 'subota'
+              };
+              
+              // Send notification to student
+              await sendNotification(userId, {
+                title: 'Novi termin nastave',
+                body: `${mentorName} je dodao/la novi termin za ${dayNames[day]} u ${vrijeme} (${dvorana})`,
+                data: {
+                  type: 'schedule_update',
+                  scheduleId: existingSchedule._id.toString(),
+                  day,
+                  time: vrijeme,
+                  classroom: dvorana,
+                  mentorId: mentor
+                }
+              });
+            } catch (notificationError) {
+              console.error('Failed to send notification:', notificationError);
+              // Continue execution even if notification fails
+            }
           }
+          
           await existingSchedule.save();
-          return res.status(200).json({ message: 'Schedule updated successfully', schedule: existingSchedule });
+          return res.status(200).json({ 
+            message: 'Schedule updated successfully', 
+            schedule: existingSchedule 
+          });
         }
+
         // Save the updated user
         await user.save();
 
-        // Return a success response
       } catch (err) {
-        // Handle errors
         next(err);
       }
     };

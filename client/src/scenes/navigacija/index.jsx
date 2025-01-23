@@ -1,9 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '@iconify/react';
+import axios from 'axios';
+import ApiConfig from '../../components/apiConfig';
 
-const Navigacija = ({ user, otvoreno, notifications = [] }) => {
+const Navigacija = ({ user, otvoreno }) => {
   const [activeItem, setActiveItem] = useState(otvoreno);
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    if (user) {
+      fetchNotifications();
+    }
+  }, [user]);
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/notifications`, {
+        withCredentials: true
+      });
+      setNotifications(res.data);
+    } catch (err) {
+      console.error('Error fetching notifications:', err);
+      setNotifications([]);
+    }
+  };
 
   const handleItemClick = (item) => {
     if (item === activeItem) return;

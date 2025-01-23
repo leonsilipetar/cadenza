@@ -43,7 +43,7 @@ const {
   updatePost,
   deletePost
 } = require('../controllers/post-controller');
-const { getNotifications } = require('../controllers/notification-controller.js');
+const { getNotifications, saveNotificationToken, sendNotificationToUser, markNotificationsAsRead } = require('../controllers/notification-controller.js');
 
 const router = express.Router();
 
@@ -129,5 +129,14 @@ router.delete('/posts/:id', verifyToken, deletePost);
 
 // Add this route to fetch notifications
 router.get('/notifications', verifyToken, getNotifications);
+
+// Update the notification token route to use the controller
+router.post('/notifications/token', verifyToken, saveNotificationToken);
+
+// Add new route for sending notifications
+router.post('/notifications/send', verifyToken, sendNotificationToUser);
+
+// Add this route
+router.post('/notifications/mark-read', verifyToken, markNotificationsAsRead);
 
 module.exports = router;

@@ -21,18 +21,13 @@ const NavTopAdministracija = ({user, naslov}) => {
         throw err; // Re-throw to allow further handling
       }
     };
-    
-  const handleLogout = async () => {
-    try {
-      await sendLogoutRequest(); // Ensure backend logout is successful
-      dispatch(authActions.logout()); // Clear Redux state
-      navigate('/login'); // Redirect to login
-    } catch (error) {
-      console.error('Logout failed:', error.message);
-      alert('Logout failed. Please try again.');
-    }
-  };
-  
+
+    const handleLogout = () => {
+      dispatch(authActions.logout());
+      localStorage.removeItem('notificationPermissionRequested');
+      navigate('/login');
+    };
+
 
  const [theme, setTheme] = useState(
       localStorage.getItem('theme') || 'light'
@@ -49,7 +44,7 @@ const NavTopAdministracija = ({user, naslov}) => {
       document.body.className = theme;
     }, [theme]);
     return (
-        <>  
+        <>
         <div className="nav-top">
             <div className="admin-gumb">
               <Link className='link' to="/user"><p>Aplikacija</p></Link>

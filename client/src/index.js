@@ -25,6 +25,37 @@ root.render(
 // Register service worker
 serviceWorkerRegistration.register();
 
+// Modify the service worker registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/firebase-messaging-sw.js')
+      .then(registration => {
+        console.log('Firebase SW registered:', registration);
+        
+        // Handle updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // New content is available, but don't notify too often
+              const lastNotification = localStorage.getItem('lastUpdateNotification');
+              const now = Date.now();
+              if (!lastNotification || now - parseInt(lastNotification) > 1000 * 60 * 60) {
+                // Show notification only once per hour
+                localStorage.setItem('lastUpdateNotification', now);
+                console.log('New content is available; please refresh.');
+              }
+            }
+          });
+        });
+      })
+      .catch(error => {
+        console.error('Service Worker registration failed:', error);
+      });
+  });
+}
+
 
 
 

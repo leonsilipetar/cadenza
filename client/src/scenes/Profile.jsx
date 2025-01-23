@@ -64,21 +64,13 @@ const Profil = () => {
       throw err; // Re-throw to allow further handling
     }
   };
-  
-  const handleLogout = async () => {
-    try {
-      await sendLogoutRequest();
-      dispatch(authActions.logout());
-      if (isPWA()) {
-        clearPWAUser();
-      }
-      navigate('/login');
-    } catch (error) {
-      console.error('Logout failed:', error.message);
-      alert('Logout failed. Please try again.');
-    }
+
+  const handleLogout = () => {
+    dispatch(authActions.logout());
+    localStorage.removeItem('notificationPermissionRequested');
+    navigate('/login');
   };
-  
+
 
   // Toggle theme state
   const toggleTheme = () => {
@@ -160,14 +152,14 @@ const Profil = () => {
             {user && schools.length > 0 && mentors.length > 0 && user.isStudent && (
               <UserInfoComponent
                 user={user}
-                schoolName={getSchoolName(user.school)} // Koristi `user.school` umesto `user.schoolId`
-                mentorName={getMentorName(user.mentors[0])} // Koristi prvi ID mentora
+                schoolName={getSchoolName(user.school)}
+                mentorName={getMentorName(user.mentors[0])}
               />
             )}
-            {user && schools.length > 0 && mentors.length > 0 && user.isMentor &&(
+            {user && schools.length > 0 && mentors.length > 0 && user.isMentor && (
               <UserInfoComponent
                 user={user}
-                schoolName={getSchoolName(user.school)} // Koristi `user.school` umesto `user.schoolId`
+                schoolName={getSchoolName(user.school)}
               />
             )}
           </div>

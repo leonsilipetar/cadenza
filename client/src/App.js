@@ -22,6 +22,11 @@ import Delete from './scenes/administracija/Delete.jsx';
 import Obavijesti from './scenes/Obavijesti.jsx';
 import { isPWA, setPWAUser, getPWAUser, clearPWAUser } from './utils/pwaUtils';
 import ProtectedRoute from './components/ProtectedRoute';
+import NotificationHandler from './components/NotificationHandler';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { NotificationProvider } from './context/NotificationContext';
+import { AuthProvider } from './context/AuthContext';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -94,72 +99,80 @@ const App = () => {
   }, [dispatch, navigate]);
 
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Welcome />} />
+    <AuthProvider>
+      <NotificationProvider>
+        <ToastContainer />
+        <NotificationHandler />
+        <div className="App">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Welcome />} />
 
-      {/* Protected Routes */}
-      <Route path="/user/*" element={
-        <ProtectedRoute>
-          <Naslovna />
-        </ProtectedRoute>
-      } />
-      <Route path="/profil/*" element={
-        <ProtectedRoute>
-          <Profil />
-        </ProtectedRoute>
-      } />
-      <Route path="/chat/*" element={
-        <ProtectedRoute>
-          <Chat />
-        </ProtectedRoute>
-      } />
-      <Route path="/racuni/*" element={
-        <ProtectedRoute>
-          <Racuni />
-        </ProtectedRoute>
-      } />
-      <Route path="/raspored/*" element={
-        <ProtectedRoute>
-          <Raspored />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/*" element={
-        <ProtectedRoute>
-          <Admin />
-        </ProtectedRoute>
-      } />
-      <Route path="/korisnici/*" element={
-        <ProtectedRoute>
-          <Korisnici />
-        </ProtectedRoute>
-      } />
-      <Route path="/mentori/*" element={
-        <ProtectedRoute>
-          <Mentori />
-        </ProtectedRoute>
-      } />
-      <Route path="/racuni-admin/*" element={
-        <ProtectedRoute>
-          <RacuniAdmin />
-        </ProtectedRoute>
-      } />
-      <Route path="/classrooms/*" element={
-        <ProtectedRoute>
-          <Classrooms />
-        </ProtectedRoute>
-      } />
-      <Route path="/delete/*" element={
-        <ProtectedRoute>
-          <Delete />
-        </ProtectedRoute>
-      } />
-      <Route path="/obavijesti/*" element={
-        <ProtectedRoute>
-          <Obavijesti />
-        </ProtectedRoute>
-      } />
-    </Routes>
+            {/* Protected Routes */}
+            <Route path="/user/*" element={
+              <ProtectedRoute>
+                <Naslovna />
+              </ProtectedRoute>
+            } />
+            <Route path="/profil/*" element={
+              <ProtectedRoute>
+                <Profil />
+              </ProtectedRoute>
+            } />
+            <Route path="/chat/*" element={
+              <ProtectedRoute>
+                <Chat />
+              </ProtectedRoute>
+            } />
+            <Route path="/racuni/*" element={
+              <ProtectedRoute>
+                <Racuni />
+              </ProtectedRoute>
+            } />
+            <Route path="/raspored/*" element={
+              <ProtectedRoute>
+                <Raspored />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/*" element={
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            } />
+            <Route path="/korisnici/*" element={
+              <ProtectedRoute>
+                <Korisnici />
+              </ProtectedRoute>
+            } />
+            <Route path="/mentori/*" element={
+              <ProtectedRoute>
+                <Mentori />
+              </ProtectedRoute>
+            } />
+            <Route path="/racuni-admin/*" element={
+              <ProtectedRoute>
+                <RacuniAdmin />
+              </ProtectedRoute>
+            } />
+            <Route path="/classrooms/*" element={
+              <ProtectedRoute>
+                <Classrooms />
+              </ProtectedRoute>
+            } />
+            <Route path="/delete/*" element={
+              <ProtectedRoute>
+                <Delete />
+              </ProtectedRoute>
+            } />
+            <Route path="/obavijesti/*" element={
+              <ProtectedRoute>
+                <Obavijesti />
+              </ProtectedRoute>
+            } />
+          </Routes>
+        </div>
+      </NotificationProvider>
+    </AuthProvider>
   );
 };
 

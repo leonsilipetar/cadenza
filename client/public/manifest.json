@@ -29,5 +29,6 @@
   "background_color": "#ffffff",
   "orientation": "portrait",
   "categories": ["education", "music", "learning"],
-  "lang": "hr"
+  "lang": "hr",
+  "gcm_sender_id": "975125523948"
 }

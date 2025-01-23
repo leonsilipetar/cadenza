@@ -353,17 +353,17 @@ const verifyToken = async (req, res, next) => {
 
 const logout = async (req, res) => {
   try {
-    // Clear the authentication cookie
+    // Clear cookies
     res.clearCookie('token', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: true,
       sameSite: 'none',
-      path: '/',
+      path: '/'
     });
 
-    return res.status(200).json({ message: "Successfully logged out" });
+    return res.status(200).json({ message: "Successfully Logged Out" });
   } catch (err) {
-    console.error("Logout error:", err);
+    console.error('Logout error:', err);
     return res.status(500).json({ message: "Error during logout" });
   }
 };
