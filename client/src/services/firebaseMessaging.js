@@ -1,5 +1,5 @@
-import { initializeApp } from "@firebase/app";
-import { getMessaging, getToken, onMessage } from "@firebase/messaging";
+import { initializeApp } from 'firebase/app';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import ApiConfig from '../components/apiConfig.js';
 
 const firebaseConfig = {
@@ -11,25 +11,39 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
+// Add console logs for debugging
+console.log('Firebase Config:', {
+  ...firebaseConfig,
+  apiKey: firebaseConfig.apiKey ? 'exists' : 'missing',
+  authDomain: firebaseConfig.authDomain ? 'exists' : 'missing',
+  projectId: firebaseConfig.projectId ? 'exists' : 'missing'
+});
+
+// Initialize Firebase only if config is valid
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
 export const requestNotificationPermission = async () => {
   try {
+    if (!messaging) {
+      throw new Error('Firebase messaging not initialized');
+    }
+
     const permission = await Notification.requestPermission();
     if (permission === 'granted') {
       const token = await getToken(messaging, {
         vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY
       });
-      
+      console.log('Notification Token:', token);
+
       // Send this token to your server to save it for the user
       await saveTokenToServer(token);
       return token;
     }
     throw new Error('Notification permission denied');
   } catch (error) {
-    console.error('Notification permission error:', error);
-    throw error;
+    console.error('Notification setup error:', error);
+    return null;
   }
 };
 
@@ -43,7 +57,7 @@ const saveTokenToServer = async (token) => {
       body: JSON.stringify({ token }),
       credentials: 'include'
     });
-    
+
     if (!response.ok) {
       console.warn('Failed to save notification token, but continuing...');
     }
@@ -59,4 +73,4 @@ export const onMessageListener = () => {
     });
     return unsubscribe; // Return the unsubscribe function
   });
-}; 
+};

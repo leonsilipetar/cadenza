@@ -1,26 +1,34 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import './App.css';
 import App from './App';
 import { Provider } from 'react-redux';
-import { store } from './store';
+import store from './store';
 import { BrowserRouter } from 'react-router-dom';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
-// Create root
-const container = document.getElementById('root');
-const root = createRoot(container);
-
-// Render app
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </BrowserRouter>
-  </React.StrictMode>
-);
+// Wrap the app rendering in a try-catch
+try {
+  ReactDOM.render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </BrowserRouter>
+    </React.StrictMode>,
+    document.getElementById('root')
+  );
+} catch (error) {
+  console.error('Application failed to start:', error);
+  // Show a user-friendly error message
+  document.getElementById('root').innerHTML = `
+    <div style="text-align: center; padding: 20px;">
+      <h1>Something went wrong</h1>
+      <p>Please try refreshing the page. If the problem persists, contact support.</p>
+    </div>
+  `;
+}
 
 // Register service worker
 serviceWorkerRegistration.register();
@@ -32,7 +40,7 @@ if ('serviceWorker' in navigator) {
       .register('/firebase-messaging-sw.js')
       .then(registration => {
         console.log('Firebase SW registered:', registration);
-        
+
         // Handle updates
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
