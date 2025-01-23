@@ -170,7 +170,7 @@ const Login = () => {
 
             <h2>Prijavi se</h2>
 
-            {errorM && <div className="errorM">{errorM}</div>}
+            <div className="error"><p>neki tekst</p></div>
 
             <input
 

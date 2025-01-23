@@ -136,7 +136,7 @@ const Login = ({ isEmbedded = false }) => {
 
         <input
 
-          className={`input-login-signup ${errorM ? 'error' : ''}`}
+          className={`input-login-signup ${errorM ? 'errorM' : ''}`}
 
           value={inputs.email}
 
@@ -160,7 +160,7 @@ const Login = ({ isEmbedded = false }) => {
 
         <input
 
-          className={`input-login-signup ${errorM ? 'error' : ''}`}
+          className={`input-login-signup ${errorM ? 'errorM' : ''}`}
 
           value={inputs.password}
 
@@ -181,7 +181,6 @@ const Login = ({ isEmbedded = false }) => {
           autoComplete='current-password'
 
         />
-
 
 
         <button
@@ -206,7 +205,7 @@ const Login = ({ isEmbedded = false }) => {
 
       </form>
 
-      {errorM && <div className="error-message">{errorM}</div>}
+       
 
     </div>
 
@@ -288,7 +287,7 @@ const Login = ({ isEmbedded = false }) => {
 
             />
 
-
+{errorM && <div className="error">{errorM}</div>}
 
             <button
 
@@ -374,7 +373,7 @@ const Login = ({ isEmbedded = false }) => {
 
             />
 
-
+{errorM && <div className="error">{errorM}</div>}
 
             <button
 

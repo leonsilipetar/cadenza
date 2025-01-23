@@ -153,6 +153,13 @@ const Profil = () => {
             </Link>
           </div>
         </div>
+        <div className="karticaZadatka sbtwn">
+        <div className='div linkMAI'>
+
+<a className='acc' href="https://www.musicartincubator.com" target="_blank" rel="noopener noreferrer">Music Art Incubator</a>
+
+</div>
+        </div>
 
         {/* Prikaz korisničkih informacija */}
         <div className="karticaZadatka">
