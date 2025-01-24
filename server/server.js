@@ -1,8 +1,11 @@
 const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
 
 const mongoose = require('mongoose');
 
 const router = require('./routes/user-routes.js');
+const groupRouter = require('./routes/group-routes.js');
 
 const path = require('path');
 
@@ -13,8 +16,7 @@ const cors = require('cors');
 const ServerConfig = require('./serverConfig');
 
 require('dotenv').config();
-
-const recipeRoutes = require('./routes/recipe-routes.js');
+ 
 
 
 
@@ -90,6 +92,8 @@ app.use('/api', (req, res, next) => {
 
 }, router);
 
+app.use('/api', groupRouter);
+
 
 
 
@@ -121,12 +125,35 @@ mongoose.connect(`mongodb+srv://admin:${process.env.MONGODB_PASSWORD}@cluster0.r
 
   .then(() => {
 
-    app.listen(PORT, () => {
+    // Create an HTTP server
+    const server = http.createServer(app);
+    const io = socketIo(server, {
+      cors: {
+        origin: ['http://localhost:3000', 'https://cadenza.com.hr'],
+        methods: ['GET', 'POST'],
+        credentials: true,
+      },
+    });
 
-      console.log("Database is connected");
+    // Handle socket connections
+    io.on('connection', (socket) => {
+        console.log('New client connected');
 
-      console.log(`Listening on port ${PORT}`);
+        // Listen for chat messages
+        socket.on('sendMessage', (message) => {
+            // Broadcast the message to all clients
+            io.emit('receiveMessage', message);
+        });
 
+        socket.on('disconnect', () => {
+            console.log('Client disconnected');
+        });
+    });
+
+    // Replace app.listen with server.listen
+    server.listen(PORT, () => {
+        console.log("Database is connected");
+        console.log(`Listening on port ${PORT}`);
     });
 
   })

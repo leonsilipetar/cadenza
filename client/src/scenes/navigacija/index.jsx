@@ -32,11 +32,17 @@ const Navigacija = ({ user, otvoreno, notifications = [] }) => {
             {hasUnreadNotifications && <div className="dot"></div>}
           </Link>
         </div>
+        <div className={activeItem === 'chat' ? 'otvoreno' : ''} onClick={() => handleItemClick('chat')}>
+          <Link className="link" to="/chat">
+            <Icon className="icon" icon="solar:chat-line-broken" />
+          </Link>
+        </div>
         <div className={activeItem === 'profil' ? 'otvoreno' : ''} onClick={() => handleItemClick('profil')}>
           <Link className="link" to="/profil">
             <Icon className="icon" icon="solar:user-circle-broken" />
           </Link>
         </div>
+
       </nav>
     </header>
   );

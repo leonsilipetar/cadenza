@@ -38,7 +38,7 @@ const NavigacijaAdmin = ({ otvoreno }) => {
           </Link>
         </div>
         <div className={otvoreno === 'delete' ? 'otvoreno' : ''}>
-          <Link className="link" to="/admin/delete">
+          <Link className="link" to="/delete">
             <Icon className="icon" icon="solar:trash-bin-trash-broken" />
             <p>Brisanje</p>
           </Link>

@@ -52,8 +52,9 @@ const ChatWindow = ({ user, recipientId }) => {
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Type a message..."
+          className="chat-input"
         />
-        <button onClick={handleSendMessage}>Send</button>
+        <button onClick={handleSendMessage} className="send-button">Send</button>
       </div>
     </div>
   );

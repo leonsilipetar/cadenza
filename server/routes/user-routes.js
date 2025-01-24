@@ -44,6 +44,13 @@ const {
   deletePost
 } = require('../controllers/post-controller');
 const { getNotifications } = require('../controllers/notification-controller.js');
+const {
+  createGroup,
+  getGroupMessages,
+} = require('../controllers/group-controller');
+const {
+  getMessages,
+} = require('../controllers/chat-controller');
 
 const router = express.Router();
 
@@ -63,11 +70,19 @@ router.post("/logout", logout);
 // Refresh token route
 router.post('/refresh', refreshToken);
 
+// Group-related routes
+router.post('/groups', verifyToken, createGroup);
+router.get('/groups/:groupId/messages', verifyToken, getGroupMessages);
 
+// Chat-related routes
+router.get('/messages/:recipientId', verifyToken, getMessages);
+
+// Mentor-related routes
 router.post('/signup-mentori', verifyToken, signupMentor);
 router.get("/mentori", verifyToken, getMentori);
 router.put("/update-mentor/:mentorId", verifyToken, updateDetaljiMentora);
 
+// Theory-related routes
 router.post("/uredi/teorija", verifyToken, updateTeorija);
 router.get("/rasporedTeorija", verifyToken, getTeorija);
 router.get("/rasporedUcenici/:id", verifyToken, getStudentsRaspored);
@@ -129,5 +144,25 @@ router.delete('/posts/:id', verifyToken, deletePost);
 
 // Add this route to fetch notifications
 router.get('/notifications', verifyToken, getNotifications);
+
+// Add these routes to your existing user routes
+router.get('/students/mentors', verifyToken, async (req, res) => {
+  try {
+    const mentors = await Mentor.find(); // Fetch all mentors
+    res.json(mentors);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching mentors' });
+  }
+});
+
+router.get('/mentors/students', verifyToken, async (req, res) => {
+  const mentorId = req.user._id; // Assuming the mentor ID is in the token
+  try {
+    const mentor = await Mentor.findById(mentorId).populate('students.ucenikId'); // Populate students
+    res.json(mentor.students);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching students' });
+  }
+});
 
 module.exports = router;
