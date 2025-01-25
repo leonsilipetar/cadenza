@@ -8,7 +8,7 @@ const ChatWindow = ({ user, recipientId }) => {
 
   useEffect(() => {
     if (recipientId) {
-      fetchMessages(recipientId);  // Fetch messages when a recipient is selected
+      fetchMessages(recipientId);
     }
   }, [recipientId]);
 
@@ -38,23 +38,23 @@ const ChatWindow = ({ user, recipientId }) => {
   };
 
   return (
-    <div className="chat-window">
-      <div className="chat-messages">
+    <div className="flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto p-4 bg-white rounded-lg shadow">
         {messages.map((msg, index) => (
-          <div key={index} className={`message ${msg.senderId === user._id ? "sent" : "received"}`}>
+          <div key={index} className={`message p-2 rounded ${msg.senderId === user._id ? "bg-green-200 self-end" : "bg-gray-200 self-start"}`}>
             {msg.text}
           </div>
         ))}
       </div>
-      <div className="chat-input">
+      <div className="flex items-center mt-4">
         <input
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Type a message..."
-          className="chat-input"
+          className="flex-1 p-2 border border-gray-300 rounded"
         />
-        <button onClick={handleSendMessage} className="send-button">Send</button>
+        <button onClick={handleSendMessage} className="ml-2 bg-blue-500 text-white px-4 py-2 rounded">Send</button>
       </div>
     </div>
   );

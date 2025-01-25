@@ -3,90 +3,87 @@ import axios from 'axios';
 import Navigacija from './navigacija';
 import NavTop from './nav-top';
 import NavSideChat from './chat/NavSideChat';
-import ChatWindow from './chat/ChatWindow';
+import ChatContainer from './chat/ChatContainer';
 import ApiConfig from '../components/apiConfig.js';
 import { Icon } from '@iconify/react';
 import io from 'socket.io-client';
-import logo from './../assets/logo512.png'; // Import the logo image
 
 axios.defaults.withCredentials = true;
 
 const socket = io('http://localhost:5000', {
-  withCredentials: true, // Ensure credentials are sent
+  withCredentials: true,
 });
 
 const Chat = () => {
   const [user, setUser] = useState();
-  const [chats, setChats] = useState([]);  // List of chats (students, mentors, groups)
-  const [selectedChat, setSelectedChat] = useState(null);  // Current chat recipient
-  const otvoreno = "chat";
+  const [chats, setChats] = useState([]);
+  const [selectedChat, setSelectedChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [isNavSideChatVisible, setNavSideChatVisible] = useState(false); // State for NavSideChat visibility
-  const [rasporedGumb, setRasporedGumb] = useState(false); // Define the state for the toggle button
-
-  const sendRequest = async () => {
-    const res = await axios.get(`${ApiConfig.baseUrl}/api/user`).catch((err) => console.log(err));
-    if (res?.data) {
-      const userData = res.data.user; // Get the user data
-      setUser(userData); // Store the user data in state
-      console.log("User data:", userData); // Log the user data for debugging
-      // Determine if the user is a student or mentor
-      const isStudent = userData.role === 'student'; // Adjust based on your user model
-      const isMentor = userData.role === 'mentor'; // Adjust based on your user model
-      return { isStudent, isMentor };
-    }
-    return { isStudent: false, isMentor: false };
-  }
+  const [chatGumb, setChatGumb] = useState(true);
 
   useEffect(() => {
-    sendRequest().then((data) => {
-        fetchChats();
-    });
-
-    // Listen for incoming messages
+    sendRequest();
+    
     socket.on('receiveMessage', (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
-    // Cleanup on unmount
     return () => {
       socket.off('receiveMessage');
     };
   }, []);
 
-  const fetchChats = async () => {
-    const { isStudent, isMentor } = await sendRequest(); // Get user type
+  useEffect(() => {
+    if (user) {
+      fetchChats();
+    }
+  }, [user]);
 
+  const sendRequest = async () => {
     try {
-      if (isMentor) {
-        // If the user is a mentor, use the students array from the user object
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/user`);
+      if (res?.data) {
+        const userData = res.data.user;
+        setUser(userData);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchChats = async () => {
+    try {
+      if (user.isMentor) {
         const mentorStudents = user.students.map(student => ({
-          id: student.ucenikId, // Use the student ID
-          name: `${student.ime} ${student.prezime}`, // Display name
+          id: student.ucenikId,
+          name: `${student.ime} ${student.prezime}`,
         }));
-        console.log("Mentor's students:", mentorStudents); // Log the students
-        setChats(mentorStudents); // Set the chats to the mentor's students
-      } else if (isStudent) {
-        // Fetch mentors for students
+        console.log("Mentor students:", mentorStudents);
+        setChats(mentorStudents);
+      } else if (user.isStudent) {
         const res = await axios.get(`${ApiConfig.baseUrl}/api/students/mentors`);
-        setChats(Array.isArray(res.data) ? res.data : []);
+        const mentorsList = res.data.map(mentor => ({
+          id: mentor._id,
+          name: `${mentor.ime} ${mentor.prezime}`,
+        }));
+        setChats(mentorsList);
       }
     } catch (error) {
       console.error("Error fetching chats", error);
-      setChats([]); // Set to an empty array on error
+      setChats([]);
     }
   };
 
   const handleChatClick = (chatId) => {
-    setSelectedChat(chatId);  // Set the selected chat for messaging
-    fetchMessages(chatId); // Fetch messages for the selected chat
+    setSelectedChat(chatId);
+    fetchMessages(chatId);
   };
 
   const fetchMessages = async (chatId) => {
     try {
-      const res = await axios.get(`${ApiConfig.baseUrl}/api/chats/${chatId}/messages`); // Adjust the endpoint as needed
-      setMessages(res.data.messages); // Assuming the response contains messages
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/chats/${chatId}/messages`);
+      setMessages(res.data.messages);
     } catch (error) {
       console.error("Error fetching messages", error);
     }
@@ -97,57 +94,50 @@ const Chat = () => {
       const messageData = {
         text: newMessage,
         timestamp: new Date().toISOString(),
-        chatId: selectedChat, // Include the selected chat ID
+        chatId: selectedChat,
       };
       socket.emit('sendMessage', messageData);
       setNewMessage('');
     }
   };
 
-  const toggleNavSideChat = () => {
-    setNavSideChatVisible(!isNavSideChatVisible); // Toggle visibility
-    setRasporedGumb(!rasporedGumb); // Toggle the button state
+  const handleItemClickChatGumb = () => {
+    setChatGumb(prevValue => !prevValue);
   };
 
   return (
     <>
-      <Navigacija user={user} otvoreno={"chat"} />
-      <NavTop user={user} naslov={"Chat"} />
-      <div className="main ">
-        <div className="chat-window">
-          {isNavSideChatVisible && ( // Conditionally render NavSideChat
-            <NavSideChat
-              chats={chats} 
-              onChatClick={handleChatClick} 
-            />
-          )}
-
-          
-          {selectedChat ? ( // Check if a chat is selected
-            <ChatWindow user={user} recipientId={selectedChat} />
-          ) : (
-            <div className="empty-chat">
-              <img src={logo} alt="App Logo" className="chat-logo" /> {/* Display the logo */}
-              <p>Select a chat to start messaging</p>
+      <Navigacija user={user} otvoreno="chat" />
+      <NavTop user={user} naslov="Chat" />
+      <div className="main">
+        <div className="flex items-center justify-center pt-20 px-4">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-6xl h-[calc(100vh-8rem)]">
+            <div className="flex h-full rounded-lg overflow-hidden relative">
+              <div className="rl-gumb" onClick={handleItemClickChatGumb}>
+                <Icon 
+                  className="icon" 
+                  icon={chatGumb ? "solar:list-up-minimalistic-broken" : "solar:list-down-minimalistic-broken"} 
+                />
+              </div>
+              {chatGumb && (
+                <div className="w-1/4 bg-gray-200 border-r border-gray-300">
+                  <NavSideChat chats={chats} onChatClick={handleChatClick} />
+                </div>
+              )}
+              <ChatContainer 
+                messages={messages} 
+                newMessage={newMessage} 
+                setNewMessage={setNewMessage} 
+                handleSendMessage={handleSendMessage} 
+                selectedChat={selectedChat} 
+                user={user} 
+              />
             </div>
-          )}
-          <div className="chat-input-container">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type a message..."
-              className="chat-input"
-            />
-            <button onClick={handleSendMessage} className="send-button">Send</button>
-          </div>
-          <div className="rl-gumb" onClick={toggleNavSideChat}>
-            <Icon className="icon" icon={rasporedGumb ? "solar:list-up-minimalistic-broken" : "solar:list-down-minimalistic-broken"} />
           </div>
         </div>
       </div>
     </>
   );
-}
+};
 
 export default Chat;

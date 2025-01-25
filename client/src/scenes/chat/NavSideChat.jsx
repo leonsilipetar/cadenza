@@ -5,18 +5,21 @@ const NavSideChat = ({ chats, onChatClick }) => {
   return (
     <div className="raspored-lista">
       {chats.length === 0 ? (
-        <div className='rl-items'>
-            <div className="rl moj-raspored">Niste razgovarali</div>
+        <div className="rl-items ">
+          <div className="rl">Niste razgovarali</div>
         </div>
       ) : (
         <div className="rl-items">
+          <div className="rl moj-raspored">
+           Razgovori
+          </div>
           {chats.map((chat) => (
             <div
-              key={chat.id}
               className="rl"
+              key={chat.id}
               onClick={() => onChatClick(chat.id)}
             >
-              {chat.name} {/* Display the name of the student/mentor/group */}
+              {chat.name}
             </div>
           ))}
         </div>
