@@ -5,13 +5,13 @@ const formatMessageTime = (timestamp) => {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
-const ChatContainer = ({ messages, newMessage, setNewMessage, handleSendMessage, selectedChat, user }) => {
+const ChatContainer = ({ messages = [], newMessage, setNewMessage, handleSendMessage, selectedChat, user }) => {
   return (
     <div className="chat-container">
       {selectedChat ? (
         <div className="chat-window">
           <div className="chat-messages">
-            {messages.map((message, index) => (
+            {Array.isArray(messages) && messages.map((message, index) => (
               <div
                 key={index}
                 className={`message ${message.senderId === user?._id ? "sent" : "received"}`}

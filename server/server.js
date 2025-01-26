@@ -140,9 +140,14 @@ mongoose.connect(`mongodb+srv://admin:${process.env.MONGODB_PASSWORD}@cluster0.r
         console.log('New client connected');
 
         // Listen for chat messages
-        socket.on('sendMessage', (message) => {
-            // Broadcast the message to all clients
-            io.emit('receiveMessage', message);
+        socket.on('sendMessage', async (message) => {
+            try {
+                // The message is already saved in the database at this point
+                // Broadcast the message to all clients except the sender
+                socket.broadcast.emit('receiveMessage', message);
+            } catch (error) {
+                console.error('Error handling message:', error);
+            }
         });
 
         socket.on('disconnect', () => {

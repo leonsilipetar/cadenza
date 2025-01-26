@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 
-const Navigacija = ({ user, otvoreno, notifications = [] }) => {
+const Navigacija = ({ user, chat, otvoreno, notifications = [] }) => {
   const [activeItem, setActiveItem] = useState(otvoreno);
 
   const handleItemClick = (item) => {
@@ -14,7 +14,7 @@ const Navigacija = ({ user, otvoreno, notifications = [] }) => {
   const hasUnreadNotifications = notifications.some(notification => notification.unread);
 
   return (
-    <header>
+    <header className={chat ? 'chat-active' : ''}>
       <nav>
         <div className={activeItem === 'naslovna' ? 'otvoreno' : ''} onClick={() => handleItemClick('naslovna')}>
           <Link className="link" to="/user">

@@ -597,10 +597,6 @@ padding: 0.3rem 0.7rem;
 text-align: center;
 border-radius: var(--radius);
 }
-.chat-container {
-display: flex;
-height: 100vh;
-}
 .raspored-lista {
 width: 25%;
 background-color: #f1f1f1;
@@ -996,12 +992,6 @@ text-align: center;
 padding: 1rem 0;
 border-bottom: 2px solid rgb(var(--isticanje2));
 cursor: pointer;
-}
-.errorM{
-color: red;
-background-color: rgba(255, 0, 0, 0.185);
-padding: 1% 2%;
-border-radius: var(--radius);
 }
 .icon{
 font-size: 2.4em;
@@ -1423,10 +1413,6 @@ padding: 0.3rem 0.7rem;
 text-align: center;
 border-radius: var(--radius);
 }
-.chat-container {
-display: flex;
-height: 100vh;
-}
 .raspored-lista {
 width: 25%;
 background-color: #f1f1f1;
@@ -1823,61 +1809,46 @@ textarea:focus {
 
 .skip-link:focus {
   top: 0;
-}.chat-main {
-  display: flex;
-  height: 100vh;
 }
 
-/*CHAT*/
-/* Example styles for chat components */
-.chat-main {
-  display: flex;
-  height: 100vh;
-}
-
-.sidebar {
-  width: 25%;
-  background-color: #f9f9f9;
-  border-right: 1px solid #ddd;
-}
 
 .chat-container {
   flex: 1;
+  height: 90vh;
+  max-width: 100vw;
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  background-color: #fff;
-}
-
-.empty-chat {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  text-align: center;
+  background-color: var(--pozadina);
 }
 
 .chat-input-container {
   display: flex;
   align-items: center;
   margin-top: 10px;
+  padding: 1rem;
 }
 
 .chat-input {
   flex-grow: 1;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--isticanje);
   border-radius: 4px;
   margin-right: 10px;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  background-color: rgb(var(--iznad));
+  color: rgb(var(--tekst));
 }
 
 .send-button {
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
+  background-color: rgb(var(--isticanje3));
+  color: white;
+  padding: 1rem 1.2rem ;
+  border-radius: var(--radius);
+  margin-left: 0.5rem;
 }
 
 .send-button:hover {
@@ -1885,20 +1856,58 @@ textarea:focus {
 }
 
 .chat-window {
+  width: 100%;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  border: 1px solid #ddd;
   border-radius: 4px;
   overflow: hidden;
 }
 
 .chat-messages {
   flex-grow: 1;
+  width: 90vw;
   overflow-y: auto;
-  padding: 10px;
-  background-color: #fff;
+  background-color: var(--pozadina);
 }
+
+.rl-gumb.chat-tgl-btn{
+  display: none;
+  top: 4px;
+  left: 2rem;
+  background-color: transparent;
+  color: var(--tekst);
+}
+@media (max-width: 1080px) {
+  .rl-gumb.chat-tgl-btn {
+    display: flex; /* Show the toggle button */
+  }
+
+  .chat-nav-container {
+    display: none; /* Hide by default on mobile */
+  }
+
+  .chat-nav-container.open {
+    display: block; /* Show when open */
+    width: 100%; /* Take full width on mobile */
+    position: absolute;
+    z-index: 10;
+    height: 90%;
+  }
+}
+
+/* Always show NavSideChat and header on larger screens */
+@media (min-width: 1081px) {
+  .chat-nav-container {
+    display: block !important; /* Always show */
+    width: 25% !important; /* Fixed width on desktop */
+  }
+
+  .header-chat {
+    display: block !important; /* Always show on desktop */
+  }
+}
+
 
 .message {
   padding: 8px;
@@ -1918,7 +1927,7 @@ textarea:focus {
 /* Chat message styles */
 .message-header {
   font-size: 0.75rem;
-  color: #666;
+  color: var(--tekst);
   margin-bottom: 2px;
 }
 
@@ -1948,10 +1957,13 @@ textarea:focus {
   align-self: flex-end;
   border-bottom-right-radius: 0.25rem;
 }
+.header-chat {
+  display: block; /* Show by default */
+}
 
 .message.received {
-  background-color: rgb(var(--isticanje2));
-  color: rgb(var(--tekst));
+  background-color: rgb(var(--isticanje));
+  color: var(--tekst);
   align-self: flex-start;
   border-bottom-left-radius: 0.25rem;
 }
@@ -1965,28 +1977,6 @@ textarea:focus {
   opacity: 0.7;
 }
 
-.chat-input-container {
-  padding: 1rem;
-  background-color: rgb(var(--iznad));
-  border-top: 1px solid rgba(var(--tekst), 0.1);
-}
-
-.chat-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid rgba(var(--tekst), 0.2);
-  border-radius: 1.5rem;
-  background-color: rgb(var(--iznad));
-  color: rgb(var(--tekst));
-}
-
-.send-button {
-  background-color: rgb(var(--isticanje3));
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 1.5rem;
-  margin-left: 0.5rem;
-}
 
 .send-button:hover {
   opacity: 0.9;

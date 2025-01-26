@@ -51,6 +51,7 @@ const {
 const {
   getMessages,
 } = require('../controllers/chat-controller');
+const Message = require('../model/Message');
 
 const router = express.Router();
 
@@ -162,6 +163,24 @@ router.get('/mentors/students', verifyToken, async (req, res) => {
     res.json(mentor.students);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching students' });
+  }
+});
+
+// Add this route with your other message routes
+router.post('/messages', verifyToken, async (req, res) => {
+  try {
+    const { text, senderId, recipientId, timestamp } = req.body;
+    const message = new Message({
+      text,
+      senderId,
+      recipientId,
+      timestamp
+    });
+    await message.save();
+    res.status(201).json(message);
+  } catch (error) {
+    console.error('Error saving message:', error);
+    res.status(500).json({ message: 'Error saving message' });
   }
 });
 

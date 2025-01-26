@@ -1,18 +1,50 @@
 const Message = require('../model/Message');
+const User = require('../model/User');
 
 const getMessages = async (req, res) => {
-    const { senderId, recipientId } = req.params;
     try {
+        const { recipientId } = req.params;
+        const senderId = req.user._id; // Get from authenticated user
+
         const messages = await Message.find({
             $or: [
                 { senderId, recipientId },
-                { senderId: recipientId, recipientId: senderId },
-            ],
+                { senderId: recipientId, recipientId: senderId }
+            ]
         }).sort({ timestamp: 1 });
-        res.json(messages);
+
+        res.json({ messages });
     } catch (error) {
+        console.error("Error fetching messages:", error);
         res.status(500).json({ message: 'Error fetching messages' });
     }
 };
 
-module.exports = { getMessages }; 
+const getChats = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const user = await User.findById(userId);
+
+        if (user.isMentor) {
+            // For mentors, return their students
+            return res.json(user.students.map(student => ({
+                id: student.ucenikId,
+                name: `${student.ime} ${student.prezime}`
+            })));
+        } else if (user.isStudent) {
+            // For students, return their mentors
+            return res.json(user.mentors.map(mentorId => ({
+                id: mentorId,
+                // You'll need to fetch mentor details here
+                name: "Mentor Name" // This should be fetched from the database
+            })));
+        }
+
+        res.json([]);
+    } catch (error) {
+        console.error("Error fetching chats:", error);
+        res.status(500).json({ message: 'Error fetching chats' });
+    }
+};
+
+module.exports = { getMessages, getChats }; 

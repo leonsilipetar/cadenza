@@ -17,7 +17,7 @@ const NavSideChat = ({ chats, onChatClick }) => {
             <div
               className="rl"
               key={chat.id}
-              onClick={() => onChatClick(chat.id)}
+              onClick={() => onChatClick(chat.id, chat.name)}
             >
               {chat.name}
             </div>

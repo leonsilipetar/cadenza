@@ -21,12 +21,24 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [chatGumb, setChatGumb] = useState(true);
+  const [selectedChatName, setSelectedChatName] = useState('Chat');
 
   useEffect(() => {
     sendRequest();
     
     socket.on('receiveMessage', (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+      setMessages((prevMessages) => {
+        const messageExists = prevMessages.some(
+          m => m._id === message._id || 
+          (m.senderId === message.senderId && 
+           m.timestamp === message.timestamp && 
+           m.text === message.text)
+        );
+        if (!messageExists) {
+          return [...prevMessages, message];
+        }
+        return prevMessages;
+      });
     });
 
     return () => {
@@ -62,12 +74,18 @@ const Chat = () => {
         console.log("Mentor students:", mentorStudents);
         setChats(mentorStudents);
       } else if (user.isStudent) {
-        const res = await axios.get(`${ApiConfig.baseUrl}/api/students/mentors`);
-        const mentorsList = res.data.map(mentor => ({
-          id: mentor._id,
-          name: `${mentor.ime} ${mentor.prezime}`,
-        }));
-        setChats(mentorsList);
+        const mentorIds = user.mentors;
+        const mentorsData = await Promise.all(
+          mentorIds.map(async (mentorId) => {
+            const res = await axios.get(`${ApiConfig.baseUrl}/api/korisnik/${mentorId}`);
+            const mentor = res.data;
+            return {
+              id: mentor._id,
+              name: `${mentor.ime} ${mentor.prezime}`,
+            };
+          })
+        );
+        setChats(mentorsData);
       }
     } catch (error) {
       console.error("Error fetching chats", error);
@@ -75,29 +93,45 @@ const Chat = () => {
     }
   };
 
-  const handleChatClick = (chatId) => {
+  const handleChatClick = (chatId, chatName) => {
     setSelectedChat(chatId);
+    setSelectedChatName(chatName);
     fetchMessages(chatId);
+    setChatGumb(false);
   };
 
   const fetchMessages = async (chatId) => {
     try {
-      const res = await axios.get(`${ApiConfig.baseUrl}/api/chats/${chatId}/messages`);
-      setMessages(res.data.messages);
+      const res = await axios.get(`${ApiConfig.baseUrl}/api/messages/${chatId}`);
+      console.log("Fetched messages:", res.data);
+      setMessages(res.data.messages || []);
     } catch (error) {
       console.error("Error fetching messages", error);
+      setMessages([]);
     }
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (newMessage.trim()) {
-      const messageData = {
-        text: newMessage,
-        timestamp: new Date().toISOString(),
-        chatId: selectedChat,
-      };
-      socket.emit('sendMessage', messageData);
-      setNewMessage('');
+      try {
+        const messageData = {
+          text: newMessage,
+          senderId: user._id,
+          recipientId: selectedChat,
+          timestamp: new Date().toISOString(),
+        };
+
+        const response = await axios.post(`${ApiConfig.baseUrl}/api/messages`, messageData);
+        const savedMessage = response.data;
+
+        setMessages(prevMessages => [...prevMessages, savedMessage]);
+        
+        socket.emit('sendMessage', savedMessage);
+        
+        setNewMessage('');
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
     }
   };
 
@@ -107,23 +141,22 @@ const Chat = () => {
 
   return (
     <>
-      <Navigacija user={user} otvoreno="chat" />
-      <NavTop user={user} naslov="Chat" />
+      
+      <NavTop user={user} naslov={selectedChatName} />
+      <Navigacija user={user} otvoreno="chat" chat={!chatGumb} />
       <div className="main">
         <div className="flex items-center justify-center pt-20 px-4">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-6xl h-[calc(100vh-8rem)]">
             <div className="flex h-full rounded-lg overflow-hidden relative">
-              <div className="rl-gumb" onClick={handleItemClickChatGumb}>
+              <div className="rl-gumb chat-tgl-btn" onClick={handleItemClickChatGumb}>
                 <Icon 
                   className="icon" 
-                  icon={chatGumb ? "solar:list-up-minimalistic-broken" : "solar:list-down-minimalistic-broken"} 
+                  icon={chatGumb ? "solar:arrow-right-broken" : "solar:arrow-left-broken"} 
                 />
               </div>
-              {chatGumb && (
-                <div className="w-1/4 bg-gray-200 border-r border-gray-300">
-                  <NavSideChat chats={chats} onChatClick={handleChatClick} />
-                </div>
-              )}
+              <div className={`chat-nav-container ${chatGumb ? 'open' : ''}`}>
+                <NavSideChat chats={chats} onChatClick={handleChatClick} />
+              </div>
               <ChatContainer 
                 messages={messages} 
                 newMessage={newMessage} 
