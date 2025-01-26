@@ -51,10 +51,10 @@ const ChatWindow = ({ user, recipientId }) => {
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type a message..."
+          placeholder="Pošalji poruku..."
           className="flex-1 p-2 border border-gray-300 rounded"
         />
-        <button onClick={handleSendMessage} className="ml-2 bg-blue-500 text-white px-4 py-2 rounded">Send</button>
+        <button onClick={handleSendMessage} className="ml-2 bg-blue-500 text-white px-4 py-2 rounded">Pošalji</button>
       </div>
     </div>
   );

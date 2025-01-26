@@ -32,7 +32,7 @@ const ChatContainer = ({ messages = [], newMessage, setNewMessage, handleSendMes
               type="text"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type a message..."
+              placeholder="Pošalji poruku..."
               className="chat-input"
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
@@ -41,13 +41,13 @@ const ChatContainer = ({ messages = [], newMessage, setNewMessage, handleSendMes
               }}
             />
             <button onClick={handleSendMessage} className="send-button">
-              Send
+              Pošalji
             </button>
           </div>
         </div>
       ) : (
         <div className="empty-chat">
-          <p>Select a chat to start messaging</p>
+          <p>Odaberi razgovor s liste</p>
         </div>
       )}
     </div>

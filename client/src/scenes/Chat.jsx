@@ -142,7 +142,7 @@ const Chat = () => {
   return (
     <>
       
-      <NavTop user={user} naslov={selectedChatName} />
+      <NavTop user={user} naslov={selectedChatName} chat={true} />
       <Navigacija user={user} otvoreno="chat" chat={!chatGumb} />
       <div className="main">
         <div className="flex items-center justify-center pt-20 px-4">
@@ -151,7 +151,7 @@ const Chat = () => {
               <div className="rl-gumb chat-tgl-btn" onClick={handleItemClickChatGumb}>
                 <Icon 
                   className="icon" 
-                  icon={chatGumb ? "solar:arrow-right-broken" : "solar:arrow-left-broken"} 
+                  icon={chatGumb ? "" : "solar:arrow-left-broken"} 
                 />
               </div>
               <div className={`chat-nav-container ${chatGumb ? 'open' : ''}`}>

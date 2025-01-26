@@ -5,7 +5,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store";
 import ApiConfig from "../../components/apiConfig.js";
-const NavTop = ({user, naslov}) => {
+const NavTop = ({user, naslov, chat}) => {
 
 
  const [theme, setTheme] = useState(
@@ -18,7 +18,7 @@ const NavTop = ({user, naslov}) => {
     return (
         <>  
         <div className="nav-top">
-          {user && user.isAdmin && (
+          {user && user.isAdmin && !chat && (
             <div className="admin-gumb">
               <Link className='link' to="/admin">
               <p>Admin</p>

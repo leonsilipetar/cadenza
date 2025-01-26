@@ -230,20 +230,6 @@ display: flex;
 flex-direction: column;
 align-items: center;
 }
-.raspored-lista{
-z-index:1;
-position: fixed;
-left: 3.5rem;
-padding-top: 1rem;
-top: 0;
-height: 100%;
-width: 20rem; /* Set the width as needed */
-display: flex;
-flex-direction: column;
-justify-content: flex-start;
-background-color: var(--iznad-nav);
-box-shadow: var(--boxShadow);
-}
 .rl-items{
 position: relative;
 display: flex;
@@ -597,11 +583,6 @@ padding: 0.3rem 0.7rem;
 text-align: center;
 border-radius: var(--radius);
 }
-.raspored-lista {
-width: 25%;
-background-color: #f1f1f1;
-border-right: 1px solid #ddd;
-}
 .chat-window {
 width: 75%;
 padding: 1rem;
@@ -702,16 +683,6 @@ background-color: rgb(var(--isticanje));
 border-radius: var(--radius);
 }
 @media only screen and (max-width: 1080px) {
-.raspored-lista{
-left: 0;
-height: 100%;
-width: 100%; /* Set the width as needed */
-display: flex;
-flex-direction: column;
-justify-content: flex-start;
-background-color: var(--iznad-nav);
-box-shadow: var(--boxShadow);
-}
 .rl-gumb{
 position: fixed;
 padding: 0.6rem;
@@ -1413,11 +1384,6 @@ padding: 0.3rem 0.7rem;
 text-align: center;
 border-radius: var(--radius);
 }
-.raspored-lista {
-width: 25%;
-background-color: #f1f1f1;
-border-right: 1px solid #ddd;
-}
 .chat-window {
 width: 75%;
 padding: 1rem;
@@ -1525,7 +1491,6 @@ width: 100%; /* Set the width as needed */
 display: flex;
 flex-direction: column;
 justify-content: flex-start;
-background-color: var(--iznad-nav);
 box-shadow: var(--boxShadow);
 }
 .rl-gumb{
@@ -1831,7 +1796,7 @@ textarea:focus {
 .chat-input {
   flex-grow: 1;
   padding: 10px;
-  border: 1px solid var(--isticanje);
+  border: 1px solid rgb(var(--isticanje));
   border-radius: 4px;
   margin-right: 10px;
   width: 100%;
@@ -1846,7 +1811,7 @@ textarea:focus {
   cursor: pointer;
   background-color: rgb(var(--isticanje3));
   color: white;
-  padding: 1rem 1.2rem ;
+  padding: 0.8rem 1rem ;
   border-radius: var(--radius);
   margin-left: 0.5rem;
 }
@@ -1857,6 +1822,10 @@ textarea:focus {
 
 .chat-window {
   width: 100%;
+  max-height: 90vh;
+  position: fixed;
+  left: 0;
+  bottom: 0;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -1871,10 +1840,11 @@ textarea:focus {
   background-color: var(--pozadina);
 }
 
+
 .rl-gumb.chat-tgl-btn{
   display: none;
-  top: 4px;
-  left: 2rem;
+  top: 0;
+  left: 1rem;
   background-color: transparent;
   color: var(--tekst);
 }
@@ -1890,9 +1860,10 @@ textarea:focus {
   .chat-nav-container.open {
     display: block; /* Show when open */
     width: 100%; /* Take full width on mobile */
-    position: absolute;
-    z-index: 10;
     height: 90%;
+  }
+  header.chat-active{
+    display: none;
   }
 }
 
@@ -1906,6 +1877,24 @@ textarea:focus {
   .header-chat {
     display: block !important; /* Always show on desktop */
   }
+  .chat-window {
+    width: 60%;
+    max-height: 90vh;
+    position: fixed;
+    left: 35vw;
+    bottom: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .chat-messages {
+    flex-grow: 1;
+    width: 100%;
+    overflow-y: auto;
+    background-color: var(--pozadina);
+  }
 }
 
 
@@ -1915,15 +1904,6 @@ textarea:focus {
   border-radius: 4px;
 }
 
-.message.sent {
-  background-color: #dcf8c6;
-  align-self: flex-end;
-}
-
-.message.received {
-  background-color: #e5e5ea;
-  align-self: flex-start;
-}
 /* Chat message styles */
 .message-header {
   font-size: 0.75rem;
@@ -1952,7 +1932,7 @@ textarea:focus {
 }
 
 .message.sent {
-  background-color: rgb(var(--isticanje3));
+  background-color: rgb(var(--isticanje));
   color: white;
   align-self: flex-end;
   border-bottom-right-radius: 0.25rem;
@@ -1962,7 +1942,7 @@ textarea:focus {
 }
 
 .message.received {
-  background-color: rgb(var(--isticanje));
+  background-color: rgb(var(--isticanje2));
   color: var(--tekst);
   align-self: flex-start;
   border-bottom-left-radius: 0.25rem;
