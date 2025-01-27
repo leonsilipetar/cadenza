@@ -3,7 +3,7 @@ import '../../App.css';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { authActions } from "../../store";
+import { authActions } from "../../store/index.js";
 import ApiConfig from "../../components/apiConfig.js";
 const NavTopAdministracija = ({user, naslov}) => {
 

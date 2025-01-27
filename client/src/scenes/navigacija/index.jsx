@@ -37,6 +37,11 @@ const Navigacija = ({ user, chat, otvoreno, notifications = [] }) => {
             <Icon className="icon" icon="solar:chat-line-broken" />
           </Link>
         </div>
+        <div className={activeItem === 'racuni' ? 'otvoreno' : ''} onClick={() => handleItemClick('racuni')}>
+          <Link className="link" to="/racuni">
+            <Icon className="icon" icon="solar:bill-list-broken" />
+          </Link>
+        </div>
         <div className={activeItem === 'profil' ? 'otvoreno' : ''} onClick={() => handleItemClick('profil')}>
           <Link className="link" to="/profil">
             <Icon className="icon" icon="solar:user-circle-broken" />

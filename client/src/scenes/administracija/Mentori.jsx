@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
 import NavigacijaAdmin from './NavigacijaAdmin';
-import NavTopAdministracija from './NavtopAdministracija';
+import NavTopAdministracija from './NavTopAdministracija';
 import DodajMentora from './DodajMentora';
 import MentorDetalji from './MentoriDetalji';
 import ApiConfig from '../../components/apiConfig';
@@ -96,7 +96,7 @@ const Mentori = () => {
       <NavigacijaAdmin otvoreno={otvoreno} />
       <NavTopAdministracija naslov={'Administracija - Korisnici'} />
       {korisnikDetaljiOtvoreno && (
-        console.log('Korisnik detalji otvoren', korisnikDetaljiOtvoreno),
+       
   <MentorDetalji korisnikId={korisnikDetaljiOtvoreno} onCancel={() => setKorisnikDetaljiOtvoreno(false)} />
 )}
       {odabranoDodajKorisnika && (

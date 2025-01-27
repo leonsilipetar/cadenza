@@ -2,7 +2,7 @@ import React from 'react'
 import { useEffect, useState } from "react";
 import axios from "axios";
 import NavigacijaAdmin from './NavigacijaAdmin';
-import NavTopAdministracija from './NavtopAdministracija';
+import NavTopAdministracija from './NavTopAdministracija';
 import ApiConfig from '../../components/apiConfig.js';
 
 

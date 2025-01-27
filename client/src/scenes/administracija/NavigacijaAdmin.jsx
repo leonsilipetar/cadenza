@@ -31,6 +31,12 @@ const NavigacijaAdmin = ({ otvoreno }) => {
             <p>Računi</p>
           </Link>
         </div>
+        <div className={otvoreno === 'programi' ? 'otvoreno' : ''}>
+          <Link className="link" to="/programi">
+            <Icon className="icon" icon="solar:case-broken" />
+            <p>Programi</p>
+          </Link>
+        </div>
         <div className={otvoreno === 'classrooms' ? 'otvoreno' : ''}>
           <Link className="link" to="/classrooms">
             <Icon className="icon" icon="solar:buildings-2-broken" />

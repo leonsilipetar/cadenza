@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
 import NavigacijaAdmin from './NavigacijaAdmin';
-import NavTopAdministracija from './NavtopAdministracija';
+import NavTopAdministracija from './NavTopAdministracija';
 import DeleteConfirmModal from './DeleteConfirmModal';
 import ApiConfig from '../../components/apiConfig';
 import '../../styles/Delete.css';

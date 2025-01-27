@@ -24,6 +24,7 @@ import { isPWA, setPWAUser, getPWAUser, clearPWAUser } from './utils/pwaUtils';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotificationComponent from './components/NotificationComponent';
 import { io } from 'socket.io-client'; // Ensure you have socket.io-client installed
+import Programs from './scenes/administracija/Programs.jsx';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -189,6 +190,11 @@ const App = () => {
         <Route path="/racuni-admin/*" element={
           <ProtectedRoute>
             <RacuniAdmin />
+          </ProtectedRoute>
+        } />
+        <Route path="/programi/*" element={
+          <ProtectedRoute>
+            <Programs/>
           </ProtectedRoute>
         } />
         <Route path="/classrooms/*" element={

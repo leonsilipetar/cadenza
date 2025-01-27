@@ -1,105 +1,131 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Icon } from '@iconify/react';
 import ApiConfig from '../../components/apiConfig';
-import Notification from '../../components/Notifikacija';
 
 const DodajProgram = ({ onDodajProgram, onCancel }) => {
-  const [inputs, setInputs] = useState({
+  const [formData, setFormData] = useState({
     naziv: '',
-    cijena: '',
-    tip: '',
-    skola: '',
-  });
-  const [notification, setNotification] = useState(null);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInputs((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const dodajProgram = async () => {
-    try {
-      const res = await axios.post(`${ApiConfig.baseUrl}/api/programs`, inputs);
-      return res.data;
-    } catch (err) {
-      console.error(err);
-      return null;
+    tipovi: {
+      grupno: '',
+      individualno1: '',
+      individualno2: '',
+      none: ''
     }
-  };
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const program = await dodajProgram();
-    if (program) {
-      setNotification({
-        type: 'success',
-        message: 'Program uspješno dodan!',
-      });
+    try {
+      // Transform data for API - filter out empty or zero prices
+      const transformedData = {
+        naziv: formData.naziv,
+        tipovi: Object.entries(formData.tipovi)
+          .filter(([_, cijena]) => cijena !== '' && parseFloat(cijena) > 0)
+          .map(([tip, cijena]) => ({
+            tip,
+            cijena: parseFloat(cijena)
+          }))
+      };
+
+      await axios.post(
+        `${ApiConfig.baseUrl}/api/programs`,
+        transformedData,
+        { withCredentials: true }
+      );
       onDodajProgram();
-      setInputs({
-        naziv: '',
-        cijena: '',
-        tip: '',
-        skola: '',
-      });
-    } else {
-      setNotification({
-        type: 'error',
-        message: 'Greška pri dodavanju programa. Pokušajte ponovo.',
-      });
+    } catch (err) {
+      console.error('Error adding program:', err);
     }
   };
 
+  const handlePriceChange = (type, value) => {
+    setFormData(prev => ({
+      ...prev,
+      tipovi: {
+        ...prev.tipovi,
+        [type]: value
+      }
+    }));
+  };
+
   return (
-    <div className="dodaj-program">
-      <h2>Dodaj program</h2>
+    <div className="popup">
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="naziv"
-          value={inputs.naziv}
-          onChange={handleChange}
-          placeholder="Naziv programa"
-          required
-        />
-        <input
-          type="number"
-          name="cijena"
-          value={inputs.cijena}
-          onChange={handleChange}
-          placeholder="Cijena"
-          required
-        />
-        <input
-          type="text"
-          name="tip"
-          value={inputs.tip}
-          onChange={handleChange}
-          placeholder="Tip"
-          required
-        />
-        <input
-          type="text"
-          name="skola"
-          value={inputs.skola}
-          onChange={handleChange}
-          placeholder="ID škole"
-          required
-        />
-        <div className="gumb btn-group">
-          <button type="button" className="gumb action-btn" onClick={onCancel}>
-            Zatvori
-          </button>
-          <button type="submit" className="gumb action-btn spremiBtn">
-            Dodaj program
-          </button>
+        <div className="div">
+          <label htmlFor='prog-Ime'>Naziv programa:</label>
+          <input
+            className="input-login-signup"
+            type="text"
+            id='prog-Ime'
+            value={formData.naziv}
+            onChange={(e) => setFormData({ ...formData, naziv: e.target.value })}
+            required
+          />
         </div>
-        {notification && (
-          <Notification type={notification.type} message={notification.message} />
-        )}
+
+        {/* Grupno */}
+        <div className="div">
+          <label>Grupno (EUR):</label>
+          <input
+            className="input-login-signup"
+            type="number"
+            min="0"
+            step="0.01"
+            value={formData.tipovi.grupno}
+            onChange={(e) => handlePriceChange('grupno', e.target.value)}
+            placeholder="Unesite cijenu za grupni program"
+          />
+        </div>
+
+        {/* Individualno 1x */}
+        <div className="div">
+          <label>Individualno 1x tjedno (EUR):</label>
+          <input
+            className="input-login-signup"
+            type="number"
+            min="0"
+            step="0.01"
+            value={formData.tipovi.individualno1}
+            onChange={(e) => handlePriceChange('individualno1', e.target.value)}
+            placeholder="Unesite cijenu za individualni program 1x tjedno"
+          />
+        </div>
+
+        {/* Individualno 2x */}
+        <div className="div">
+          <label>Individualno 2x tjedno (EUR):</label>
+          <input
+            className="input-login-signup"
+            type="number"
+            min="0"
+            step="0.01"
+            value={formData.tipovi.individualno2}
+            onChange={(e) => handlePriceChange('individualno2', e.target.value)}
+            placeholder="Unesite cijenu za individualni program 2x tjedno"
+          />
+        </div>
+
+        {/* Poseban program */}
+        <div className="div">
+          <label>Poseban program (EUR):</label>
+          <input
+            className="input-login-signup"
+            type="number"
+            min="0"
+            step="0.01"
+            value={formData.tipovi.none}
+            onChange={(e) => handlePriceChange('none', e.target.value)}
+            placeholder="Unesite cijenu za poseban program"
+          />
+        </div>
+
+        <div className="div-radio">
+          <button type="button" className="gumb action-btn zatvoriBtn" onClick={onCancel}>
+            Odustani
+          </button>
+          <button type="submit" className="gumb action-btn spremiBtn">Dodaj</button>
+        </div>
       </form>
     </div>
   );

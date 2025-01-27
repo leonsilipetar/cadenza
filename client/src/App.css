@@ -318,6 +318,7 @@ padding: 0.3rem;
 z-index: 5;
 position: absolute;
 width: 100%;
+min-height: 100vh;
 display: flex;
 align-items: center;
 justify-content: center;
@@ -1133,27 +1134,6 @@ color: rgb(var(--tekst));
 }
 .p{
 padding: 0.3rem;
-}
-.popup {
-z-index: 5;
-position: absolute;
-width: 100%;
-display: flex;
-align-items: center;
-justify-content: center;
-background-color: rgba(0, 0, 0, 0.8);
-padding: 1rem;
-overflow-x: hidden; /* Allow the popup to scroll if content overflows */
-}
-.popup .div{
-width: 75%;
-background-color: var(--iznad);
-display: flex;
-justify-content: center;
-align-items: center;
-padding: 1rem;
-border-radius: var(--radius);
-margin: 1rem 0;
 }
 .div-clmn{
 flex-direction: column;

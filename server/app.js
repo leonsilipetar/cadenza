@@ -28,4 +28,8 @@ app.use(rateLimit({
 }));
 
 app.use(mongoSanitize());
+
+// Add to your routes setup
+const invoiceSettingsRoutes = require('./routes/invoiceSettings');
+app.use('/api', invoiceSettingsRoutes);
   
