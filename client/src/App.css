@@ -1804,6 +1804,20 @@ textarea:focus {
   border-radius: var(--radius);
   background-color: rgb(var(--iznad));
   color: rgb(var(--tekst));
+  height: 3rem;
+  max-height: 300px; /* Set a maximum height */
+  overflow-y: auto; /* Hide the scrollbar */
+  resize: none; /* Prevent manual resizing */
+}
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari) */
+.chat-input::-webkit-scrollbar {
+  display: none; /* Hide scrollbar */
+}
+
+/* Hide scrollbar for Firefox */
+.chat-input {
+  scrollbar-width: none; /* Hide scrollbar */
 }
 
 .send-button {

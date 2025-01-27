@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import Navigacija from './navigacija';
 import NavTop from './nav-top';
@@ -14,7 +14,7 @@ const socket = io('http://localhost:5000', {
   withCredentials: true,
 });
 
-const Chat = () => {
+const Chat = ({ setIsChatWindowOpen }) => {
   const [user, setUser] = useState();
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
@@ -22,6 +22,35 @@ const Chat = () => {
   const [newMessage, setNewMessage] = useState('');
   const [chatGumb, setChatGumb] = useState(true);
   const [selectedChatName, setSelectedChatName] = useState('Chat');
+
+  const fetchChats = useCallback(async () => {
+    try {
+      if (user?.isMentor) {
+        const mentorStudents = user.students.map(student => ({
+          id: student.ucenikId,
+          name: `${student.ime} ${student.prezime}`,
+        }));
+        console.log("Mentor students:", mentorStudents);
+        setChats(mentorStudents);
+      } else if (user?.isStudent) {
+        const mentorIds = user.mentors;
+        const mentorsData = await Promise.all(
+          mentorIds.map(async (mentorId) => {
+            const res = await axios.get(`${ApiConfig.baseUrl}/api/korisnik/${mentorId}`);
+            const mentor = res.data;
+            return {
+              id: mentor._id,
+              name: `${mentor.ime} ${mentor.prezime}`,
+            };
+          })
+        );
+        setChats(mentorsData);
+      }
+    } catch (error) {
+      console.error("Error fetching chats", error);
+      setChats([]);
+    }
+  }, [user]);
 
   useEffect(() => {
     sendRequest();
@@ -50,7 +79,12 @@ const Chat = () => {
     if (user) {
       fetchChats();
     }
-  }, [user]);
+  }, [user, fetchChats]);
+
+  useEffect(() => {
+    setIsChatWindowOpen(true);
+    return () => setIsChatWindowOpen(false);
+  }, [setIsChatWindowOpen]);
 
   const sendRequest = async () => {
     try {
@@ -61,35 +95,6 @@ const Chat = () => {
       }
     } catch (err) {
       console.log(err);
-    }
-  };
-
-  const fetchChats = async () => {
-    try {
-      if (user.isMentor) {
-        const mentorStudents = user.students.map(student => ({
-          id: student.ucenikId,
-          name: `${student.ime} ${student.prezime}`,
-        }));
-        console.log("Mentor students:", mentorStudents);
-        setChats(mentorStudents);
-      } else if (user.isStudent) {
-        const mentorIds = user.mentors;
-        const mentorsData = await Promise.all(
-          mentorIds.map(async (mentorId) => {
-            const res = await axios.get(`${ApiConfig.baseUrl}/api/korisnik/${mentorId}`);
-            const mentor = res.data;
-            return {
-              id: mentor._id,
-              name: `${mentor.ime} ${mentor.prezime}`,
-            };
-          })
-        );
-        setChats(mentorsData);
-      }
-    } catch (error) {
-      console.error("Error fetching chats", error);
-      setChats([]);
     }
   };
 

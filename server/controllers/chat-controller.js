@@ -13,6 +13,12 @@ const getMessages = async (req, res) => {
             ]
         }).sort({ timestamp: 1 });
 
+        // Update read status for messages sent to the current user
+        await Message.updateMany(
+            { senderId: recipientId, recipientId: senderId, read: false },
+            { $set: { read: true } }
+        );
+
         res.json({ messages });
     } catch (error) {
         console.error("Error fetching messages:", error);

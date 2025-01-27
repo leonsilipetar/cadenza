@@ -174,7 +174,8 @@ router.post('/messages', verifyToken, async (req, res) => {
       text,
       senderId,
       recipientId,
-      timestamp
+      timestamp,
+      read: false // Set read status to false when sending
     });
     await message.save();
     res.status(201).json(message);
@@ -182,6 +183,20 @@ router.post('/messages', verifyToken, async (req, res) => {
     console.error('Error saving message:', error);
     res.status(500).json({ message: 'Error saving message' });
   }
+});
+
+router.put('/messages/read/:recipientId', verifyToken, async (req, res) => {
+    try {
+        const senderId = req.user._id;
+        await Message.updateMany(
+            { senderId: req.params.recipientId, recipientId: senderId, read: false },
+            { $set: { read: true } }
+        );
+        res.status(200).json({ message: 'Messages marked as read' });
+    } catch (error) {
+        console.error("Error marking messages as read:", error);
+        res.status(500).json({ message: 'Error marking messages as read' });
+    }
 });
 
 module.exports = router;

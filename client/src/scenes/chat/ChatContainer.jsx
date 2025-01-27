@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const formatMessageTime = (timestamp) => {
   const date = new Date(timestamp);
@@ -6,6 +6,16 @@ const formatMessageTime = (timestamp) => {
 };
 
 const ChatContainer = ({ messages = [], newMessage, setNewMessage, handleSendMessage, selectedChat, user }) => {
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]); // Scroll when messages change
+
   return (
     <div className="chat-container">
       {selectedChat ? (
@@ -26,6 +36,7 @@ const ChatContainer = ({ messages = [], newMessage, setNewMessage, handleSendMes
                 </div>
               </div>
             ))}
+            <div ref={messagesEndRef} /> {/* Invisible element at the bottom */}
           </div>
           <div className="chat-input-container">
             <input

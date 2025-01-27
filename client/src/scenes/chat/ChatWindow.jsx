@@ -9,6 +9,7 @@ const ChatWindow = ({ user, recipientId }) => {
   useEffect(() => {
     if (recipientId) {
       fetchMessages(recipientId);
+      markMessagesAsRead(recipientId);
     }
   }, [recipientId]);
 
@@ -34,6 +35,14 @@ const ChatWindow = ({ user, recipientId }) => {
       setNewMessage("");
     } catch (error) {
       console.error("Error sending message", error);
+    }
+  };
+
+  const markMessagesAsRead = async (recipientId) => {
+    try {
+      await axios.put(`${ApiConfig.baseUrl}/api/messages/read/${recipientId}`);
+    } catch (error) {
+      console.error("Error marking messages as read", error);
     }
   };
 
