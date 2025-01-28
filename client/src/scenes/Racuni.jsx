@@ -270,6 +270,7 @@ const Racuni = () => {
       <NavTop user={user} naslov={"Računi"} />
       <div className="main">
         {user?.isMentor && (
+          <div className='karticaZadatka'>
           <div className="tablica">
             <div className="tr naziv">
               <div className="th">Učenik</div>
@@ -301,6 +302,7 @@ const Racuni = () => {
                 </div>
               </div>
             ))}
+          </div>
           </div>
         )}
         {user && user.isStudent && (

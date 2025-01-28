@@ -428,6 +428,9 @@ align-items: center;
 .th{
 flex: 1;
 }
+.redak:nth-child(even){
+  background-color:rgba(153, 153, 153, 0.082);
+}
 .redak:hover{
 background-color:rgba(153, 153, 153, 0.195);
 }
