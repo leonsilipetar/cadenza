@@ -366,7 +366,7 @@ justify-content: center;
 flex-direction: column;
 position: relative;
 width: 60%;
-align-items: flex-start;
+align-items: center;
 margin-bottom: 2%;
 padding: 0.8rem;
 }
@@ -399,10 +399,10 @@ min-width: 0; /* Prevent overflow */
 text-align: right;
 }
 .profilDiv .field:nth-child(1){
-border-radius: 0.2rem 0.2rem 0 0;
+border-radius: var(--radius)var(--radius) 0 0;
 }
 .profilDiv .field:nth-last-child(1){
-border-radius: 0 0 0.2rem 0.2rem;
+border-radius: 0 0 var(--radius) var(--radius);
 }
 .tablica{
 display: grid;
@@ -1179,21 +1179,6 @@ top: 4.5rem;
 justify-content: space-evenly;
 align-items: center;
 flex-direction: column;
-}
-.profilDiv{
-width: 100%;
-display: flex;
-justify-content: center;
-align-items: flex-start;
-flex-direction: column;
-gap: 0.2rem;
-padding: 2rem;
-}
-.profilDiv .field:nth-child(1){
-border-radius: 0.2rem 0.2rem 0 0;
-}
-.profilDiv .field:nth-last-child(1){
-border-radius: 0 0 0.2rem 0.2rem;
 }
 .tablica{
 display: grid;
