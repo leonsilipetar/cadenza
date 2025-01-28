@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Icon } from '@iconify/react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import NavigacijaAdmin from './NavigacijaAdmin';
-import NavTopAdministracija from './NavTopAdministracija';
+import NavTopAdministracija from './NavTopAdministracija.jsx';
 import DodajRacun from './DodajRacun';
 import RenderPDF from '../../components/RenderPDF';
 import ApiConfig from '../../components/apiConfig';
