@@ -85,7 +85,7 @@ const Welcome = () => {
 
               <img
 
-                src="/Logo512.png"
+                src="/logo512.png"
 
                 alt="MAI Logo"
 
