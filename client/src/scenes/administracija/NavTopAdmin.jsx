@@ -5,7 +5,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/index.js";
 import ApiConfig from "../../components/apiConfig.js";
-const NavTopAdministracija = ({user, naslov}) => {
+const NavTopAdmin = ({user, naslov}) => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -65,4 +65,4 @@ const NavTopAdministracija = ({user, naslov}) => {
         </>
     );
 }
-export default NavTopAdministracija;
+export default NavTopAdmin;

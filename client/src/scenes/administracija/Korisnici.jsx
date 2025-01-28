@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
 import NavigacijaAdmin from './NavigacijaAdmin';
-import NavTopAdministracija from './NavTopAdministracija';
+import NavTopAdministracija from './NavTopAdmin.jsx';
 import DodajKorisnika from './DodajKorisnika';
 import KorisnikDetalji from './KorisnikDetalji';
 import ApiConfig from '../../components/apiConfig';
