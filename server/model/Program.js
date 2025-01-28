@@ -4,9 +4,19 @@ const Schema = mongoose.Schema;
 
 const programSchema = new Schema({
   naziv: { type: String, required: true },
-  cijena: { type: Number, required: true }, // Osnovna cijena
-  tip: { type: String, enum: ['grupno', 'individualno1', 'individualno2'], required: true }, // Vrsta tečaja
-  skola: { type: Schema.Types.ObjectId, ref: 'School', required: true },
+  tipovi: [{
+    tip: {
+      type: String,
+      required: true,
+      enum: ['grupno', 'individualno1', 'individualno2', 'none']
+    },
+    cijena: {
+      type: Number,
+      required: true,
+      min: 0
+    }
+  }],
+  school: { type: Schema.Types.ObjectId, ref: 'School', required: true },
   mentori: [{ type: Schema.Types.ObjectId, ref: 'User' }], // Povezivanje s mentorima
   students: [{ type: Schema.Types.ObjectId, ref: 'User' }], // Povezivanje s učenicima
   opis: { type: String },
@@ -14,4 +24,5 @@ const programSchema = new Schema({
   brojSati: { type: Number }, // Hours per month
 }, { timestamps: true });
 
-module.exports = mongoose.model('Program', programSchema);
+// Export only if model hasn't been compiled
+module.exports = mongoose.models.Program || mongoose.model('Program', programSchema);

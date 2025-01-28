@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ApiConfig from '../../components/apiConfig';
 import Notification from '../../components/Notifikacija';
+import { Icon } from '@iconify/react';
 
 axios.defaults.withCredentials = true;
 
@@ -9,6 +10,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [mentors, setMentors] = useState([]);
   const [schools, setSchools] = useState([]);
+  const [programs, setPrograms] = useState([]);
   const [inputs, setInputs] = useState({
     korisnickoIme: '',
     email: '',
@@ -18,7 +20,7 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
     isMentor: false,
     isStudent: true,
     oib: '',
-    program: '',
+    program: [],
     brojMobitela: '',
     mentor: '',  // Initial value for mentor
     school: '',  // Initial value for school
@@ -45,6 +47,9 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [programInput, setProgramInput] = useState('');
+  const [selectedPrograms, setSelectedPrograms] = useState([]);
+  const [programToRemove, setProgramToRemove] = useState(null);
 
   const fetchMentors = async () => {
     try {
@@ -61,6 +66,23 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
       setSchools(res.data);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const fetchPrograms = async () => {
+    try {
+      const userRes = await axios.get(`${ApiConfig.baseUrl}/api/user`, { 
+        withCredentials: true 
+      });
+      
+      const programsRes = await axios.get(
+        `${ApiConfig.baseUrl}/api/programs?school=${userRes.data.user.school}`, 
+        { withCredentials: true }
+      );
+      
+      setPrograms(Array.isArray(programsRes.data) ? programsRes.data : []);
+    } catch (err) {
+      console.error('Error fetching programs:', err);
     }
   };
 
@@ -100,7 +122,14 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
 
   const urediKorisnika = async () => {
     try {
-      const res = await axios.put(`${ApiConfig.baseUrl}/api/update-korisnik/${korisnikId}`, inputs);
+      const res = await axios.put(
+        `${ApiConfig.baseUrl}/api/update-korisnik/${korisnikId}`, 
+        {
+          ...inputs,
+          program: selectedPrograms.map(program => program._id) // Send program IDs
+        },
+        { withCredentials: true }
+      );
       return res.data;
     } catch (err) {
       console.error(err);
@@ -111,11 +140,19 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
+
     const result = await urediKorisnika();
     if (result) {
-      console.log('User updated successfully:', result);
+      setNotification({
+        type: 'success',
+        message: 'Korisnik uspješno ažuriran'
+      });
+      onCancel();
     } else {
-      console.log('User update failed.');
+      setNotification({
+        type: 'error',
+        message: 'Greška pri ažuriranju korisnika'
+      });
     }
     setIsSaving(false);
   };
@@ -143,47 +180,120 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
     }
   };
 
-  useEffect(() => {
-    getDetaljiKorisnika(korisnikId).then((data) => {
-      const formattedDate = data.datumRodjenja ? new Date(data.datumRodjenja).toISOString().split('T')[0] : '';
-      setInputs({
-        korisnickoIme: data.korisnickoIme,
-        email: data.email,
-        ime: data.ime,
-        prezime: data.prezime,
-        isAdmin: data.isAdmin,
-        isMentor: data.isMentor,
-        isStudent: data.isStudent,
-        oib: data.oib,
-        program: data.program,
-        brojMobitela: data.brojMobitela,
-        mentor: data.mentors || '',  // Ensure default value is set
-        school: data.school || '',  // Ensure default value is set
-        datumRodjenja: formattedDate,
-        adresa: {
-          ulica: data.adresa?.ulica || '',
-          kucniBroj: data.adresa?.kucniBroj || '',
-          mjesto: data.adresa?.mjesto || '',
-        },
-        pohadjaTeoriju: data.pohadjaTeoriju,
-        napomene: data.napomene,
-        maloljetniClan: data.maloljetniClan,
-        roditelj1: {
-          ime: data.roditelj1?.ime || '',
-          prezime: data.roditelj1?.prezime || '',
-          brojMobitela: data.roditelj1?.brojMobitela || '',
-        },
-        roditelj2: {
-          ime: data.roditelj2?.ime || '',
-          prezime: data.roditelj2?.prezime || '',
-          brojMobitela: data.roditelj2?.brojMobitela || '',
-        },
-      });
-    });
+  const handleAddProgram = async (programId) => {
+    try {
+      const program = programs.find(p => p._id === programId);
+      if (!program) return;
 
-    fetchMentors();
-    fetchSchools();
-  }, [korisnikId]);
+      setInputs(prev => ({
+        ...prev,
+        program: [...(prev.program || []), programId]
+      }));
+
+      setSelectedPrograms(prev => [...prev, program]);
+      setProgramInput('');
+    } catch (err) {
+      console.error('Error adding program:', err);
+    }
+  };
+
+  const handleRemoveProgram = async (programId) => {
+    try {
+      setInputs(prev => ({
+        ...prev,
+        program: prev.program.filter(id => id !== programId)
+      }));
+
+      setSelectedPrograms(prev => 
+        prev.filter(program => program._id !== programId)
+      );
+      setProgramToRemove(null);
+    } catch (err) {
+      console.error('Error removing program:', err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        // Fetch user details
+        const userData = await getDetaljiKorisnika(korisnikId);
+        const formattedDate = userData.datumRodjenja ? 
+          new Date(userData.datumRodjenja).toISOString().split('T')[0] : '';
+
+        // Fetch programs for user's school
+        const userRes = await axios.get(`${ApiConfig.baseUrl}/api/user`, { 
+          withCredentials: true 
+        });
+        
+        const programsRes = await axios.get(
+          `${ApiConfig.baseUrl}/api/programs?school=${userRes.data.user.school}`, 
+          { withCredentials: true }
+        );
+        
+        const fetchedPrograms = Array.isArray(programsRes.data) ? programsRes.data : [];
+        setPrograms(fetchedPrograms);
+
+        // Set user data
+        setInputs({
+          korisnickoIme: userData.korisnickoIme,
+          email: userData.email,
+          ime: userData.ime,
+          prezime: userData.prezime,
+          isAdmin: userData.isAdmin,
+          isMentor: userData.isMentor,
+          isStudent: userData.isStudent,
+          oib: userData.oib,
+          program: userData.program || [],
+          brojMobitela: userData.brojMobitela,
+          mentor: userData.mentors || '',
+          school: userData.school || '',
+          datumRodjenja: formattedDate,
+          adresa: {
+            ulica: userData.adresa?.ulica || '',
+            kucniBroj: userData.adresa?.kucniBroj || '',
+            mjesto: userData.adresa?.mjesto || '',
+          },
+          pohadjaTeoriju: userData.pohadjaTeoriju,
+          napomene: userData.napomene,
+          maloljetniClan: userData.maloljetniClan,
+          roditelj1: {
+            ime: userData.roditelj1?.ime || '',
+            prezime: userData.roditelj1?.prezime || '',
+            brojMobitela: userData.roditelj1?.brojMobitela || '',
+          },
+          roditelj2: {
+            ime: userData.roditelj2?.ime || '',
+            prezime: userData.roditelj2?.prezime || '',
+            brojMobitela: userData.roditelj2?.brojMobitela || '',
+          },
+        });
+
+        // Set selected programs after both user data and programs are loaded
+        if (userData.program && userData.program.length > 0 && fetchedPrograms.length > 0) {
+          const userPrograms = fetchedPrograms.filter(p => 
+            userData.program.includes(p._id)
+          );
+          setSelectedPrograms(userPrograms);
+        }
+
+        // Fetch other required data
+        await Promise.all([
+          fetchMentors(),
+          fetchSchools()
+        ]);
+
+      } catch (error) {
+        console.error('Error fetching initial data:', error);
+        setNotification({
+          type: 'error',
+          message: 'Greška pri učitavanju podataka'
+        });
+      }
+    };
+
+    fetchInitialData();
+  }, [korisnikId]); // Only depend on korisnikId
 
   return (
     <div className="popup">
@@ -271,13 +381,80 @@ const KorisnikDetalji = ({ korisnikId, onCancel }) => {
           <label htmlFor="kor-program">Program:</label>
           <input
             className="input-login-signup"
-            value={inputs.program}
-            onChange={handleChange}
             type="text"
-            name="program"
-            id="kor-program"
-            placeholder="program"
+            value={programInput}
+            onChange={(e) => setProgramInput(e.target.value)}
+            placeholder="Pretraži programe..."
           />
+          
+          {/* Program search results */}
+          {programInput.length > 0 && (
+            <div className="search-results">
+              {programs
+                .filter(program => 
+                  program.naziv.toLowerCase().includes(programInput.toLowerCase()) &&
+                  !selectedPrograms.some(sp => sp._id === program._id)
+                )
+                .map(program => (
+                  <div key={program._id} className="tr redak">
+                    <div className="th">{program.naziv}</div>
+                    <div className="th">
+                      <button
+                        className="action-btn abEdit"
+                        onClick={() => handleAddProgram(program._id)}
+                        type="button"
+                      >
+                        <Icon icon="solar:add-circle-broken" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
+
+          {/* Selected programs */}
+          <div className="tablica">
+            <div className="tr naziv">
+              <div className="th">Dodani programi</div>
+              <div className="th"></div>
+            </div>
+            {selectedPrograms.map((program) => (
+              <div key={program._id} className="tr redak">
+                <div className="th">{program.naziv}</div>
+                <div className="th">
+                  {programToRemove?._id === program._id ? (
+                    <>
+                      <button
+                        className="gumb action-btn abDelete"
+                        type="button"
+                        onClick={() => handleRemoveProgram(program._id)}
+                      >
+                        Ukloni
+                      </button>
+                      <button
+                        className="gumb action-btn abEdit"
+                        type="button"
+                        onClick={() => setProgramToRemove(null)}
+                      >
+                        Odustani
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      className="action-btn abDelete"
+                      onClick={() => setProgramToRemove(program)}
+                      type="button"
+                    >
+                      <Icon icon="solar:trash-bin-trash-broken" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="div">
           <label htmlFor="kor-mentor">Mentor:</label>
           <input
             className="input-login-signup"

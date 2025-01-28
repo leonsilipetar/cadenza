@@ -23,7 +23,10 @@ const userSchema = new Schema({
     mjesto: String,
   },
   pohadjaTeoriju: Boolean,
-  program: [{ type: Schema.Types.ObjectId, ref: 'Program' }], // Reference na programe
+  program: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Program'
+  }],
   napomene: { type: [String], default: [] },
   maloljetniClan: Boolean,
   roditelj1: {

@@ -3,8 +3,12 @@ const path = require('path');
 const PDFDocument = require('pdfkit');
 const InvoiceModel = require('../model/Invoice');
 const User = require('../model/User');
+const Mentor = require('../model/Mentor');
 const Program = require('../model/Program');
 const School = require('../model/School');
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const addInvoice = async (req, res) => {
     try {
@@ -122,10 +126,99 @@ const downloadInvoice = async (req, res) => {
   }
 };
 
+const uploadPdfInvoice = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const { studentId } = req.body;
+    
+    // Get student details to get school info
+    const student = await User.findById(studentId);
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    // Get the logged-in mentor
+    const mentor = await Mentor.findOne({ 
+      _id: req.user._id,
+      isMentor: true 
+    });
+    
+    if (!mentor) {
+      return res.status(403).json({ message: 'Only mentors can upload invoices' });
+    }
+
+    // Generate invoice number (YYYYMMXXX format)
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    
+    // Find the last invoice number for current year/month
+    const lastInvoice = await InvoiceModel.findOne({
+      invoiceNumber: { 
+        $regex: new RegExp(`^${year}${month}`) 
+      }
+    }).sort({ invoiceNumber: -1 });
+
+    let sequence = '001';
+    if (lastInvoice) {
+      const lastSequence = parseInt(lastInvoice.invoiceNumber.slice(-3));
+      sequence = String(lastSequence + 1).padStart(3, '0');
+    }
+
+    const invoiceNumber = parseInt(`${year}${month}${sequence}`);
+
+    // Calculate due date (15 days from now)
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 15);
+
+    const newInvoice = new InvoiceModel({
+      studentId,
+      mentorId: req.user._id,
+      schoolId: student.school,
+      invoiceNumber: `${year}${month}${sequence}`,
+      month: new Date().toLocaleString('hr-HR', { month: 'long' }).toLowerCase(),
+      year: new Date().getFullYear(),
+      issueDate: new Date(),
+      dueDate: dueDate,
+      pdfData: {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+        originalName: req.file.originalname
+      }
+    });
+
+    const savedInvoice = await newInvoice.save();
+
+    // Update student's invoices array
+    await User.findByIdAndUpdate(
+      studentId,
+      { $push: { racuni: savedInvoice._id } }
+    );
+
+    // Return the saved invoice with populated fields
+    const populatedInvoice = await InvoiceModel.findById(savedInvoice._id)
+      .populate('studentId', 'ime prezime')
+      .populate('mentorId', 'ime prezime')
+      .populate('schoolId', 'naziv');
+
+    res.status(201).json(populatedInvoice);
+  } catch (error) {
+    console.error('Error uploading PDF invoice:', error);
+    res.status(500).json({ 
+      message: 'Error uploading invoice',
+      error: error.message 
+    });
+  }
+};
+
 module.exports = {
   generateInvoice,
   getUserInvoices,
   downloadInvoice,
-  addInvoice
+  addInvoice,
+  uploadPdfInvoice
 };
 

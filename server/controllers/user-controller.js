@@ -530,25 +530,47 @@ const getDetaljiKorisnika = async (req, res, next) => {
 const updateDetaljiKorisnika = async (req, res, next) => {
   try {
     const userId = req.params.userId;
-    const updateData = req.body; // Assuming the update data is sent in the request body
+    const updateData = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: 'Invalid user ID' });
     }
 
-    const detaljiKorisnika = await User.findById(userId);
+    const user = await User.findById(userId);
 
-    if (!detaljiKorisnika) {
+    if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update user fields with the values from the request body
-    Object.assign(detaljiKorisnika, updateData);
+    // Handle program changes
+    if (Array.isArray(updateData.program)) {
+      // Update user's programs
+      user.program = updateData.program;
+
+      // Update Program model references
+      await Program.updateMany(
+        { students: userId },
+        { $pull: { students: userId } }
+      );
+
+      if (updateData.program.length > 0) {
+        await Program.updateMany(
+          { _id: { $in: updateData.program } },
+          { $addToSet: { students: userId } }
+        );
+      }
+    }
+
+    // Update other user fields
+    Object.assign(user, {
+      ...updateData,
+      program: user.program // Keep the programs we just updated
+    });
 
     // Save the updated user
-    await detaljiKorisnika.save();
+    await user.save();
 
-    res.json({ message: 'User updated successfully', user: detaljiKorisnika });
+    res.json({ message: 'User updated successfully', user });
   } catch (err) {
     next(err);
   }

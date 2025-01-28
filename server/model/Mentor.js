@@ -35,6 +35,10 @@ const mentorSchema = new Schema({
     ref: 'School',
     required: true,
   },
+  programs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Program'
+  }],
 });
 
 const Mentor = mongoose.model('Mentor', mentorSchema);

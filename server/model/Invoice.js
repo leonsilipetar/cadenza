@@ -7,38 +7,21 @@ const invoiceSchema = new Schema({
         required: true,
         unique: true 
     },
-    studentId: { 
-        type: Schema.Types.ObjectId, 
-        ref: 'User', 
-        required: true 
-    },
+    studentId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     mentorId: { 
         type: Schema.Types.ObjectId, 
         ref: 'User', 
         required: true 
     },
-    programId: { 
-        type: Schema.Types.ObjectId, 
-        ref: 'Program', 
-        required: true 
-    },
+    programId: { type: Schema.Types.ObjectId, ref: 'Program' },
     schoolId: { 
         type: Schema.Types.ObjectId, 
         ref: 'School', 
         required: true 
     },
-    month: { 
-        type: String, 
-        required: true 
-    },
-    year: { 
-        type: Number, 
-        required: true 
-    },
-    amount: { 
-        type: Number, 
-        required: true 
-    },
+    month: { type: String, required: true },
+    year: { type: Number, required: true },
+    amount: { type: Number },
     status: { 
         type: String, 
         enum: ['draft', 'sent', 'paid', 'cancelled'],
@@ -48,39 +31,19 @@ const invoiceSchema = new Schema({
         type: Date, 
         required: true 
     },
-    issueDate: { 
-        type: Date, 
-        default: Date.now 
-    },
+    issueDate: { type: Date, default: Date.now },
+    programType: String,
     paymentDetails: {
         bankAccount: String,
         reference: String,
         qrCode: String
     },
-    notes: String
-}, { timestamps: true });
-
-// Generate invoice number before saving
-invoiceSchema.pre('save', async function(next) {
-    if (this.isNew) {
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        
-        // Find the last invoice number for the current year/month
-        const lastInvoice = await this.constructor.findOne({
-            invoiceNumber: new RegExp(`^${year}${month}`)
-        }).sort({ invoiceNumber: -1 });
-        
-        let sequence = '001';
-        if (lastInvoice) {
-            const lastSequence = parseInt(lastInvoice.invoiceNumber.slice(-3));
-            sequence = String(lastSequence + 1).padStart(3, '0');
-        }
-        
-        this.invoiceNumber = `${year}${month}${sequence}`;
+    notes: String,
+    pdfData: {
+        data: Buffer,
+        contentType: String,
+        originalName: String
     }
-    next();
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Invoice', invoiceSchema);

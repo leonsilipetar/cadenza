@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
 import ApiConfig from '../../components/apiConfig';
 import Notification from '../../components/Notifikacija';
 
-const DodajProgram = ({ onDodajProgram, onCancel, user }) => {
+const ProgramDetalji = ({ program, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
     naziv: '',
     tipovi: {
@@ -16,10 +16,28 @@ const DodajProgram = ({ onDodajProgram, onCancel, user }) => {
   });
   const [notification, setNotification] = useState(null);
 
+  useEffect(() => {
+    if (program) {
+      const transformedTipovi = {};
+      program.tipovi.forEach(({ tip, cijena }) => {
+        transformedTipovi[tip] = cijena.toString();
+      });
+      
+      setFormData({
+        naziv: program.naziv,
+        tipovi: {
+          grupno: transformedTipovi.grupno || '',
+          individualno1: transformedTipovi.individualno1 || '',
+          individualno2: transformedTipovi.individualno2 || '',
+          none: transformedTipovi.none || ''
+        }
+      });
+    }
+  }, [program]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Transform data for API and include school
       const transformedData = {
         naziv: formData.naziv,
         tipovi: Object.entries(formData.tipovi)
@@ -27,29 +45,28 @@ const DodajProgram = ({ onDodajProgram, onCancel, user }) => {
           .map(([tip, cijena]) => ({
             tip,
             cijena: parseFloat(cijena)
-          })),
-        school: user.school // Add school ID from user
+          }))
       };
 
-      await axios.post(
-        `${ApiConfig.baseUrl}/api/programs`,
+      const response = await axios.put(
+        `${ApiConfig.baseUrl}/api/programs/${program._id}`,
         transformedData,
         { withCredentials: true }
       );
-      
+
       setNotification({
         type: 'success',
-        message: 'Program uspješno dodan!'
+        message: 'Program uspješno ažuriran!'
       });
 
       setTimeout(() => {
-        onDodajProgram();
+        onUpdate(response.data);
       }, 1500);
     } catch (err) {
-      console.error('Error adding program:', err);
+      console.error('Error updating program:', err);
       setNotification({
         type: 'error',
-        message: err.response?.data?.error || 'Greška pri dodavanju programa'
+        message: err.response?.data?.error || 'Greška pri ažuriranju programa'
       });
     }
   };
@@ -67,19 +84,20 @@ const DodajProgram = ({ onDodajProgram, onCancel, user }) => {
   return (
     <div className="popup">
       <form onSubmit={handleSubmit}>
+        
+        <h2>Uredi program</h2>
+
         <div className="div">
-          <label htmlFor='prog-Ime'>Naziv programa:</label>
+          <label>Naziv programa:</label>
           <input
             className="input-login-signup"
             type="text"
-            id='prog-Ime'
             value={formData.naziv}
             onChange={(e) => setFormData({ ...formData, naziv: e.target.value })}
             required
           />
         </div>
 
-        {/* Grupno */}
         <div className="div">
           <label>Grupno (EUR):</label>
           <input
@@ -93,7 +111,6 @@ const DodajProgram = ({ onDodajProgram, onCancel, user }) => {
           />
         </div>
 
-        {/* Individualno 1x */}
         <div className="div">
           <label>Individualno 1x tjedno (EUR):</label>
           <input
@@ -107,7 +124,6 @@ const DodajProgram = ({ onDodajProgram, onCancel, user }) => {
           />
         </div>
 
-        {/* Individualno 2x */}
         <div className="div">
           <label>Individualno 2x tjedno (EUR):</label>
           <input
@@ -121,7 +137,6 @@ const DodajProgram = ({ onDodajProgram, onCancel, user }) => {
           />
         </div>
 
-        {/* Poseban program */}
         <div className="div">
           <label>Poseban program (EUR):</label>
           <input
@@ -136,10 +151,19 @@ const DodajProgram = ({ onDodajProgram, onCancel, user }) => {
         </div>
 
         <div className="div-radio">
-          <button type="button" className="gumb action-btn zatvoriBtn" onClick={onCancel}>
-            Odustani
+          <button 
+            type="button" 
+            className="gumb action-btn zatvoriBtn" 
+            onClick={onClose}
+          >
+            <Icon icon="solar:close-circle-broken" /> Odustani
           </button>
-          <button type="submit" className="gumb action-btn spremiBtn">Dodaj</button>
+          <button 
+            type="submit" 
+            className="gumb action-btn spremiBtn"
+          >
+            <Icon icon="solar:disk-circle-broken" /> Spremi
+          </button>
         </div>
       </form>
       {notification && (
@@ -152,4 +176,4 @@ const DodajProgram = ({ onDodajProgram, onCancel, user }) => {
   );
 };
 
-export default DodajProgram;
+export default ProgramDetalji; 

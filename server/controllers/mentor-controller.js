@@ -178,7 +178,7 @@ const sendPasswordEmail = async (email, password) => {
     const updateDetaljiMentora = async (req, res, next) => {
       try {
         const mentorId = req.params.mentorId;
-        const updateData = req.body; // Assuming the update data is sent in the request body
+        const updateData = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(mentorId)) {
           return res.status(400).json({ message: 'Invalid mentor ID' });
@@ -190,13 +190,30 @@ const sendPasswordEmail = async (email, password) => {
           return res.status(404).json({ message: 'Mentor not found' });
         }
 
-        // Directly update the mentor's students array with the new data
-        if (updateData.students) {
-          mentor.students = updateData.students; // Replace the entire students array
+        // Handle program changes
+        if (Array.isArray(updateData.programs)) {
+          // Update mentor's programs
+          mentor.programs = updateData.programs;
+
+          // Update Program model references
+          await Program.updateMany(
+            { mentors: mentorId },
+            { $pull: { mentors: mentorId } }
+          );
+
+          if (updateData.programs.length > 0) {
+            await Program.updateMany(
+              { _id: { $in: updateData.programs } },
+              { $addToSet: { mentors: mentorId } }
+            );
+          }
         }
 
-        // Update other mentor fields with the values from the request body
-        Object.assign(mentor, updateData);
+        // Update other mentor fields
+        Object.assign(mentor, {
+          ...updateData,
+          programs: mentor.programs // Keep the programs we just updated
+        });
 
         // Save the updated mentor
         await mentor.save();

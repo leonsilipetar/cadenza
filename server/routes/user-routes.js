@@ -34,7 +34,7 @@ const {
   deleteClassroom,
 } = require('../controllers/classroom-controller'); // Import classroom controller
 const { generateInvoice, addInvoice, downloadInvoice } = require('../controllers/invoice-controller'); // Import invoice controller
-const { getAllPrograms, getProgramById, createProgram, updateProgram, deleteProgram } = require('../controllers/program-controller.js');
+const { getAllPrograms, getProgramById, createProgram, updateProgram, deleteProgram } = require('../controllers/program-controller');
 const recipeRoutes = require('./recipe-routes');
 const {
   createPost,
@@ -52,6 +52,9 @@ const {
   getMessages,
 } = require('../controllers/chat-controller');
 const Message = require('../model/Message');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+const invoiceController = require('../controllers/invoice-controller');
 
 const router = express.Router();
 
@@ -198,5 +201,18 @@ router.put('/messages/read/:recipientId', verifyToken, async (req, res) => {
         res.status(500).json({ message: 'Error marking messages as read' });
     }
 });
+
+// Programs routes
+router.get('/programs', verifyToken, getAllPrograms);
+router.get('/programs/:id', verifyToken, getProgramById);
+router.post('/programs', verifyToken, createProgram);
+router.put('/programs/:id', verifyToken, updateProgram);
+router.delete('/programs/:id', verifyToken, deleteProgram);
+
+// Invoice routes
+router.post('/invoices/upload-pdf-invoice', verifyToken, upload.single('pdfFile'), invoiceController.uploadPdfInvoice);
+router.post('/invoices/generate', invoiceController.generateInvoice);
+router.get('/invoices/user/:userId', invoiceController.getUserInvoices);
+router.get('/invoices/:invoiceId', invoiceController.downloadInvoice);
 
 module.exports = router;
