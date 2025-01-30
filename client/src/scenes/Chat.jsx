@@ -10,7 +10,7 @@ import io from 'socket.io-client';
 
 axios.defaults.withCredentials = true;
 
-const socket = io('http://localhost:5000', {
+const socket = io(`${ApiConfig.baseUrl}`, {
   withCredentials: true,
 });
 

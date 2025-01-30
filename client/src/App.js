@@ -30,7 +30,7 @@ const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
-  const socket = io('http://localhost:5000'); // Update with your socket server URL
+  const socket = io(`${ApiConfig.baseUrl}`); // Update with your socket server URL
   const [isChatWindowOpen, setIsChatWindowOpen] = useState(false);
 
   const checkTokenAndFetchUser = useCallback(async () => {
