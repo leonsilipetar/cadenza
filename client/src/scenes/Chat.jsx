@@ -10,7 +10,7 @@ import io from 'socket.io-client';
 
 axios.defaults.withCredentials = true;
 
-const socket = io(`${ApiConfig.baseUrl}`, {
+const socket = io('https://musicartincubator-cadenza.onrender.com', {
   withCredentials: true,
 });
 
